@@ -1,4 +1,5 @@
 # 環境変数
+export CLICOLOR=1
 export LSCOLORS=gxfxcxdxbxegedabagacad
 
 # ヒストリの設定
@@ -55,5 +56,3 @@ alias mv='mv -i'
 alias vi='vim'
 alias cat='cat -n'
 alias less='less -NM'
-export CLICOLOR=1
-export LSCOLORS=DxGxcxdxCxegedabagacad
