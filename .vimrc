@@ -18,16 +18,20 @@ endif
 " plugin
 call plug#begin(expand('~/.vim/plugged'))
 Plug 'mattn/vim-starwars'
-"" space + ne -> sidebar
+
+"" nerd tree & nerd fonts
+Plug 'ryanoasis/vim-devicons'
+"" space + tr -> sidebar
 Plug 'scrooloose/nerdtree'
 Plug 'jistr/vim-nerdtree-tabs'
+Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
 "" ga -> align
 Plug 'junegunn/vim-easy-align'
 "" space + qr -> exec script
 Plug 'thinca/vim-quickrun'
 Plug 'Shougo/vimproc.vim', {'do' : 'make'}
 "" gcc -> comment
-Plug 'tpope/vim-commentary'
+
 "" option bar
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
@@ -57,7 +61,7 @@ Plug 'arnaud-lb/vim-php-namespace'
 Plug 'davidhalter/jedi-vim'
 Plug 'raimon49/requirements.txt.vim', {'for': 'requirements'}
 
-" Plug 'numirias/semshi', {'do': ':UpdateRemotePlugins'}
+Plug 'numirias/semshi', {'do': ':UpdateRemotePlugins'}
 
 "" space + sh -> vimshell
 Plug 'Shougo/vimshell.vim'
@@ -108,6 +112,7 @@ autocmd FileType html imap <buffer><expr><tab>
       \ emmet#isExpandable() ? "\<plug>(emmet-expand-abbr)" :
       \ "\<tab>"
 
+
 "" nerdtree
 let g:NERDTreeChDirMode=2
 let g:NERDTreeIgnore=['\.rbc$', '\~$', '\.pyc$', '\.db$', '\.sqlite$', '__pycache__']
@@ -115,8 +120,36 @@ let g:NERDTreeSortOrder=['^__\.py$', '\/$', '*', '\.swp$', '\.bak$', '\~$']
 let g:NERDTreeShowBookmarks=1
 let g:nerdtree_tabs_focus_on_files=1
 let g:NERDTreeMapOpenInTabSilent = '<RightMouse>'
-let g:NERDTreeWinSize = 30
+let g:NERDTreeDirArrows = 1
+let g:NERDTreeWinSize = 28
 let NERDTreeShowHidden=1
+
+
+"vim-nerdtree-syntax-highlight
+let s:rspec_red = 'FE405F'
+let s:git_orange = 'F54D27'
+let g:NERDTreeExactMatchHighlightColor = {} " this line is needed to avoid error
+let g:NERDTreeExactMatchHighlightColor['.gitignore'] = s:git_orange " sets the color for .gitignore files
+let g:NERDTreePatternMatchHighlightColor = {} " this line is needed to avoid error
+let g:NERDTreePatternMatchHighlightColor['.*_spec\.rb$'] = s:rspec_red " sets the color for files ending with _spec.rb
+
+" vim-devicons
+let g:webdevicons_conceal_nerdtree_brackets = 1
+let g:WebDevIconsNerdTreeAfterGlyphPadding = ' '
+
+" dir-icons
+let g:WebDevIconsUnicodeDecorateFolderNodes = 1
+let g:DevIconsEnableFoldersOpenClose = 1
+let g:WebDevIconsUnicodeDecorateFolderNodesDefaultSymbol = ''
+let g:DevIconsDefaultFolderOpenSymbol = ''
+" file-icons
+let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols = {}
+let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['html'] = ''
+let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['css'] = ''
+let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['md'] = ''
+let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['txt'] = ''
+
+set guifont=Ricty\ Diminished\ with-icons:17
 set wildignore+=*/tmp/*,*.so,*.swp,*.zip,*.pyc,*.db,*.sqlite
 nnoremap <Leader>tr :NERDTreeTabsToggle<CR>
 autocmd BufWritePre * :FixWhitespace
@@ -416,13 +449,3 @@ call dein#add('Shougo/neosnippet.vim')
 call dein#add('Shougo/neosnippet-snippets')
 call dein#add('thinca/vim-quickrun')
 
-
-
-filetype plugin indent on
-
-
-"==coloescheme==
-
-autocmd ColorScheme * highlight Normal ctermbg=none
-autocmd ColorScheme * highlight LineNr ctermbg=none
-colorscheme ayu
