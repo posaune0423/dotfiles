@@ -1,0 +1,21 @@
+[core]
+  editor = vim
+  autoCRLF = false
+
+[user]
+  name = Asuma Yamada
+  email =y.asuma0423@icloud.com
+
+[color]
+  ui = auto
+
+[alias]
+  st = status
+  ca = commit -a
+  br = branch
+  df = diff
+  ps = "!git push origin $(git rev-parse --abbrev-ref HEAD)"
+  pl = "!git pull origin $(git rev-parse --abbrev-ref HEAD)"
+
+[push]
+  default = matching
