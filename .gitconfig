@@ -4,7 +4,7 @@
 
 [user]
   name = Asuma Yamada
-  email =y.asuma0423@icloud.com
+  email = y.asuma0423@icloud.com
 
 [color]
   ui = auto
@@ -16,6 +16,7 @@
   df = diff
   ps = "!git push origin $(git rev-parse --abbrev-ref HEAD)"
   pl = "!git pull origin $(git rev-parse --abbrev-ref HEAD)"
+  open = "!hub browse"
 
 [push]
   default = matching
