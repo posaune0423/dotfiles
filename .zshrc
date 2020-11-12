@@ -1,38 +1,38 @@
-# 環境変数
+# env
 export CLICOLOR=1
 export LSCOLORS=gxfxcxdxbxegedabagacad
 
-# ヒストリの設定
+# setting for history
 HISTFILE=~/.zsh_history
 HISTSIZE=30000
 SAVEHIST=30000
-# 直前のコマンドの重複を削除
+# ignore duplicated commands
 setopt hist_ignore_dups
-# 同じコマンドをヒストリに残さない
+# not Leaving same command in history
 setopt hist_ignore_all_dups
-# 同時に起動したzshの間でヒストリを共有
+# share history between multiple shells
 setopt share_history
 
-# 補完機能を有効にする
+# activate completion
 autoload -Uz compinit
 compinit -u
 if [ -e /usr/local/share/zsh-completions ]; then
-  fpath=(/usr/local/share/zsh-completions $fpath)
+    fpath=(/usr/local/share/zsh-completions $fpath)
 fi
-# 補完で小文字でも大文字にマッチさせる
+# completion matches capital and small letters
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
-# 補完候補を詰めて表示
+# show suggested list packed
 setopt list_packed
-# 補完候補一覧をカラー表示
+# make suggested list colored
 zstyle ':completion:*' list-colors ''
 
-# プラグインを有効化
+# activate plugins
 source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 source $(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
-# コマンドのスペルを訂正
+# correct misspel
 setopt correct
-# ビープ音を鳴らさない
+# cancel beep sound
 setopt no_beep
 
 # prompt
