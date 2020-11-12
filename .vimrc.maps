@@ -1,0 +1,47 @@
+" shortcut leader=Space
+"" save
+nnoremap <Leader>w :w<CR>
+nnoremap <Leader>qqq :q!<CR>
+nnoremap <Leader>eee :e<CR>
+nnoremap <Leader>wq :wq<CR>
+nnoremap <Leader>nn :noh<CR>
+
+"" split
+nnoremap <Leader>s :<C-u>split<CR>
+nnoremap <Leader>v :<C-u>vsplit<CR>
+
+"" Tabs
+nnoremap <Tab> gt
+nnoremap <S-Tab> gT
+nnoremap <Leader>t :tabnew<CR>
+
+"" ignore wrap
+nnoremap j gj
+nnoremap k gk
+nnoremap <Down> gj
+nnoremap <Up> gk
+
+"" Sft + y => yunk to EOL
+nnoremap Y y$
+
+"" + => increment
+nnoremap + <C-a>
+
+"" - => decrement
+nnoremap - <C-x>
+
+
+"" pbcopy for OSX copy/paste
+vmap <C-x> :!pbcopy<CR>
+vmap <C-c> :w !pbcopy<CR><CR>
+
+"" move line/word
+nmap <C-e> $
+nmap <C-a> 0
+nmap <C-f> W
+nmap <C-b> B
+imap <C-e> <C-o>$
+imap <C-a> <C-o>0
+imap <C-f> <C-o>W
+imap <C-b> <C-o>B
+
