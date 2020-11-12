@@ -1,3 +1,4 @@
+" import plugins
 source ~/.vimrc.plugs
 
 " base
@@ -112,5 +113,5 @@ augroup END
 " snippet
 let g:UltiSnipsSnippetDirectories=["~/vim-snippets/"]
 
-
+" import file for keymapping
 source ~/.vimrc.maps
