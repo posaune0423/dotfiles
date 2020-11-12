@@ -1,37 +1,39 @@
 " setting
 if has('vim_starting')
-  set nocompatible
+    set nocompatible
 endif
 
 if !filereadable(expand('~/.vim/autoload/plug.vim'))
-  if !executable("curl")
-    echoerr "You have to install curl or first install vim-plug yourself!"
-    execute "q!"
-  endif
-  echo "Installing Vim-Plug..."
-  echo ""
-  silent !\curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-  let g:not_finish_vimplug = "yes"
-  autocmd VimEnter * PlugInstall
+    if !executable("curl")
+        echoerr "You have to install curl or first install vim-plug yourself!"
+        execute "q!"
+    endif
+    echo "Installing Vim-Plug..."
+    echo ""
+    silent !\curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+    let g:not_finish_vimplug = "yes"
+    autocmd VimEnter * PlugInstall
 endif
 
 " plugin
 call plug#begin(expand('~/.vim/plugged'))
 Plug 'mattn/vim-starwars'
+"" space + ne -> sidebar
 
-"" nerd tree & nerd fonts
+"" nerdtree & nerd fonts
 Plug 'ryanoasis/vim-devicons'
-"" space + tr -> sidebar
+Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
+"----- added above -----
+
 Plug 'scrooloose/nerdtree'
 Plug 'jistr/vim-nerdtree-tabs'
-Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
 "" ga -> align
 Plug 'junegunn/vim-easy-align'
 "" space + qr -> exec script
 Plug 'thinca/vim-quickrun'
 Plug 'Shougo/vimproc.vim', {'do' : 'make'}
 "" gcc -> comment
-
+Plug 'tpope/vim-commentary'
 "" option bar
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
@@ -60,9 +62,6 @@ Plug 'arnaud-lb/vim-php-namespace'
 "" python
 Plug 'davidhalter/jedi-vim'
 Plug 'raimon49/requirements.txt.vim', {'for': 'requirements'}
-
-Plug 'numirias/semshi', {'do': ':UpdateRemotePlugins'}
-
 "" space + sh -> vimshell
 Plug 'Shougo/vimshell.vim'
 "" snippet
@@ -93,7 +92,7 @@ let g:ycm_seed_identifiers_with_syntax = 1
 let g:SuperTabDefaultCompletionType = '<C-n>'
 let g:make = 'gmake'
 if exists('make')
-  let g:make = 'make'
+    let g:make = 'make'
 endif
 
 "" auto-format
@@ -109,21 +108,11 @@ let g:airline_skip_empty_sections = 1
 
 "" emmet
 autocmd FileType html imap <buffer><expr><tab>
-      \ emmet#isExpandable() ? "\<plug>(emmet-expand-abbr)" :
-      \ "\<tab>"
+            \ emmet#isExpandable() ? "\<plug>(emmet-expand-abbr)" :
+            \ "\<tab>"
 
 
-"" nerdtree
-let g:NERDTreeChDirMode=2
-let g:NERDTreeIgnore=['\.rbc$', '\~$', '\.pyc$', '\.db$', '\.sqlite$', '__pycache__']
-let g:NERDTreeSortOrder=['^__\.py$', '\/$', '*', '\.swp$', '\.bak$', '\~$']
-let g:NERDTreeShowBookmarks=1
-let g:nerdtree_tabs_focus_on_files=1
-let g:NERDTreeMapOpenInTabSilent = '<RightMouse>'
-let g:NERDTreeDirArrows = 1
-let g:NERDTreeWinSize = 28
-let NERDTreeShowHidden=1
-
+"------- added ----------
 
 "vim-nerdtree-syntax-highlight
 let s:rspec_red = 'FE405F'
@@ -137,11 +126,15 @@ let g:NERDTreePatternMatchHighlightColor['.*_spec\.rb$'] = s:rspec_red " sets th
 let g:webdevicons_conceal_nerdtree_brackets = 1
 let g:WebDevIconsNerdTreeAfterGlyphPadding = ' '
 
+
+
 " dir-icons
 let g:WebDevIconsUnicodeDecorateFolderNodes = 1
 let g:DevIconsEnableFoldersOpenClose = 1
 let g:WebDevIconsUnicodeDecorateFolderNodesDefaultSymbol = ''
 let g:DevIconsDefaultFolderOpenSymbol = ''
+
+
 " file-icons
 let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols = {}
 let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['html'] = ''
@@ -149,14 +142,24 @@ let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['css'] = ''
 let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['md'] = ''
 let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['txt'] = ''
 
-set guifont=Ricty\ Diminished\ with-icons:17
+"-------------------------
+
+"" nerdtree
+let g:NERDTreeChDirMode=2
+let g:NERDTreeIgnore=['\.rbc$', '\~$', '\.pyc$', '\.db$', '\.sqlite$', '__pycache__']
+let g:NERDTreeSortOrder=['^__\.py$', '\/$', '*', '\.swp$', '\.bak$', '\~$']
+let g:NERDTreeShowBookmarks=1
+let g:nerdtree_tabs_focus_on_files=1
+let g:NERDTreeMapOpenInTabSilent = '<RightMouse>'
+let g:NERDTreeWinSize = 30
+let NERDTreeShowHidden=1
 set wildignore+=*/tmp/*,*.so,*.swp,*.zip,*.pyc,*.db,*.sqlite
-nnoremap <Leader>tr :NERDTreeTabsToggle<CR>
+nnoremap <Leader>dir :NERDTreeTabsToggle<CR>
 autocmd BufWritePre * :FixWhitespace
 augroup NERD
-  au!
-  autocmd VimEnter * NERDTree
-  autocmd VimEnter * wincmd p
+    au!
+    autocmd VimEnter * NERDTree
+    autocmd VimEnter * wincmd p
 augroup END
 
 "" quickrun
@@ -164,9 +167,9 @@ nnoremap <Leader>go :QuickRun<CR>
 nnoremap <C-U>qr :QuickRun<CR>
 let g:quickrun_config={'*': {'split': ''}}
 let g:quickrun_config.cpp = {
-      \   'command': 'g++',
-      \   'cmdopt': '-std=c++11'
-      \ }
+            \   'command': 'g++',
+            \   'cmdopt': '-std=c++11'
+            \ }
 
 "" vim-easy-align
 xmap ga <Plug>(EasyAlign)
@@ -208,90 +211,84 @@ let python_highlight_all = 1
 "" vim-airline
 let g:airline#extensions#virtualenv#enabled = 1
 if !exists('g:airline_symbols')
-  let g:airline_symbols = {}
+    let g:airline_symbols = {}
 endif
 if !exists('g:airline_powerline_fonts')
-  let g:airline#extensions#tabline#left_sep = ' '
-  let g:airline#extensions#tabline#left_alt_sep = '|'
-  let g:airline_left_sep          = '▶'
-  let g:airline_left_alt_sep      = '»'
-  let g:airline_right_sep         = '◀'
-  let g:airline_right_alt_sep     = '«'
-  let g:airline#extensions#branch#prefix     = '⤴' "➔, ➥, ⎇
-  let g:airline#extensions#readonly#symbol   = '⊘'
-  let g:airline#extensions#linecolumn#prefix = '¶'
-  let g:airline#extensions#paste#symbol      = 'ρ'
-  let g:airline_symbols.linenr    = '␊'
-  let g:airline_symbols.branch    = '⎇'
-  let g:airline_symbols.paste     = 'ρ'
-  let g:airline_symbols.paste     = 'Þ'
-  let g:airline_symbols.paste     = '∥'
-  let g:airline_symbols.whitespace = 'Ξ'
+    let g:airline#extensions#tabline#left_sep = ' '
+    let g:airline#extensions#tabline#left_alt_sep = '|'
+    let g:airline_left_sep          = '▶'
+    let g:airline_left_alt_sep      = '»'
+    let g:airline_right_sep         = '◀'
+    let g:airline_right_alt_sep     = '«'
+    let g:airline#extensions#branch#prefix     = '⤴' "➔, ➥, ⎇
+    let g:airline#extensions#readonly#symbol   = '⊘'
+    let g:airline#extensions#linecolumn#prefix = '¶'
+    let g:airline#extensions#paste#symbol      = 'ρ'
+    let g:airline_symbols.linenr    = '␊'
+    let g:airline_symbols.branch    = '⎇'
+    let g:airline_symbols.paste     = 'ρ'
+    let g:airline_symbols.paste     = 'Þ'
+    let g:airline_symbols.paste     = '∥'
+    let g:airline_symbols.whitespace = 'Ξ'
 else
-  let g:airline#extensions#tabline#left_sep = ''
-  let g:airline#extensions#tabline#left_alt_sep = ''
-  let g:airline_left_sep = ''
-  let g:airline_left_alt_sep = ''
-  let g:airline_right_sep = ''
-  let g:airline_right_alt_sep = ''
-  let g:airline_symbols.branch = ''
-  let g:airline_symbols.readonly = ''
-  let g:airline_symbols.linenr = ''
+    let g:airline#extensions#tabline#left_sep = ''
+    let g:airline#extensions#tabline#left_alt_sep = ''
+    let g:airline_left_sep = ''
+    let g:airline_left_alt_sep = ''
+    let g:airline_right_sep = ''
+    let g:airline_right_alt_sep = ''
+    let g:airline_symbols.branch = ''
+    let g:airline_symbols.readonly = ''
+    let g:airline_symbols.linenr = ''
 endif
 
 " function
 "" xaml
 augroup MyXML
-  autocmd!
-  autocmd Filetype xml inoremap <buffer> </ </<C-x><C-o>
-  autocmd Filetype html inoremap <buffer> </ </<C-x><C-o>
+    autocmd!
+    autocmd Filetype xml inoremap <buffer> </ </<C-x><C-o>
+    autocmd Filetype html inoremap <buffer> </ </<C-x><C-o>
 augroup END
 
 "" The PC is fast enough, do syntax highlight syncing from start unless 200 lines
 augroup vimrc-sync-fromstart
-  autocmd!
-  autocmd BufEnter * :syntax sync maxlines=200
+    autocmd!
+    autocmd BufEnter * :syntax sync maxlines=200
 augroup END
 
 "" Remember cursor position
 augroup vimrc-remember-cursor-position
-  autocmd!
-  autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
+    autocmd!
+    autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
 augroup END
 
 "" txt
 augroup vimrc-wrapping
-  autocmd!
-  autocmd BufRead,BufNewFile *.txt call s:setupWrapping()
+    autocmd!
+    autocmd BufRead,BufNewFile *.txt call s:setupWrapping()
 augroup END
 if !exists('*s:setupWrapping')
-  function s:setupWrapping()
-    set wrap
-    set wm=2
-    set textwidth=79
-  endfunction
+    function s:setupWrapping()
+        set wrap
+        set wm=2
+        set textwidth=79
+    endfunction
 endif
 
 "" make/cmake
 augroup vimrc-make-cmake
-  autocmd!
-  autocmd FileType make setlocal noexpandtab
-  autocmd BufNewFile,BufRead CMakeLists.txt setlocal filetype=cmake
+    autocmd!
+    autocmd FileType make setlocal noexpandtab
+    autocmd BufNewFile,BufRead CMakeLists.txt setlocal filetype=cmake
 augroup END
 
 "" python
 augroup vimrc-python
-  autocmd!
-  autocmd FileType python setlocal
-        \ formatoptions+=croq softtabstop=4
-        \ cinwords=if,elif,else,for,while,try,except,finally,def,class,with
+    autocmd!
+    autocmd FileType python setlocal
+                \ formatoptions+=croq softtabstop=4
+                \ cinwords=if,elif,else,for,while,try,except,finally,def,class,with
 augroup END
-
-" au BufRead,BufNewFile *.py set filetype=python
-
-
-
-
 
 " shortcut leader=Space
 "" save
@@ -310,10 +307,11 @@ nnoremap <Tab> gt
 nnoremap <S-Tab> gT
 nnoremap <Leader>t :tabnew<CR>
 
-
-"" ESC key => jj
-inoremap <silent> jj <ESC>
-
+"" ignore wrap
+nnoremap j gj
+nnoremap k gk
+nnoremap <Down> gj
+nnoremap <Up> gk
 
 "" Sft + y => yunk to EOL
 nnoremap Y y$
@@ -323,10 +321,6 @@ nnoremap + <C-a>
 
 "" - => decrement
 nnoremap - <C-x>
-
-"" move 15 words
-nmap <silent> <Tab> 15<Right>
-nmap <silent> <S-Tab> 15<Left>
 
 
 "" pbcopy for OSX copy/paste
@@ -366,7 +360,6 @@ set nobackup
 set noswapfile
 set fileformats=unix,dos,mac
 syntax on
-syntax enable
 set ruler
 set number
 set gcr=a:blinkon0
@@ -383,69 +376,13 @@ set noerrorbells visualbell t_vb=
 set clipboard+=unnamed,autoselect
 set mouse=a
 set whichwrap=b,s,h,l,<,>,[,]
-set fenc=utf-8
-set virtualedit=onemore
-set autoindent
-set smartindent
-set shiftwidth=2
-set listchars=tab:▸\ ,eol:↲,extends:❯,precedes:❮
-
-
-
-
-
-let &t_ti.="\e[5 q"
-
 
 " template
 augroup templateGroup
-  autocmd!
-  autocmd BufNewFile *.html :0r ~/.vim/template/t.html
-  autocmd BufNewFile *.cpp :0r ~/.vim/template/t.cpp
-  autocmd BufNewFile *.php :0r ~/.vim/template/t.php
+    autocmd!
+    autocmd BufNewFile *.html :0r ~/vim-template/t.html
+    autocmd BufNewFile *.cpp :0r ~/vim-template/t.cpp
+    autocmd BufNewFile *.py :0r ~/vim-template/t.py
 augroup END
-
 " snippet
-let g:UltiSnipsSnippetDirectories=["~/vim-snippets/"]"" auto format
-
-
-
-
-
-"=== Auto Complete Settings ===
-inoremap ( ()<LEFT>
-inoremap { {}<LEFT>
-inoremap [ []<LEFT>
-inoremap " ""<LEFT>
-inoremap ' ''<LEFT>
-
-
-"dein Scripts-----------------------------
-
-if &compatible
-  set nocompatible
-endif
-" Add the dein installation directory into runtimepath
-set runtimepath+=~/.cache/dein/repos/github.com/Shougo/dein.vim
-
-if dein#load_state('~/.cache/dein')
-  call dein#begin('~/.cache/dein')
-
-  call dein#add('~/.cache/dein/repos/github.com/Shougo/dein.vim')
-  call dein#add('Shougo/deoplete.nvim')
-  if !has('nvim')
-    call dein#add('roxma/nvim-yarp')
-    call dein#add('roxma/vim-hug-neovim-rpc')
-  endif
-
-
-  call dein#end()
-  call dein#save_state()
-endif
-
-"End Dein Script------------------------------
-
-call dein#add('Shougo/neosnippet.vim')
-call dein#add('Shougo/neosnippet-snippets')
-call dein#add('thinca/vim-quickrun')
-
+let g:UltiSnipsSnippetDirectories=["~/vim-snippets/"]
