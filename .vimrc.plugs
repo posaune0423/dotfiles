@@ -22,7 +22,6 @@ Plug 'mattn/vim-starwars'
 "" nerdtree & nerd fonts
 Plug 'ryanoasis/vim-devicons'
 Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
-"----- added above -----
 
 Plug 'scrooloose/nerdtree'
 Plug 'jistr/vim-nerdtree-tabs'
@@ -67,7 +66,6 @@ Plug 'Shougo/vimshell.vim'
 Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
 
-"---- added ----
 Plug 'w0rp/ale'
 
 call plug#end()
@@ -115,8 +113,6 @@ autocmd FileType html imap <buffer><expr><tab>
             \ "\<tab>"
 
 
-"------- added ----------
-
 "vim-nerdtree-syntax-highlight
 let s:rspec_red = 'FE405F'
 let s:git_orange = 'F54D27'
@@ -145,7 +141,6 @@ let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['css'] = ''
 let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['md'] = ''
 let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['txt'] = ''
 
-"-------------------------
 
 "" nerdtree
 let g:NERDTreeChDirMode=2
