@@ -1,6 +1,3 @@
-" import plugins
-" source ~/.vimrc.plugs
-
 " base
 set encoding=utf-8
 set fileencoding=utf-8
