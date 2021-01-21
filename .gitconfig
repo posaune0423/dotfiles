@@ -4,19 +4,25 @@
 
 [user]
   name = Asuma Yamada
-  email = y.asuma0423@icloud.com
 
 [color]
   ui = auto
 
 [alias]
   st = status
+  ci = commit
   ca = commit -a
+  cm = commit -m
   br = branch
-  df = diff
+  ba = branch -a
+  d = diff
+  df = "!git hist | peco | awk '{print $2}' | xargs -I {} git diff {}^ {}"
   ps = "!git push origin $(git rev-parse --abbrev-ref HEAD)"
+  hist = log --pretty=format:\"%Cgreen%h %Creset%cd %Cblue[%cn] %Creset%s%C(yellow)%d%C(reset)\" --graph --date=relative --decorate --all
   pl = "!git pull origin $(git rev-parse --abbrev-ref HEAD)"
   open = "!hub browse"
+  find-merge = "!sh -c 'commit=$0 && branch=${1:-HEAD} && (git rev-list $commit..$branch --ancestry-path | cat -n; git rev-list $commit..$branch --first-parent | cat -n) | sort -k2 | uniq -f1 -d | sort -n | tail -1 | cut -f2'"
+  show-merge = "!sh -c 'merge=$(git find-merge $0 $1) && [ -n \"$merge\" ] && git show $merge'"
 
 [push]
   default = matching
