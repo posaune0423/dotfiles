@@ -1,11 +1,17 @@
 [core]
-  editor = vim
+  editor = nvim
   autoCRLF = false
+  excludesfile = ~/.gitignore
 
 [user]
   name = Asuma Yamada
 
 [color]
+  status = auto
+  diff = auto
+  branch = auto
+  interactive = auto
+  grep = auto
   ui = auto
 
 [alias]
@@ -26,3 +32,8 @@
 
 [push]
   default = matching
+
+[hub]
+  protocol = https
+[github]
+	user = posaune0423
