@@ -34,7 +34,7 @@ else
       clear
       ;;
     *)
-      echo [ERROR] "$1" は設定されていない引数です。
+      echo [ERROR] "$1" is undefined arguments
       ;;
   esac
 fi
