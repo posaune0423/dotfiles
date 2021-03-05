@@ -52,11 +52,6 @@ alias restart='exec $SHELL -l'
 alias g='git'
 alias ide='~/.scripts/ide.sh'
 
-# for pyenv
-if command -v pyenv 1>/dev/null 2>&1; then
-  eval "$(pyenv init -)"
-fi
-
 
 # for preventing from warning when brew doctor
 alias brew='PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin brew' 
