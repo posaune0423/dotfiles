@@ -1,39 +1,29 @@
-# env
-export CLICOLOR=1
-export LSCOLORS=gxfxcxdxbxegedabagacad
-
 # setting for history
 HISTFILE=~/.zsh_history
 HISTSIZE=30000
 SAVEHIST=30000
-# ignore duplicated commands
-setopt hist_ignore_dups
-# not Leaving same command in history
-setopt hist_ignore_all_dups
-# share history between multiple shells
-setopt share_history
 
-# activate completion
+setopt hist_ignore_dups
+setopt hist_ignore_all_dups
+setopt share_history
+setopt no_beep
+setopt correct
+setopt list_packed
+
+
+# enable autocompletion
 autoload -Uz compinit
 compinit -u
 if [ -e /usr/local/share/zsh-completions ]; then
-    fpath=(/usr/local/share/zsh-completions $fpath)
+  fpath=(/usr/local/share/zsh-completions $fpath)
 fi
-# completion matches capital and small letters
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
-# show suggested list packed
-setopt list_packed
-# make suggested list colored
 zstyle ':completion:*' list-colors ''
 
-# activate plugins
+# enable plugins
 source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 source $(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
-# correct misspel
-setopt correct
-# cancel beep sound
-setopt no_beep
 
 # prompt
 autoload -Uz vcs_info
@@ -44,7 +34,7 @@ zstyle ':vcs_info:git:*' unstagedstr "%F{yellow}+"
 zstyle ':vcs_info:*' formats "%F{cyan}%c%u[%b]%f"
 zstyle ':vcs_info:*' actionformats '[%b|%a]'
 precmd() { vcs_info }
-PROMPT='%T %~ %F{magenta}$%f '
+PROMPT='%T %n %~ %F{magenta}$%f '
 RPROMPT='${vcs_info_msg_0_}'
 
 # alias
@@ -53,7 +43,23 @@ alias ll='ls -l'
 alias rm='rm -i'
 alias cp='cp -i'
 alias mv='mv -i'
-alias vi='vim'
+alias vi='nvim'
+alias vim='nvim'
 alias cat='cat -n'
 alias less='less -NM'
+alias reload='source ~/.zshrc'
+alias restart='exec $SHELL -l'
 alias g='git'
+alias ide='~/.scripts/ide.sh'
+alias appserver='~/.scripts/appserver.sh'
+alias rakumodev='open http://localhost:8080/admin/ & open http:localhost:8000'
+
+# for pyenv
+if command -v pyenv 1>/dev/null 2>&1; then
+  eval "$(pyenv init -)"
+fi
+
+
+# for preventing from warning when brew doctor
+alias brew='PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin brew' 
+HOMEBREW_CASK_OPTS="--appdir=/Applications"
