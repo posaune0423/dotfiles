@@ -51,8 +51,6 @@ alias reload='source ~/.zshrc'
 alias restart='exec $SHELL -l'
 alias g='git'
 alias ide='~/.scripts/ide.sh'
-alias appserver='~/.scripts/appserver.sh'
-alias rakumodev='open http://localhost:8080/admin/ & open http:localhost:8000'
 
 # for pyenv
 if command -v pyenv 1>/dev/null 2>&1; then
