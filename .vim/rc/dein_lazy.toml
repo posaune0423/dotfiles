@@ -31,10 +31,6 @@ repo = 'kchmck/vim-coffee-script'
 on_ft = ['coffee']
 
 [[plugins]]
-repo = 'dag/vim-fish'
-on_ft = ['fish']
-
-[[plugins]]
 repo = 'cespare/vim-toml'
 on_ft = ['toml']
 
