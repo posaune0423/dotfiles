@@ -3,7 +3,7 @@ I really respect the settings of [Takuya Matsuyama](https://github.com/craftzdog
 
 ## neovim
 
-if you have anerror such as `this plugin requires python3 support`
+if you have an error such as `this plugin requires python3 support`
 you may well run below
 
 ```
