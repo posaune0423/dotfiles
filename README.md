@@ -1,4 +1,5 @@
 # dotfiles
+I really respect the settings of [Takuya Matsuyama](https://github.com/craftzdog/dotfiles-public).
 
 ## neovim
 
