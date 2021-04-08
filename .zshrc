@@ -51,6 +51,7 @@ alias reload='source ~/.zshrc'
 alias restart='exec $SHELL -l'
 alias g='git'
 alias ide='~/.scripts/ide.sh'
+alias chrome='open -a "Google Chrome"'
 
 
 # for preventing from warning when brew doctor
