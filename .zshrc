@@ -38,8 +38,8 @@ PROMPT='%T %n %~ %F{magenta}$%f '
 RPROMPT='${vcs_info_msg_0_}'
 
 # alias
-alias ls='ls -aF'
-alias ll='ls -l'
+alias ls='exa -g --icons'
+alias ll='exa -g -l --icons'
 alias rm='rm -i'
 alias cp='cp -i'
 alias mv='mv -i'
