@@ -1,0 +1,109 @@
+{
+    "window.zoomLevel": 0,
+    "breadcrumbs.enabled": true,
+    "workbench.sideBar.location": "left",
+    "workbench.startupEditor": "newUntitledFile",
+    "workbench.editor.enablePreview": false,
+    "emmet.triggerExpansionOnTab": true,
+    "editor.suggestSelection": "first",
+    "editor.renderWhitespace": "boundary",
+    "editor.fontSize": 15,
+    "editor.fontFamily": "Monaco",
+    "editor.insertSpaces": false,
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": true
+    },
+    "files.trimFinalNewlines": true,
+    "files.trimTrailingWhitespace": true,
+    "files.exclude": {
+        "**/__pycache__": true,
+        "**/*.idea": true,
+        "**/*.pyc": true,
+        "**/*.vscode": true
+    },
+    "files.associations": {
+        "*Dockerfile*": "dockerfile",
+        "yml": "yaml"
+    },
+    "html.format.enable": true,
+    "terminal.external.osxExec": "iTerm.app",
+    "terminal.integrated.fontFamily": "monospace",
+    // setting for Color Theme or Editor
+    "workbench.colorTheme": "Ayu Mirage Bordered",
+    "workbench.preferredDarkColorTheme": "Default Light+",
+    "workbench.iconTheme": "material-icon-theme",
+    "workbench.editorAssociations": [
+        {
+            "viewType": "jupyter-notebook",
+            "filenamePattern": "*.ipynb"
+        }
+    ],
+    ///////////// Plugins /////////////////
+    // Prettier
+    "prettier.semi": false,
+    "prettier.singleQuote": true,
+    "javascript.updateImportsOnFileMove.enabled": "always",
+    // bracketPairColorizer
+    "bracketPairColorizer.activeScopeCSS": [
+        "borderStyle : solid",
+        "borderWidth : 1px",
+        "borderColor : {color}; opacity: 0.5"
+    ],
+    // settings for python
+    "python.languageServer": "Pylance",
+    "python.pythonPath": "/Users/yamadaasuma/.pyenv/shims/python",
+    "liveServer.settings.donotShowInfoMsg": true,
+    "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
+    "terminal.integrated.fontSize": 16,
+    // settings for python linting
+    "python.linting.flake8Enabled": true,
+    "python.linting.enabled": false,
+    "python.formatting.provider": "black",
+    "python.formatting.blackArgs": [
+        "-l 120"
+    ],
+    // settings for each languages
+    "[html]": {
+        "editor.defaultFormatter": "vscode.html-language-features"
+    },
+    "[javascript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[php]": {
+        "editor.defaultFormatter": "bmewburn.vscode-intelephense-client"
+    },
+    "[css]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[vue]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[json]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    // When editting .md file, turn off trimTrailingWhitespace function
+    "[markdown]": {
+        "files.trimTrailingWhitespace": false
+    },
+    "[dockerfile]": {
+        "editor.quickSuggestions": {
+            "strings": true
+        }
+    },
+    "[typescriptreact]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[javascriptreact]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[typescript]": {
+        "editor.defaultFormatter": "vscode.typescript-language-features"
+    },
+    "[jsonc]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[yaml]": {
+
+        "editor.defaultFormatter": "redhat.vscode-yaml"
+    }
+}
