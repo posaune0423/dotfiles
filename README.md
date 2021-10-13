@@ -9,6 +9,7 @@ you may well run below
 
 ```bash
 $ pip3 install --user pynvim
+$ pip install --user pynvim (also in python2)
 ```
 
 ## [dein.vim](https://github.com/Shougo/dein.vim)
