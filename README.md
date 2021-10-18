@@ -26,3 +26,11 @@ $ curl https://raw.githubusercontent.com/Shougo/dein.vim/master/bin/installer.sh
 # For example, we just use `~/.cache/dein` as installation directory
 $ sh ./installer.sh ~/.cache/dein
 ```
+
+### [Nodebrew](https://github.com/hokaccha/nodebrew)
+
+```bash
+$ nodebrew setup
+$ nodebrew install latest # latest version
+$ nodebrew use ${version}
+```
