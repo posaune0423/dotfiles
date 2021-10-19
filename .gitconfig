@@ -33,6 +33,9 @@
 
 [push]
   default = matching
+ 
+[pull]
+  rebase = false
 
 [hub]
   protocol = https
