@@ -27,10 +27,10 @@ $ curl https://raw.githubusercontent.com/Shougo/dein.vim/master/bin/installer.sh
 $ sh ./installer.sh ~/.cache/dein
 ```
 
-### [Nodebrew](https://github.com/hokaccha/nodebrew)
+### [nvm]([https://github.com/hokaccha/nodebrew](https://github.com/nvm-sh/nvm))
 
-```bash
-$ nodebrew setup
-$ nodebrew install latest # latest version
-$ nodebrew use ${version}
-```
+### [Denite](https://github.com/Shougo/denite.nvim)
+
+### [defx](https://github.com/Shougo/defx.nvim)
+
+### [deoplete]([https://github.com/](https://github.com/Shougo/deoplete.nvim))
