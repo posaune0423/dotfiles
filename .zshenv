@@ -7,20 +7,9 @@ export LSCOLORS=gxfxcxdxbxegedabagacad
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
 
-
 # openssl settings
 export LDFLAGS="-L/usr/local/opt/openssl/lib"
 export CPPFLAGS="-I/usr/local/opt/openssl/include"
-
-# for pyenv
-if command -v pyenv 1>/dev/null 2>&1; then
-  eval "$(pyenv init --path)"
-fi
-
-# pyenv settings
-export PYENV_ROOT="$HOME/.pyenv"
-export PATH="$PYENV_ROOT/bin:$PATH"
-eval "$(pyenv init --path)"
 
 # openjdk
 export PATH="/usr/local/opt/openjdk@11/bin:$PATH"
@@ -29,6 +18,13 @@ export PATH="/usr/local/opt/openjdk@11/bin:$PATH"
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
 
-# for Golang
+# load rbenv
+export PATH="$HOME/.rbenv/bin:$PATH"
+
+# For Golang
 export GOPATH=$HOME/go
 export PATH=$PATH:$GOPATH/bin
+
+# pyenv settings
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$PYENV_ROOT/bin:$PATH"
