@@ -1,5 +1,5 @@
 {
-  "coc.preferences.formatOnSaveFiletypes": ["json", "css", "markdown"],
+  "coc.preferences.formatOnSaveFiletypes": ["json", "css", "markdown", "go"],
   "eslint.autoFixOnSave": true,
   "eslint.autoFix": true,
   "tsserver.enableJavascript": false,
@@ -12,6 +12,11 @@
       "requireRootPattern": true,
       "settings": {},
       "rootPatterns": [".flowconfig"]
+    },
+    "golang": {
+      "command": "gopls",
+      "rootPatterns": ["go.mod", ".vim/", ".git/", ".hg/"],
+      "filetypes": ["go"]
     }
   },
   "diagnostic.errorSign": "✘",
