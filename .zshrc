@@ -57,8 +57,3 @@ alias chrome='open -a "Google Chrome"'
 # for preventing from warning when brew doctor
 alias brew='PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin brew' 
 HOMEBREW_CASK_OPTS="--appdir=/Applications"
-
-# for Golang
-export GOPATH=$HOME/go
-export PATH=$PATH:$GOPATH/bin
-
