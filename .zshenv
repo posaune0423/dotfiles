@@ -25,6 +25,10 @@ eval "$(pyenv init --path)"
 # openjdk
 export PATH="/usr/local/opt/openjdk@11/bin:$PATH"
 
+# nvm setting
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
 
-# setting for nodebrew
-export PATH=$HOME/.nodebrew/current/bin:$PATH
+# for Golang
+export GOPATH=$HOME/go
+export PATH=$PATH:$GOPATH/bin
