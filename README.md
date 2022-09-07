@@ -27,10 +27,10 @@ $ curl https://raw.githubusercontent.com/Shougo/dein.vim/master/bin/installer.sh
 $ sh ./installer.sh ~/.cache/dein
 ```
 
-### [nvm]([https://github.com/hokaccha/nodebrew](https://github.com/nvm-sh/nvm))
+### [nvm](https://github.com/nvm-sh/nvm)
 
 ### [Denite](https://github.com/Shougo/denite.nvim)
 
 ### [defx](https://github.com/Shougo/defx.nvim)
 
-### [deoplete]([https://github.com/](https://github.com/Shougo/deoplete.nvim))
+### [deoplete](https://github.com/Shougo/deoplete.nvim)
