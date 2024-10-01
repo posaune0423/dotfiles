@@ -18,7 +18,7 @@
   ///////////////////////////////////
   "editor.insertSpaces": false,
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true
+    "source.fixAll.eslint": "explicit"
   },
   "files.autoSaveDelay": 1000,
   "files.trimFinalNewlines": true,
