@@ -14,6 +14,7 @@ setopt share_history        # 履歴を共有
 setopt no_beep              # ビープ音を鳴らさない
 setopt correct              # コマンドのスペルを訂正
 setopt list_packed          # 補完候補を詰めて表示
+setopt auto_cd
 
 #---------------------------
 # Homebrew Settings
