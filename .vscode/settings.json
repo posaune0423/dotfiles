@@ -1,105 +1,59 @@
 {
-  "window.zoomLevel": 0,
-  "breadcrumbs.enabled": true,
-  "workbench.sideBar.location": "left",
-  "workbench.startupEditor": "newUntitledFile",
-  "workbench.editor.enablePreview": false,
-  "emmet.triggerExpansionOnTab": true,
-  "security.workspace.trust.untrustedFiles": "open",
-  "editor.suggestSelection": "first",
-  "editor.renderWhitespace": "boundary",
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
-  ////////////////    Font Settings     ////////////////
-  "editor.codeLensFontFamily": "Monaco",
-  "editor.inlayHints.fontFamily": "Monaco",
-  "editor.fontFamily": "Monaco",
-  "editor.fontSize": 15,
-  "editor.fontWeight": "400",
-  ///////////////////////////////////
-  "editor.insertSpaces": false,
-  "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": "explicit"
-  },
-  "files.autoSaveDelay": 1000,
-  "files.trimFinalNewlines": true,
-  "files.trimTrailingWhitespace": true,
-  "files.exclude": {
-    "**/__pycache__": true,
-    "**/*.idea": true,
-    "**/*.pyc": true,
-    "**/*.vscode": true
-  },
-  "files.associations": {
-    "*Dockerfile*": "dockerfile",
-    "yml": "yaml",
-    "*.html": "html"
-  },
-  ///////////////////////     let VSCODE ignore these directory watching below    ///////////////////////
-  "files.watcherExclude": {
-    "**/.git/objects/**": true,
-    "**/.git/subtree-cache/**": true,
-    "**/.rvm/**": true,
-    "**/node_modules/**": true,
-    "**/GoogleDrive/**": true,
-    "**/Dropbox/**": true,
-    "**/Pictures/**": true
-  },
-  "html.format.enable": true,
-  /////////////////////////   Terminal Settings    /////////////////////////
-  "terminal.external.osxExec": "iTerm.app",
-  "terminal.integrated.fontFamily": "monospace",
-  "terminal.integrated.fontSize": 16,
-  ///////////////////////// setting for Color Theme or Editor    /////////////////////////
-  "workbench.colorTheme": "Ayu Mirage Bordered",
-  "workbench.preferredDarkColorTheme": "Default Light+",
-  "workbench.iconTheme": "material-icon-theme",
-  ///////////////// Prettier ////////////////////////////
-  "prettier.semi": false,
-  "prettier.singleQuote": true,
-  "javascript.updateImportsOnFileMove.enabled": "always",
-  // bracketPairColorizer
-  "bracketPairColorizer.activeScopeCSS": [
-    "borderStyle : solid",
-    "borderWidth : 1px",
-    "borderColor : {color}; opacity: 0.5"
-  ],
-  ///////////////////////  ESLINT    /////////////////////
-  "eslint.alwaysShowStatus": true,
-  "eslint.lintTask.enable": true,
-  "eslint.packageManager": "yarn",
-  /////////////////////  PYTHON SETTINGS  ////////////////
-  "python.pythonPath": "/Users/yamadaasuma/.pyenv/shims/python",
-  "python.venvFolders": ["venv"],
-  "python.linting.lintOnSave": true,
-  "python.linting.pylintEnabled": false,
-  "python.linting.pycodestyleEnabled": false,
-  "python.linting.flake8Enabled": true,
-  "python.linting.flake8Args": [
-    "--ignore=W293, W504",
-    "--max-line-length=150",
-    "--max-complexity=20"
-  ],
-  "python.formatting.provider": "autopep8",
-  "python.formatting.autopep8Args": ["--aggressive", "--aggressive"],
-  "python.defaultInterpreterPath": "/Users/a.yamada/.pyenv/shims/python",
-  "python.formatting.autopep8Path": "/Users/a.yamada/.pyenv/shims/autopep8",
-  //////////////////////  Language Settings  //////////////////////
-  "[html]": {
-    "editor.defaultFormatter": "vscode.html-language-features"
+  "[cairo]": {
+    "editor.defaultFormatter": "StarkWare.cairo1",
+    "editor.tabSize": 4
   },
   "[css]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "[scss]": {
+  "[dockerfile]": {
+    "editor.defaultFormatter": "ms-azuretools.vscode-docker"
+  },
+  "[dotenv]": {
+    "editor.defaultFormatter": "foxundermoon.shell-format"
+  },
+  "[github-actions-workflow]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[html]": {
+    "editor.defaultFormatter": "vscode.html-language-features"
   },
   "[javascript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "[typescript]": {
+  "[javascriptreact]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "[javascriptreact]": {
+  "[json]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[makefile]": {
+    "editor.insertSpaces": false
+  },
+  "[markdown]": {
+    "files.trimTrailingWhitespace": false
+  },
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.black-formatter",
+    "editor.wordBasedSuggestions": "off",
+    "gitlens.codeLens.symbolScopes": ["!Module"]
+  },
+  "[scss]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[shellscript]": {
+    "editor.defaultFormatter": "foxundermoon.shell-format"
+  },
+  "[svg]": {
+    "editor.defaultFormatter": "jock.svg"
+  },
+  "[toml]": {
+    "editor.defaultFormatter": "tamasfe.even-better-toml"
+  },
+  "[typescript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[typescriptreact]": {
@@ -108,25 +62,165 @@
   "[vue]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "[json]": {
+  "[xml]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[php]": {
-    "editor.defaultFormatter": "bmewburn.vscode-intelephense-client"
-  },
-  // When editting .md file, turn off trimTrailingWhitespace function
-  "[markdown]": {
-    "files.trimTrailingWhitespace": false
-  },
-  "[dockerfile]": {
-    "editor.quickSuggestions": {
-      "strings": true
-    }
   },
   "[yaml]": {
     "editor.defaultFormatter": "redhat.vscode-yaml"
   },
-  "[makefile]": {
-    "editor.insertSpaces": false
+  "breadcrumbs.enabled": true,
+  "cSpell.userWords": [
+    "cdefs",
+    "dotenv",
+    "dpkg",
+    "geckodriver",
+    "pytest",
+    "torbrowser",
+    "useragent"
+  ],
+  "cairo1.enableLanguageServer": true,
+  "cairo1.enableScarb": true,
+  "cairo1.languageServerPath": "~/.asdf/installs/dojo/1.0.0/bin/dojo-language-server",
+  "cursor.cpp.enablePartialAccepts": true,
+  "editor.accessibilitySupport": "off",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
   },
+  "editor.codeLensFontFamily": "Monaco",
+  "editor.inlayHints.fontFamily": "Monaco",
+  "editor.fontFamily": "Monaco",
+  "editor.fontSize": 14,
+  "editor.fontWeight": "400",
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.insertSpaces": false,
+  "editor.renderWhitespace": "boundary",
+  "editor.suggestSelection": "first",
+  "emmet.triggerExpansionOnTab": true,
+  "eslint.lintTask.enable": true,
+  "files.associations": {
+    "*.html": "html",
+    "*.svg": "svg",
+    "*Dockerfile*": "dockerfile",
+    "yml": "yaml",
+    ".cursorrules": "markdown"
+  },
+  "files.exclude": {
+    "**/*.idea": true,
+    "**/*.pyc": true,
+    "**/__pycache__": true
+  },
+  "files.trimFinalNewlines": true,
+  "files.trimTrailingWhitespace": true,
+  "files.watcherExclude": {
+    "**/.git/objects/**": true,
+    "**/.git/subtree-cache/**": true,
+    "**/.nuxt/**": true,
+    "**/.rvm/**": true,
+    "**/Dropbox/**": true,
+    "**/GoogleDrive/**": true,
+    "**/Pictures/**": true,
+    "**/build/**": true,
+    "**/node_modules/**": true
+  },
+  "git.autofetch": true,
+  "git.confirmSync": false,
+  "git.openRepositoryInParentFolders": "never",
+  "git.suggestSmartCommit": false,
+  "html.format.enable": true,
+  "javascript.updateImportsOnFileMove.enabled": "always",
+  "makefile.configureOnOpen": true,
+  "python.defaultInterpreterPath": "/Users/asumayamada/.pyenv/shims/python",
+  "python.venvFolders": ["venv"],
+  "python.venvPath": "/Users/asumayamada/.pyenv",
+  "redhat.telemetry.enabled": true,
+  "security.workspace.trust.untrustedFiles": "open",
+  "solidity.telemetry": true,
+  "terminal.integrated.allowedLinkSchemes": [
+    "file",
+    "http",
+    "https",
+    "mailto",
+    "vscode",
+    "vscode-insiders",
+    "docker-desktop"
+  ],
+  "terminal.integrated.env.osx": {
+    "Q_NEW_SESSION": "1"
+  },
+  "terminal.integrated.fontFamily": "SauceCodePro Nerd Font",
+  "terminal.integrated.fontSize": 16,
+  "terminal.integrated.fontWeight": "200",
+  "workbench.colorTheme": "Ayu Mirage Bordered",
+  "workbench.iconTheme": "material-icon-theme",
+  "workbench.preferredDarkColorTheme": "Default Light+",
+  "workbench.sideBar.location": "left",
+  "yaml.customTags": [
+    "!And",
+    "!And sequence",
+    "!If",
+    "!If sequence",
+    "!Not",
+    "!Not sequence",
+    "!Equals",
+    "!Equals sequence",
+    "!Or",
+    "!Or sequence",
+    "!FindInMap",
+    "!FindInMap sequence",
+    "!Base64",
+    "!Join",
+    "!Join sequence",
+    "!Cidr",
+    "!Ref",
+    "!Sub",
+    "!Sub sequence",
+    "!GetAtt",
+    "!GetAZs",
+    "!ImportValue",
+    "!ImportValue sequence",
+    "!Select",
+    "!Select sequence",
+    "!Split",
+    "!Split sequence"
+  ],
+  "yaml.validate": false,
+  "window.openFilesInNewWindow": "on",
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "[solidity]": {
+    "editor.defaultFormatter": "NomicFoundation.hardhat-solidity"
+  },
+  "cursor.cpp.disabledLanguages": ["plaintext"],
+  "biome.enabled": false,
+  "[ignore]": {
+    "editor.defaultFormatter": "foxundermoon.shell-format"
+  },
+  "hediet.vscode-drawio.customLibraries": [
+    {
+      "entryId": "AWS-20230428", //https://github.com/m-radzikowski/diagrams-aws-icons
+      "libName": "AWS-20230428",
+      "file": "/Users/asumayamada/.vscode-drawio/AWS Architecture Icons 20240206.xml"
+    }
+  ],
+  "hediet.vscode-drawio.resizeImages": null,
+  "hediet.vscode-drawio.appearance": "dark",
+  "update.releaseTrack": "prerelease",
+  "cursor.composer.shouldAllowCustomModes": true,
+  "cursor.composer.shouldChimeAfterChatFinishes": true,
+  "explorer.confirmDragAndDrop": false,
+  "cursorStats.showTotalRequests": true,
+  "[dockercompose]": {
+    "editor.defaultFormatter": "bluebrown.yamlfmt"
+  },
+  "evenBetterToml.formatter.indentString": " ",
+  "markdown-mermaid.languages": ["mermaid"],
+  "remote.SSH.remotePlatform": {
+    "raspberrypi.local": "linux"
+  },
+  "remote.SSH.connectTimeout": 600,
+  "chat.editor.fontSize": 14,
+  "cursor.composer.textSizeScale": 1.15,
+  "[sql]": {
+    "editor.defaultFormatter": "mtxr.sqltools"
+  },
+  "diffEditor.maxComputationTime": 0,
 }
