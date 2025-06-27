@@ -3,16 +3,16 @@
 #---------------------------
 # PATH重複を防ぐヘルパー関数
 path_prepend() {
-  case ":$PATH:" in
-    *":$1:"*) ;;
-    *) export PATH="$1:$PATH" ;;
+  [[ -d "$1" ]] && case ":$PATH:" in
+  *":$1:"*) ;;
+  *) export PATH="$1:$PATH" ;;
   esac
 }
 
 path_append() {
-  case ":$PATH:" in
-    *":$1:"*) ;;
-    *) export PATH="$PATH:$1" ;;
+  [[ -d "$1" ]] && case ":$PATH:" in
+  *":$1:"*) ;;
+  *) export PATH="$PATH:$1" ;;
   esac
 }
 
@@ -24,9 +24,6 @@ path_prepend "/opt/homebrew/bin"
 path_prepend "/opt/homebrew/sbin"
 path_prepend "/usr/local/bin"
 path_prepend "$HOME/bin"
-
-# Dotfiles bin directory
-path_prepend "$HOME/Private/posaune0423/dotfiles/bin"
 
 #---------------------------
 # Language & Locale Settings
@@ -70,7 +67,7 @@ path_prepend "/usr/local/opt/openjdk@11/bin"
 export PYENV_ROOT="$HOME/.pyenv"
 path_prepend "$PYENV_ROOT/bin"
 # Initialize pyenv PATH (must be in .zshenv for GUI apps)
-if command -v pyenv >/dev/null 2>&1; then
+if [[ -d "$PYENV_ROOT" ]] && command -v pyenv >/dev/null 2>&1; then
   eval "$(pyenv init --path)"
 fi
 path_prepend "/opt/homebrew/opt/python@3.13/libexec/bin"

@@ -48,7 +48,7 @@ function cat() {
   for file in "$@"; do
     case "${file##*.}" in
     jpg | jpeg | png | gif | bmp | tiff | webp)
-      imgcat "$file"
+      viu "$file"
       ;;
     *)
       bat "$file"
