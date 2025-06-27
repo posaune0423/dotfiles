@@ -1,4 +1,18 @@
 #---------------------------
+# Development Tools Runtime Initialization
+#---------------------------
+
+# pyenv (Python version manager) - runtime initialization
+if command -v pyenv >/dev/null 2>&1; then
+  eval "$(pyenv init -)"
+fi
+
+# rbenv (Ruby version manager) - runtime initialization
+if command -v rbenv >/dev/null 2>&1; then
+  eval "$(rbenv init -)"
+fi
+
+#---------------------------
 # Development Tools Library Loading
 #---------------------------
 
@@ -13,7 +27,7 @@
 [[ -s "$NVM_DIR/bash_completion" ]] && \. "$NVM_DIR/bash_completion"
 
 # bun completions
-[[ -s "$HOME/.bun/_bun" ]] && source "$HOME/.bun/_bun"
+[[ -s "$BUN_INSTALL/_bun" ]] && source "$BUN_INSTALL/_bun"
 
 #---------------------------
 # Specialized Tools Initialization
@@ -22,5 +36,5 @@
 # starkli (Starknet CLI)
 [[ -f "$HOME/.starkli/env" ]] && . "$HOME/.starkli/env"
 
-# deno (JavaScript/TypeScript runtime)
-[[ -f "$HOME/.deno/env" ]] && . "$HOME/.deno/env"
+# deno (JavaScript/TypeScript runtime) - already in PATH via .zshenv
+# [[ -f "$DENO_INSTALL/env" ]] && . "$DENO_INSTALL/env"
