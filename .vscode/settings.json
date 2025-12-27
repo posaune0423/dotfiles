@@ -346,7 +346,7 @@
   // ==============================================
 
   // テーマ設定
-  "workbench.colorTheme": "Ayu Mirage Bordered",
+  "workbench.colorTheme": "Ayu Mirage",
   "workbench.iconTheme": "material-icon-theme",
   "workbench.preferredDarkColorTheme": "Default Light+",
 
