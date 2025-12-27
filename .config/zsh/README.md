@@ -9,8 +9,9 @@
 ~/.zprofile                # ログインシェル専用設定・GUI アプリ用環境変数
 ~/.zshrc                   # メイン設定ファイル（他ファイルを読み込み）
 ~/.config/zsh/             # モジュール化された設定ファイル群
+├── autocomplete.zsh       # zsh-autocomplete 設定（最初に読み込み）
 ├── zsh-config.zsh         # zsh基本設定（履歴・オプション・補完）
-├── ui.zsh                 # UI・プラグイン・プロンプト
+├── ui.zsh                 # UI・プラグイン・プロンプト（最後に読み込み）
 ├── aliases.zsh            # コマンドエイリアス・ショートカット
 ├── functions.zsh          # カスタムシェル関数
 └── tools.zsh              # 開発ツール読み込み
@@ -43,8 +44,9 @@
 
 | ファイル | 内容 | 主な機能 |
 |---------|------|----------|
+| `autocomplete.zsh` | **zsh-autocomplete設定**<br>• リアルタイム型補完<br>• 非同期補完処理<br>• カスタムキーバインド | 高速な補完体験 |
 | `zsh-config.zsh` | **zsh本体の基本設定**<br>• 履歴設定（XDG準拠、50,000件）<br>• 基本オプション（auto_cd, extended_glob等）<br>• 高度な補完設定 | zshの動作を制御 |
-| `ui.zsh` | **UI・見た目関連**<br>• プラグイン（autosuggestions, syntax-highlighting）<br>• Starshipプロンプト<br>• エラーハンドリング付き | ユーザー体験の向上 |
+| `ui.zsh` | **UI・見た目関連**<br>• プラグイン（autosuggestions, syntax-highlighting）<br>• Starshipプロンプト（最後に初期化） | ユーザー体験の向上 |
 | `aliases.zsh` | **コマンドエイリアス**<br>• ファイル操作ショートカット<br>• 開発ツールエイリアス<br>• エディタ・ユーティリティコマンド | 作業効率化 |
 | `functions.zsh` | **カスタム関数**<br>• ディレクトリ作成・ナビゲーションヘルパー<br>• ファイル検索・操作ユーティリティ<br>• アーカイブ展開関数<br>• 画像対応cat関数 | 高度な機能提供 |
 | `tools.zsh` | **開発ツール読み込み**<br>• 言語ランタイム初期化（pyenv, rbenv等）<br>• ライブラリ読み込み（nvm, asdf等）<br>• 特殊ツール初期化 | 開発環境構築 |
@@ -93,7 +95,20 @@
 `zsh-config.zsh` に追記
 
 ### 新しいプラグインを追加
-`ui.zsh` に追記（エラーハンドリング付き）
+`zz-ui.zsh` に追記（エラーハンドリング付き）
+
+### zsh-autocomplete のインストール
+
+```bash
+# Homebrew（推奨）
+brew install zsh-autocomplete
+
+# または手動インストール
+git clone --depth 1 -- https://github.com/marlonrichert/zsh-autocomplete.git \
+  "${XDG_DATA_HOME:-$HOME/.local/share}/zsh/plugins/zsh-autocomplete"
+```
+
+設定は `autocomplete.zsh` で管理されています。
 
 ### 新しいエイリアスを追加
 `aliases.zsh` に追記
@@ -120,7 +135,7 @@ path_append "/path/to/dir"   # PATHの末尾に追加（重複チェック付き
 
 | 項目 | 従来構成 | 現在構成 |
 |------|----------|----------|
-| ファイル数 | 8〜9個（細分化） | **5個（合理化）** |
+| ファイル数 | 8〜9個（細分化） | **6個（合理化）** |
 | 環境変数管理 | 分散 | **`.zshenv`に統合** |
 | GUI対応 | なし | **`.zprofile`で対応** |
 | エラーハンドリング | 最小限 | **包括的** |
