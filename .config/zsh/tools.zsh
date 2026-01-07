@@ -33,8 +33,7 @@
 # Specialized Tools Initialization
 #---------------------------
 
-# starkli (Starknet CLI)
-[[ -f "$HOME/.starkli/env" ]] && . "$HOME/.starkli/env"
-
-# deno (JavaScript/TypeScript runtime) - already in PATH via .zshenv
-# [[ -f "$DENO_INSTALL/env" ]] && . "$DENO_INSTALL/env"
+# deno (JavaScript/TypeScript runtime)
+# Deno env/PATH is handled in ~/.zprofile (login). If you want it initialized
+# for every interactive shell, uncomment the next line:
+# [[ -f "$HOME/.deno/env" ]] && . "$HOME/.deno/env"

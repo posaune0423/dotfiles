@@ -14,11 +14,6 @@
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
 
-  // Dockerfile設定
-  "[dockerfile]": {
-    "editor.defaultFormatter": "ms-azuretools.vscode-docker"
-  },
-
   // Docker Compose設定
   "[dockercompose]": {
     "editor.defaultFormatter": "bluebrown.yamlfmt"
@@ -142,7 +137,7 @@
 
   // フォントとエディタ表示設定
   "editor.fontFamily": "Monaco",
-  "editor.fontSize": 14,
+  "editor.fontSize": 12,
   "editor.fontWeight": "400",
   "editor.codeLensFontFamily": "Monaco",
   "editor.inlayHints.fontFamily": "Monaco",
@@ -224,7 +219,6 @@
 
   // Python設定
   "python.defaultInterpreterPath": "/Users/asumayamada/.pyenv/shims/python",
-  "python.venvFolders": ["venv"],
   "python.venvPath": "/Users/asumayamada/.pyenv",
 
   // Makefile設定
@@ -346,38 +340,20 @@
   // ==============================================
 
   // テーマ設定
-  "workbench.colorTheme": "Ayu Mirage",
+  "workbench.colorTheme": "Ayu Mirage Bordered",
   "workbench.iconTheme": "material-icon-theme",
   "workbench.preferredDarkColorTheme": "Default Light+",
 
   // レイアウト設定
   "workbench.sideBar.location": "left",
 
-  // ウィンドウ設定
-  "window.openFilesInNewWindow": "on",
-
   // ==============================================
   // その他の設定
   // ==============================================
 
-  // セキュリティ設定
-  "security.workspace.trust.untrustedFiles": "open",
-
   // エクスプローラー設定
   "explorer.confirmDragAndDrop": false,
 
-  // アップデート設定
-  "update.releaseTrack": "prerelease",
-
-  // チャット設定
-  "chat.editor.fontSize": 14,
-
   // Diff Editor設定
-  "diffEditor.maxComputationTime": 0,
-
-  // Remote SSH設定
-  "remote.SSH.remotePlatform": {
-    "raspberrypi.local": "linux"
-  },
-  "remote.SSH.connectTimeout": 600
+  "diffEditor.maxComputationTime": 0
 }
