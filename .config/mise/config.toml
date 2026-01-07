@@ -1,0 +1,38 @@
+[settings]
+experimental = true
+disable_backends = ["vfox"]
+
+[settings.pipx]
+uvx = true
+
+[tools]
+# [CLI Tools]
+aws = "latest"
+terraform = "latest"
+github-cli = "latest"
+
+# [Node.js]
+node = "latest"
+"npm:serverless" = "v3"
+"npm:aws-cdk" = "latest"
+"npm:cdktf-cli" = "latest"
+
+# [Python]
+python = "latest"
+uv = "latest"
+"pipx:cfn-lint" = "latest"
+"pipx:git-remote-codecommit" = "latest"
+"pipx:snowflake-cli" = "latest"
+
+# [Ruby]
+ruby = "latest"
+
+# [Go]
+go = "latest"
+
+# [Java]
+java = "latest"
+
+# [Bun / Deno]
+bun = "latest"
+deno = "latest"

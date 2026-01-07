@@ -11,47 +11,25 @@
 # Build / toolchain environment
 # --------------------------
 export HOMEBREW_CASK_OPTS="${HOMEBREW_CASK_OPTS:---appdir=/Applications}"
-
-# OpenSSL (only if you still want these globally)
-export LDFLAGS="${LDFLAGS:--L/usr/local/opt/openssl/lib}"
-export CPPFLAGS="${CPPFLAGS:--I/usr/local/opt/openssl/include}"
+#
+# NOTE: mise shims are prepended in ~/.zshenv (for all shells).
+# Keep ~/.zprofile lightweight.
 
 # --------------------------
 # Language runtimes / package managers
 # --------------------------
-# Java
-path_prepend "/usr/local/opt/openjdk@11/bin"
+# Note: Version management (Node/Python/Ruby/Go/Java/Bun/Deno) is now handled by mise
+# See ~/.zshrc for mise activation
 
-# Python
-path_prepend "$PYENV_ROOT/bin"
-if [[ -d "$PYENV_ROOT" ]] && command -v pyenv >/dev/null 2>&1; then
-  eval "$(pyenv init --path)"
-fi
-path_prepend "/opt/homebrew/opt/python@3.13/libexec/bin"
-
-# Ruby
-path_prepend "$RBENV_ROOT/bin"
-
-# Go
-if [[ -d "/opt/homebrew/opt/go/libexec" ]]; then
-  export GOROOT="/opt/homebrew/opt/go/libexec"
-  path_append "$GOROOT/bin"
-fi
+# Go: Keep GOPATH/bin for go install binaries (not version-managed by mise)
 path_append "$GOPATH/bin"
-
-# asdf shims
-path_prepend "${ASDF_DATA_DIR}/shims"
-
-# Bun / Deno
-path_prepend "$BUN_INSTALL/bin"
-path_prepend "$DENO_INSTALL/bin"
 
 # --------------------------
 # User-provided env scripts
 # --------------------------
 [[ -f "$HOME/.cargo/env" ]] && source "$HOME/.cargo/env"
 [[ -f "$HOME/.starkli/env" ]] && source "$HOME/.starkli/env"
-[[ -f "$HOME/.deno/env" ]] && source "$HOME/.deno/env"
+# Deno is now managed by mise, so .deno/env is not needed
 [[ -f "$HOME/.local/bin/env" ]] && source "$HOME/.local/bin/env"
 
 # LM Studio CLI (lms)
@@ -75,10 +53,6 @@ if [[ "$OSTYPE" == darwin* ]]; then
   launchctl setenv VISUAL "$VISUAL" 2>/dev/null
 
   [[ -n "$GOPATH" ]] && launchctl setenv GOPATH "$GOPATH" 2>/dev/null
-  [[ -n "$GOROOT" ]] && launchctl setenv GOROOT "$GOROOT" 2>/dev/null
-  [[ -n "$PYENV_ROOT" ]] && launchctl setenv PYENV_ROOT "$PYENV_ROOT" 2>/dev/null
-  [[ -n "$RBENV_ROOT" ]] && launchctl setenv RBENV_ROOT "$RBENV_ROOT" 2>/dev/null
-  [[ -n "$NVM_DIR" ]] && launchctl setenv NVM_DIR "$NVM_DIR" 2>/dev/null
 fi
 
 # --------------------------
