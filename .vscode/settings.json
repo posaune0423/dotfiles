@@ -263,7 +263,7 @@
   // Cairo言語サーバー設定
   "cairo1.enableLanguageServer": true,
   "cairo1.enableScarb": true,
-  "cairo1.languageServerPath": "~/.asdf/installs/dojo/1.0.0/bin/dojo-language-server",
+  "cairo1.languageServerPath": "~/.local/share/mise/shims/scarb-cairo-language-server",
 
   // Code Spell Checker設定
   "cSpell.userWords": [
