@@ -25,8 +25,7 @@
   # Starship is a single file under ~/.config
   xdg.configFile."starship.toml".source = "${self}/.config/starship.toml";
 
-  # This repo currently stores Ghostty config under `.config/ghosty/`.
+  # This repo currently stores Ghostty config under `.config/ghostty/`.
   # Keep that path for compatibility.
-  xdg.configFile."ghosty".source = "${self}/.config/ghosty";
+  xdg.configFile."ghostty".source = "${self}/.config/ghostty";
 }
-

@@ -67,7 +67,7 @@ Zsh plugins are managed via [sheldon](https://github.com/rossmacarthur/sheldon).
 
 home-manager automatically creates symlinks on `nix run .#switch`:
 - Root dotfiles: `.zshenv`, `.zshrc`, `.zprofile`, `.gitconfig`
-- XDG configs: `zsh/`, `sheldon/`, `nvim/`, `wezterm/`, `karabiner/`, `ghosty/`, `starship.toml`
+- XDG configs: `zsh/`, `sheldon/`, `nvim/`, `wezterm/`, `karabiner/`, `ghostty/`, `starship.toml`
 
 ## Key Conventions
 

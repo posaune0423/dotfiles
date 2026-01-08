@@ -101,7 +101,7 @@ dotfiles/
     ├── nvim/                   # Neovim configuration
     ├── wezterm/                # WezTerm terminal config
     ├── karabiner/              # Karabiner-Elements config
-    ├── ghosty/                 # Ghostty terminal config
+    ├── ghostty/                # Ghostty terminal config
     └── starship.toml           # Starship prompt configuration
 ```
 
