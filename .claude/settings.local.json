@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git -C /Users/asumayamada/Private/posaune0423/dotfiles status)",
+      "Bash(git -C /Users/asumayamada/Private/posaune0423/dotfiles log --oneline -5)",
+      "Bash(git -C /Users/asumayamada/Private/posaune0423/dotfiles diff --staged)",
+      "Bash(git -C /Users/asumayamada/Private/posaune0423/dotfiles add CLAUDE.md)",
+      "Bash(git -C /Users/asumayamada/Private/posaune0423/dotfiles commit -m \"$\\(cat <<''EOF''\ndocs: add CLAUDE.md for Claude Code guidance\n\nProvides architecture overview, installation commands, and key conventions\nfor AI-assisted development in this dotfiles repository.\n\n🤖 Generated with [Claude Code]\\(https://claude.ai/code\\)\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
+    ]
+  }
+}

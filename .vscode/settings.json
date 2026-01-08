@@ -1,230 +1,63 @@
 {
-  // ==============================================
-  // 言語固有の設定
-  // ==============================================
-
-  // Cairo言語設定
-  "[cairo]": {
-    "editor.defaultFormatter": "StarkWare.cairo1",
-    "editor.tabSize": 4
-  },
-
-  // CSS設定
-  "[css]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-
-  // Docker Compose設定
-  "[dockercompose]": {
-    "editor.defaultFormatter": "bluebrown.yamlfmt"
-  },
-
-  // 環境変数ファイル設定
-  "[dotenv]": {
-    "editor.defaultFormatter": "foxundermoon.shell-format"
-  },
-
-  // GitHub Actions設定
-  "[github-actions-workflow]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-
-  // HTML設定
-  "[html]": {
-    "editor.defaultFormatter": "vscode.html-language-features"
-  },
-
-  // gitignore設定
-  "[ignore]": {
-    "editor.defaultFormatter": "foxundermoon.shell-format"
-  },
-
-  // JavaScript設定
-  "[javascript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-
-  // JavaScript React設定
-  "[javascriptreact]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-
-  // JSON設定
-  "[json]": {
-    "editor.defaultFormatter": "vscode.json-language-features"
-  },
-
-  // JSONC設定
-  "[jsonc]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-
-  // Makefile設定
-  "[makefile]": {
-    "editor.insertSpaces": false
-  },
-
-  // Markdown設定
-  "[markdown]": {
-    "files.trimTrailingWhitespace": false
-  },
-
-  // Python設定
-  "[python]": {
-    "editor.defaultFormatter": "ms-python.black-formatter",
-    "editor.wordBasedSuggestions": "off",
-    "gitlens.codeLens.symbolScopes": ["!Module"]
-  },
-
-  // SCSS設定
-  "[scss]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-
-  // Shell Script設定
-  "[shellscript]": {
-    "editor.defaultFormatter": "foxundermoon.shell-format"
-  },
-
-  // Solidity設定
-  "[solidity]": {
-    "editor.defaultFormatter": "NomicFoundation.hardhat-solidity"
-  },
-
-  // SQL設定
-  "[sql]": {
-    "editor.defaultFormatter": "mtxr.sqltools"
-  },
-
-  // SVG設定
-  "[svg]": {
-    "editor.defaultFormatter": "jock.svg"
-  },
-
-  // TOML設定
-  "[toml]": {
-    "editor.defaultFormatter": "tamasfe.even-better-toml"
-  },
-
-  // TypeScript設定
-  "[typescript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-
-  // TypeScript React設定
-  "[typescriptreact]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-
-  // Vue設定
-  "[vue]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-
-  // XML設定
-  "[xml]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-
-  // YAML設定
-  "[yaml]": {
-    "editor.defaultFormatter": "redhat.vscode-yaml"
-  },
-
-  // ==============================================
-  // エディタの基本設定
-  // ==============================================
-
-  // フォントとエディタ表示設定
-  "editor.fontFamily": "Monaco",
-  "editor.fontSize": 12,
-  "editor.fontWeight": "400",
+  "breadcrumbs.enabled": true,
+  "workbench.sideBar.location": "left",
+  "workbench.startupEditor": "newUntitledFile",
+  "workbench.editor.enablePreview": false,
+  "emmet.triggerExpansionOnTab": true,
+  "editor.suggestSelection": "first",
+  "editor.renderWhitespace": "boundary",
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "git.suggestSmartCommit": false,
+  "redhat.telemetry.enabled": true,
   "editor.codeLensFontFamily": "Monaco",
   "editor.inlayHints.fontFamily": "Monaco",
-
-  // エディタ機能設定
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.fontFamily": "Monaco",
+  "editor.fontWeight": "400",
   "editor.insertSpaces": false,
-  "editor.renderWhitespace": "boundary",
-  "editor.suggestSelection": "first",
-  "editor.accessibilitySupport": "off",
-
-  // コード補完とアクション設定
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit"
   },
-
-  // その他エディタ設定
-  "breadcrumbs.enabled": true,
-  "emmet.triggerExpansionOnTab": true,
-
-  // ==============================================
-  // ファイル管理関連の設定
-  // ==============================================
-
-  // ファイル関連付け設定
-  "files.associations": {
-    "*.html": "html",
-    "*.svg": "svg",
-    "*Dockerfile*": "dockerfile",
-    "yml": "yaml",
-    ".cursorrules": "markdown"
-  },
-
-  // ファイル除外設定
-  "files.exclude": {
-    "**/*.idea": true,
-    "**/*.pyc": true,
-    "**/__pycache__": true
-  },
-
-  // ファイル整形設定
   "files.trimFinalNewlines": true,
   "files.trimTrailingWhitespace": true,
-
-  // ファイル監視除外設定（パフォーマンス最適化）
+  "files.exclude": {
+    "**/__pycache__": true,
+    "**/*.idea": true,
+    "**/*.pyc": true
+  },
+  "files.associations": {
+    "*Dockerfile*": "dockerfile",
+    "yml": "yaml",
+    "*.html": "html"
+  },
   "files.watcherExclude": {
     "**/.git/objects/**": true,
     "**/.git/subtree-cache/**": true,
-    "**/.nuxt/**": true,
     "**/.rvm/**": true,
-    "**/Dropbox/**": true,
+    "**/node_modules/**": true,
     "**/GoogleDrive/**": true,
-    "**/Pictures/**": true,
+    "**/Dropbox/**": true,
+    "**/.nuxt/**": true,
     "**/build/**": true,
-    "**/node_modules/**": true
+    "**/Pictures/**": true
   },
-
-  // ==============================================
-  // Git設定
-  // ==============================================
-
-  "git.autofetch": true,
-  "git.confirmSync": false,
-  "git.openRepositoryInParentFolders": "never",
-  "git.suggestSmartCommit": false,
-
-  // ==============================================
-  // プログラミング言語固有の設定
-  // ==============================================
-
-  // HTML設定
   "html.format.enable": true,
-
-  // JavaScript設定
+  "terminal.external.osxExec": "WezTerm",
+  "terminal.integrated.fontFamily": "SauceCodePro Nerd Font",
+  "terminal.integrated.fontSize": 16,
+  "terminal.integrated.fontWeight": "200",
+  "workbench.preferredDarkColorTheme": "Default Light+",
+  "workbench.iconTheme": "material-icon-theme",
+  "prettier.semi": false,
+  "prettier.singleQuote": true,
   "javascript.updateImportsOnFileMove.enabled": "always",
-
-  // TypeScript設定
-  "typescript.updateImportsOnFileMove.enabled": "always",
-
-  // Python設定
-  "python.defaultInterpreterPath": "/Users/asumayamada/.pyenv/shims/python",
-  "python.venvPath": "/Users/asumayamada/.pyenv",
-
-  // Makefile設定
-  "makefile.configureOnOpen": true,
-
-  // YAML設定
+  "eslint.lintTask.enable": true,
+  "python.pythonPath": "/Users/yamadaasuma/.pyenv/shims/python",
+  "python.venvFolders": ["venv"],
+  "python.defaultInterpreterPath": "/Users/yamadaasuma/.pyenv/shims/python",
+  "python.venvPath": "/Users/a.yamada/.pyenv",
+  "php-cs-fixer.executablePath": "/usr/local/bin/php-cs-fixer",
+  "php-cs-fixer.onsave": true,
+  "php-cs-fixer.rules": "@Symfony,-phpdoc_summary,-phpdoc_to_comment",
   "yaml.customTags": [
     "!And",
     "!And sequence",
@@ -255,105 +88,97 @@
     "!Split sequence"
   ],
   "yaml.validate": false,
-
-  // ==============================================
-  // 拡張機能の設定
-  // ==============================================
-
-  // Cairo言語サーバー設定
+  "[html]": {
+    "editor.defaultFormatter": "vscode.html-language-features"
+  },
+  "[css]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[scss]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[vue]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[php]": {
+    "editor.insertSpaces": true,
+    "editor.defaultFormatter": "bmewburn.vscode-intelephense-client"
+  },
+  "[markdown]": {
+    "files.trimTrailingWhitespace": false
+  },
+  "[dockerfile]": {
+    "editor.quickSuggestions": {
+      "strings": true
+    }
+  },
+  "[yaml]": {
+    "editor.defaultFormatter": "redhat.vscode-yaml"
+  },
+  "[shellscript]": {
+    "editor.defaultFormatter": "foxundermoon.shell-format"
+  },
+  "[makefile]": {
+    "editor.insertSpaces": false
+  },
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.python",
+    "gitlens.codeLens.symbolScopes": ["!Module"],
+    "editor.wordBasedSuggestions": "off"
+  },
+  "material-icon-theme.activeIconPack": "react",
+  "material-icon-theme.files.associations": {
+    "*.cairo": "rust"
+  },
+  "[cairo]": {
+    "editor.tabSize": 4,
+    "editor.insertSpaces": true,
+    "editor.semanticHighlighting.enabled": true
+  },
   "cairo1.enableLanguageServer": true,
   "cairo1.enableScarb": true,
-  "cairo1.languageServerPath": "~/.asdf/installs/dojo/1.0.0/bin/dojo-language-server",
-
-  // Code Spell Checker設定
-  "cSpell.userWords": [
-    "cdefs",
-    "dotenv",
-    "dpkg",
-    "geckodriver",
-    "pytest",
-    "torbrowser",
-    "useragent"
-  ],
-
-  // Cursor設定
-  "cursor.cpp.enablePartialAccepts": true,
-  "cursor.cpp.disabledLanguages": ["plaintext"],
-  "cursor.composer.shouldAllowCustomModes": true,
-  "cursor.composer.shouldChimeAfterChatFinishes": true,
-  "cursor.composer.textSizeScale": 1.15,
-
-  // Cursor統計設定
-  "cursorStats.showTotalRequests": true,
-
-  // ESLint設定
-  "eslint.lintTask.enable": true,
-
-  // Biome設定
-  "biome.enabled": false,
-
-  // Even Better TOML設定
-  "evenBetterToml.formatter.indentString": " ",
-
-  // Draw.io設定
-  "hediet.vscode-drawio.customLibraries": [
-    {
-      "entryId": "AWS-20230428",
-      "libName": "AWS-20230428",
-      "file": "/Users/asumayamada/.vscode-drawio/AWS Architecture Icons 20240206.xml"
-    }
-  ],
-  "hediet.vscode-drawio.resizeImages": null,
-  "hediet.vscode-drawio.appearance": "dark",
-
-  // Markdown Mermaid設定
-  "markdown-mermaid.languages": ["mermaid"],
-
-  // Red Hat Telemetry設定
-  "redhat.telemetry.enabled": true,
-
-  // Solidity Telemetry設定
-  "solidity.telemetry": true,
-
-  // ==============================================
-  // ターミナル設定
-  // ==============================================
-
-  "terminal.integrated.allowedLinkSchemes": [
-    "file",
-    "http",
-    "https",
-    "mailto",
-    "vscode",
-    "vscode-insiders",
-    "docker-desktop"
-  ],
+  "cairo1.scarbPath": "~/.asdf/shims/scarb",
+  "cairo1.languageServerPath": "~/.asdf/installs/dojo/0.7.2/bin/dojo-language-server",
   "terminal.integrated.env.osx": {
     "Q_NEW_SESSION": "1"
   },
-  "terminal.integrated.fontFamily": "SauceCodePro Nerd Font",
-  "terminal.integrated.fontSize": 16,
-  "terminal.integrated.fontWeight": "200",
-
-  // ==============================================
-  // ワークベンチ設定
-  // ==============================================
-
-  // テーマ設定
-  "workbench.colorTheme": "Ayu Mirage Bordered",
-  "workbench.iconTheme": "material-icon-theme",
-  "workbench.preferredDarkColorTheme": "Default Light+",
-
-  // レイアウト設定
-  "workbench.sideBar.location": "left",
-
-  // ==============================================
-  // その他の設定
-  // ==============================================
-
-  // エクスプローラー設定
-  "explorer.confirmDragAndDrop": false,
-
-  // Diff Editor設定
-  "diffEditor.maxComputationTime": 0
+  "update.releaseTrack": "dev",
+  "update.mode": "silentlyApplyOnQuit",
+  "cursor.composer.shouldChimeAfterChatFinishes": true,
+  "editor.accessibilitySupport": "on",
+  "git.confirmSync": false,
+  "explorer.confirmDelete": false,
+  "cSpell.userWords": [
+    "agentic",
+    "backtest",
+    "bunx",
+    "cooldown",
+    "daiko",
+    "neverthrow",
+    "POLYMARKET",
+    "posaune",
+    "Solana",
+    "Substreams",
+    "timestamptz"
+  ],
+  "[toml]": {
+    "editor.defaultFormatter": "tamasfe.even-better-toml"
+  },
+  "editor.fontSize": 11,
+  "workbench.colorTheme": "Ayu Mirage Bordered"
 }
