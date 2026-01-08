@@ -29,15 +29,13 @@
   // Terminal Settings
   // ============================================
   "terminal.integrated.defaultProfile.osx": "fish",
-  "terminal.external.osxExec": "WezTerm",
   "terminal.integrated.fontFamily": "SauceCodePro Nerd Font",
   "terminal.integrated.fontSize": 15,
   "terminal.integrated.fontWeight": "200",
   "terminal.integrated.enableImages": true,
   "terminal.integrated.enableVisualBell": false,
-  "terminal.integrated.env.osx": {
-    "Q_NEW_SESSION": "1"
-  },
+  "terminal.integrated.shellIntegration.enabled": false,
+  "terminal.integrated.bellDuration": 0,
 
   // ============================================
   // Files Settings
@@ -73,14 +71,17 @@
   "git.confirmSync": false,
 
   // ============================================
-  // Security Settings
-  // ============================================
-  "security.workspace.trust.untrustedFiles": "open",
-
-  // ============================================
   // Accessibility Settings
   // ============================================
   "accessibility.signals.terminalBell": {
+    "sound": "off",
+    "announcement": "off"
+  },
+  "accessibility.signals.terminalCommandSucceeded": {
+    "sound": "off",
+    "announcement": "off"
+  },
+  "accessibility.signals.terminalCommandFailed": {
     "sound": "off",
     "announcement": "off"
   },
@@ -92,12 +93,6 @@
     "sound": "off",
     "announcement": "off"
   },
-
-  // ============================================
-  // Update Settings
-  // ============================================
-  "update.releaseTrack": "dev",
-  "update.mode": "silentlyApplyOnQuit",
 
   // ============================================
   // Explorer Settings
