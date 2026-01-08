@@ -1,23 +1,47 @@
 {
-  "breadcrumbs.enabled": true,
-  "terminal.integrated.defaultProfile.osx": "fish",
-  "workbench.sideBar.location": "left",
-  "workbench.startupEditor": "newUntitledFile",
-  "workbench.editor.enablePreview": false,
-  "emmet.triggerExpansionOnTab": true,
-  "editor.suggestSelection": "first",
-  "editor.renderWhitespace": "boundary",
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "git.suggestSmartCommit": false,
-  "redhat.telemetry.enabled": true,
+  // ============================================
+  // Editor Settings
+  // ============================================
+  "editor.fontFamily": "Monaco",
+  "editor.fontSize": 11,
+  "editor.fontWeight": "400",
   "editor.codeLensFontFamily": "Monaco",
   "editor.inlayHints.fontFamily": "Monaco",
-  "editor.fontFamily": "Monaco",
-  "editor.fontWeight": "400",
   "editor.insertSpaces": false,
+  "editor.renderWhitespace": "boundary",
+  "editor.suggestSelection": "first",
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit"
   },
+
+  // ============================================
+  // Workbench Settings
+  // ============================================
+  "workbench.sideBar.location": "left",
+  "workbench.startupEditor": "newUntitledFile",
+  "workbench.editor.enablePreview": false,
+  "workbench.colorTheme": "Ayu Mirage Bordered",
+  "workbench.preferredDarkColorTheme": "Default Light+",
+  "workbench.iconTheme": "material-icon-theme",
+
+  // ============================================
+  // Terminal Settings
+  // ============================================
+  "terminal.integrated.defaultProfile.osx": "fish",
+  "terminal.external.osxExec": "WezTerm",
+  "terminal.integrated.fontFamily": "SauceCodePro Nerd Font",
+  "terminal.integrated.fontSize": 15,
+  "terminal.integrated.fontWeight": "200",
+  "terminal.integrated.enableImages": true,
+  "terminal.integrated.enableVisualBell": false,
+  "terminal.integrated.env.osx": {
+    "Q_NEW_SESSION": "1"
+  },
+
+  // ============================================
+  // Files Settings
+  // ============================================
   "files.trimFinalNewlines": true,
   "files.trimTrailingWhitespace": true,
   "files.exclude": {
@@ -41,54 +65,58 @@
     "**/build/**": true,
     "**/Pictures/**": true
   },
-  "html.format.enable": true,
-  "terminal.external.osxExec": "WezTerm",
-  "terminal.integrated.fontFamily": "SauceCodePro Nerd Font",
-  "terminal.integrated.fontSize": 15,
-  "terminal.integrated.fontWeight": "200",
-  "workbench.preferredDarkColorTheme": "Default Light+",
-  "workbench.iconTheme": "material-icon-theme",
-  "prettier.semi": false,
-  "prettier.singleQuote": true,
-  "javascript.updateImportsOnFileMove.enabled": "always",
-  "eslint.lintTask.enable": true,
-  "python.pythonPath": "/Users/yamadaasuma/.pyenv/shims/python",
-  "python.venvFolders": ["venv"],
-  "python.defaultInterpreterPath": "/Users/yamadaasuma/.pyenv/shims/python",
-  "python.venvPath": "/Users/a.yamada/.pyenv",
-  "php-cs-fixer.executablePath": "/usr/local/bin/php-cs-fixer",
-  "php-cs-fixer.onsave": true,
-  "php-cs-fixer.rules": "@Symfony,-phpdoc_summary,-phpdoc_to_comment",
-  "yaml.customTags": [
-    "!And",
-    "!And sequence",
-    "!If",
-    "!If sequence",
-    "!Not",
-    "!Not sequence",
-    "!Equals",
-    "!Equals sequence",
-    "!Or",
-    "!Or sequence",
-    "!FindInMap",
-    "!FindInMap sequence",
-    "!Base64",
-    "!Join",
-    "!Join sequence",
-    "!Cidr",
-    "!Ref",
-    "!Sub",
-    "!Sub sequence",
-    "!GetAtt",
-    "!GetAZs",
-    "!ImportValue",
-    "!ImportValue sequence",
-    "!Select",
-    "!Select sequence",
-    "!Split",
-    "!Split sequence"
-  ],
-  "yaml.validate": false,
+
+  // ============================================
+  // Git Settings
+  // ============================================
+  "git.suggestSmartCommit": false,
+  "git.confirmSync": false,
+
+  // ============================================
+  // Security Settings
+  // ============================================
+  "security.workspace.trust.untrustedFiles": "open",
+
+  // ============================================
+  // Accessibility Settings
+  // ============================================
+  "accessibility.signals.terminalBell": {
+    "sound": "off",
+    "announcement": "off"
+  },
+  "accessibility.signals.lineHasBreakpoint": {
+    "announcement": "off",
+    "sound": "off"
+  },
+  "accessibility.signals.onDebugBreak": {
+    "sound": "off",
+    "announcement": "off"
+  },
+
+  // ============================================
+  // Update Settings
+  // ============================================
+  "update.releaseTrack": "dev",
+  "update.mode": "silentlyApplyOnQuit",
+
+  // ============================================
+  // Explorer Settings
+  // ============================================
+  "explorer.confirmDelete": false,
+
+  // ============================================
+  // Breadcrumbs Settings
+  // ============================================
+  "breadcrumbs.enabled": true,
+
+  // ============================================
+  // Emmet Settings
+  // ============================================
+  "emmet.triggerExpansionOnTab": true,
+
+  // ============================================
+  // Language-Specific Settings
+  // ============================================
   "[html]": {
     "editor.defaultFormatter": "vscode.html-language-features"
   },
@@ -142,26 +170,93 @@
     "gitlens.codeLens.symbolScopes": ["!Module"],
     "editor.wordBasedSuggestions": "off"
   },
-  "material-icon-theme.activeIconPack": "react",
-  "material-icon-theme.files.associations": {
-    "*.cairo": "rust"
-  },
   "[cairo]": {
     "editor.tabSize": 4,
     "editor.insertSpaces": true,
     "editor.semanticHighlighting.enabled": true
   },
+  "[toml]": {
+    "editor.defaultFormatter": "tamasfe.even-better-toml"
+  },
+
+  // ============================================
+  // Extension Settings
+  // ============================================
+  // Prettier
+  "prettier.semi": false,
+  "prettier.singleQuote": true,
+
+  // ESLint
+  "eslint.lintTask.enable": true,
+
+  // JavaScript/TypeScript
+  "javascript.updateImportsOnFileMove.enabled": "always",
+
+  // HTML
+  "html.format.enable": true,
+
+  // Python
+  "python.pythonPath": "/Users/yamadaasuma/.pyenv/shims/python",
+  "python.venvFolders": ["venv"],
+  "python.defaultInterpreterPath": "/Users/yamadaasuma/.pyenv/shims/python",
+  "python.venvPath": "/Users/a.yamada/.pyenv",
+
+  // PHP CS Fixer
+  "php-cs-fixer.executablePath": "/usr/local/bin/php-cs-fixer",
+  "php-cs-fixer.onsave": true,
+  "php-cs-fixer.rules": "@Symfony,-phpdoc_summary,-phpdoc_to_comment",
+
+  // YAML
+  "yaml.customTags": [
+    "!And",
+    "!And sequence",
+    "!If",
+    "!If sequence",
+    "!Not",
+    "!Not sequence",
+    "!Equals",
+    "!Equals sequence",
+    "!Or",
+    "!Or sequence",
+    "!FindInMap",
+    "!FindInMap sequence",
+    "!Base64",
+    "!Join",
+    "!Join sequence",
+    "!Cidr",
+    "!Ref",
+    "!Sub",
+    "!Sub sequence",
+    "!GetAtt",
+    "!GetAZs",
+    "!ImportValue",
+    "!ImportValue sequence",
+    "!Select",
+    "!Select sequence",
+    "!Split",
+    "!Split sequence"
+  ],
+  "yaml.validate": false,
+
+  // Material Icon Theme
+  "material-icon-theme.activeIconPack": "react",
+  "material-icon-theme.files.associations": {
+    "*.cairo": "rust"
+  },
+
+  // Cairo
   "cairo1.enableLanguageServer": true,
   "cairo1.enableScarb": true,
   "cairo1.scarbPath": "~/.asdf/shims/scarb",
   "cairo1.languageServerPath": "~/.asdf/installs/dojo/0.7.2/bin/dojo-language-server",
-  "terminal.integrated.env.osx": {
-    "Q_NEW_SESSION": "1"
-  },
+
+  // Red Hat Telemetry
+  "redhat.telemetry.enabled": true,
+
+  // Cursor Composer
   "cursor.composer.shouldChimeAfterChatFinishes": true,
-  "editor.accessibilitySupport": "on",
-  "git.confirmSync": false,
-  "explorer.confirmDelete": false,
+
+  // Code Spell Checker
   "cSpell.userWords": [
     "agentic",
     "backtest",
@@ -174,13 +269,5 @@
     "Solana",
     "Substreams",
     "timestamptz"
-  ],
-  "[toml]": {
-    "editor.defaultFormatter": "tamasfe.even-better-toml"
-  },
-  "editor.fontSize": 11,
-  "workbench.colorTheme": "Ayu Mirage Bordered",
-  "[lua]": {
-    "editor.defaultFormatter": "JohnnyMorganz.stylua"
-  }
+  ]
 }
