@@ -8,20 +8,11 @@
 [[ -f "$HOME/Library/Application Support/kiro-cli/shell/profile.pre.bash" ]] && source "$HOME/Library/Application Support/kiro-cli/shell/profile.pre.bash"
 
 # --------------------------
-# Build / toolchain environment
-# --------------------------
-export HOMEBREW_CASK_OPTS="${HOMEBREW_CASK_OPTS:---appdir=/Applications}"
-#
-# NOTE: mise shims are prepended in ~/.zshenv (for all shells).
-# Keep ~/.zprofile lightweight.
-
-# --------------------------
 # Language runtimes / package managers
 # --------------------------
-# Note: Version management (Node/Python/Ruby/Go/Java/Bun/Deno) is now handled by mise
-# See ~/.zshrc for mise activation
+# All runtimes (Node/Python/Ruby/Go/Java/Bun/Deno) are managed by Nix.
 
-# Go: Keep GOPATH/bin for go install binaries (not version-managed by mise)
+# Go: Keep GOPATH/bin for go install binaries
 path_append "$GOPATH/bin"
 
 # --------------------------
@@ -29,7 +20,6 @@ path_append "$GOPATH/bin"
 # --------------------------
 [[ -f "$HOME/.cargo/env" ]] && source "$HOME/.cargo/env"
 [[ -f "$HOME/.starkli/env" ]] && source "$HOME/.starkli/env"
-# Deno is now managed by mise, so .deno/env is not needed
 [[ -f "$HOME/.local/bin/env" ]] && source "$HOME/.local/bin/env"
 
 # LM Studio CLI (lms)
