@@ -12,6 +12,7 @@ Modular fish shell configuration mirroring the zsh setup.
 │   ├── 01_env.fish        # Environment variables
 │   ├── 02_path.fish       # PATH configuration
 │   ├── 03_tools.fish      # Tool initialization (mise, cargo, etc.)
+│   ├── 04_completions_path.fish # Adds local completions directory
 │   ├── 98_aliases.fish    # Shell aliases
 │   ├── 99_kiro_post.fish  # Kiro CLI post-hook
 │   └── z.fish             # z directory jumping (fisher plugin)
@@ -23,6 +24,7 @@ Modular fish shell configuration mirroring the zsh setup.
 │   ├── cat.fish           # Enhanced cat (bat + viu for images)
 │   ├── y.fish             # Yazi file manager wrapper
 │   └── __z*.fish          # z plugin internals
+│   └── update_completions.fish # Generate/update completions
 ├── completions/         # Command completions
 │   └── fisher.fish        # Fisher completion
 ├── fish_plugins         # Fisher plugin list
