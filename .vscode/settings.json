@@ -264,5 +264,8 @@
     "Solana",
     "Substreams",
     "timestamptz"
-  ]
+  ],
+  "terminal.integrated.env.osx": {
+    "Q_NEW_SESSION": "1"
+  }
 }
