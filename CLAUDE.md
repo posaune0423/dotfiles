@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repository Overview
 
-This is a macOS dotfiles repository with a modular Zsh configuration system. It manages shell configuration, development tools via mise, and application configs (Neovim, WezTerm, Karabiner, Starship, Ghostty).
+This is a macOS dotfiles repository with modular Zsh and Fish shell configurations. It manages shell configuration, development tools via mise, and application configs (Neovim, WezTerm, Karabiner, Starship, Ghostty).
 
 ## Installation
 
@@ -57,15 +57,36 @@ All language runtimes and CLI tools are managed via mise (not Homebrew). The con
 
 `HOMEBREW_FORBIDDEN_FORMULAE` is set to prevent accidentally installing version-managed tools via Homebrew.
 
+### Fish Shell Configuration
+
+Fish configuration mirrors the zsh setup. Files in `.config/fish/`:
+
+1. **`conf.d/*.fish`** - Auto-loaded in alphabetical order:
+   - `01_env.fish` - Environment variables
+   - `02_path.fish` - PATH configuration (uses `fish_add_path`)
+   - `03_tools.fish` - Tool initialization (mise, cargo, etc.)
+   - `98_aliases.fish` - Shell aliases
+
+2. **`config.fish`** - Main entry point for interactive shells (Starship prompt)
+
+3. **`functions/*.fish`** - Custom functions (lazy-loaded):
+   - `mkcd.fish`, `ff.fish`, `cpc.fish`, `extract.fish`, `cat.fish`, `y.fish`
+
+4. **Plugin Management**: [fisher](https://github.com/jorgebucaran/fisher) via `fish_plugins`
+
 ### Symlink Structure
 
 The installer creates symlinks from `~/.dotfiles/` to:
 - Root dotfiles: `.zshenv`, `.zshrc`, `.zprofile`, `.gitconfig`
 - XDG configs: Individual app directories under `~/.config/` (not the entire `.config` folder)
+- Fish config: `.config/fish/`
 
 ## Key Conventions
 
-- **PATH management**: Always use `path_prepend` or `path_append` helpers to avoid duplicates
+- **PATH management (Zsh)**: Always use `path_prepend` or `path_append` helpers to avoid duplicates
+- **PATH management (Fish)**: Use `fish_add_path` which auto-deduplicates
 - **New Zsh modules**: Create `.zsh` files in `.config/zsh/` and add to the `_zsh_configs` array in `.zshrc`
+- **New Fish configs**: Create `.fish` files in `.config/fish/conf.d/` with numeric prefix for load order
+- **New Fish functions**: Create `function_name.fish` in `.config/fish/functions/`
 - **New tools**: Add to `.config/mise/config.toml` (not Homebrew for version-managed software)
 - **GUI environment vars**: Add to `.zprofile` with `launchctl setenv` for macOS app access

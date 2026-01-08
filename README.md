@@ -5,6 +5,7 @@ Modern, modular dotfiles configuration inspired by [Takuya Matsuyama](https://gi
 ## ✨ Features
 
 - **🔧 Modular Zsh Configuration**: Clean, organized shell setup with [sheldon](https://github.com/rossmacarthur/sheldon) plugin manager
+- **🐟 Fish Shell Support**: Complete fish configuration mirroring zsh setup with [fisher](https://github.com/jorgebucaran/fisher) plugin manager
 - **🚀 mise Integration**: All language runtimes and CLI tools managed via [mise](https://mise.jdx.dev/)
 - **🎨 Beautiful Prompt**: Starship prompt with Git integration
 - **⚡ Performance Optimized**: Fast startup with PATH deduplication
@@ -50,8 +51,18 @@ dotfiles/
     │   └── events.lua
     ├── karabiner/              # Karabiner-Elements config
     │   └── karabiner.json
-    ├── ghosty/                 # Ghostty terminal config
+    ├── ghostty/                # Ghostty terminal config
     │   └── config
+    ├── fish/                   # Fish shell configuration
+    │   ├── config.fish         # Main entry point
+    │   ├── conf.d/             # Auto-loaded configs
+    │   │   ├── 01_env.fish     # Environment variables
+    │   │   ├── 02_path.fish    # PATH configuration
+    │   │   ├── 03_tools.fish   # Tool initialization
+    │   │   └── 98_aliases.fish # Shell aliases
+    │   ├── functions/          # Custom functions
+    │   ├── fish_plugins        # Fisher plugin list
+    │   └── README.md           # Fish configuration docs
     └── starship.toml           # Starship prompt configuration
 ```
 
@@ -152,7 +163,7 @@ All language runtimes and CLI tools are managed via **mise** (not Homebrew). Con
 
 > **Note**: `HOMEBREW_FORBIDDEN_FORMULAE` is set to prevent accidentally installing version-managed tools via Homebrew.
 
-### Plugin Management with sheldon
+### Plugin Management with sheldon (Zsh)
 
 Zsh plugins are managed via [sheldon](https://github.com/rossmacarthur/sheldon), a fast plugin manager written in Rust. Configuration in `.config/sheldon/plugins.toml`:
 
@@ -174,6 +185,27 @@ Then run:
 ```bash
 sheldon lock --update
 ```
+
+### Fish Shell Configuration
+
+Fish configuration mirrors the zsh setup with equivalent functionality. See `.config/fish/README.md` for details.
+
+#### Quick Setup for Fish
+
+```bash
+# Install fisher (plugin manager)
+curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source && fisher install jorgebucaran/fisher
+
+# Install plugins from fish_plugins
+fisher update
+```
+
+#### Fish Plugins
+
+| Plugin | Description |
+|--------|-------------|
+| `jethrokuan/z` | Directory jumping (like zsh-z) |
+| `PatrickF1/fzf.fish` | fzf integration |
 
 ### Editor Configuration
 
