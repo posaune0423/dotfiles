@@ -12,17 +12,104 @@ if (set -o pipefail) 2>/dev/null; then
   set -o pipefail
 fi
 
-say() { printf "%s\n" "$*"; }
-err() { printf "ERROR: %s\n" "$*" >&2; }
+# =============================================================================
+# Color & Formatting
+# =============================================================================
+setup_colors() {
+  if [ -t 1 ] && [ -n "${TERM:-}" ] && [ "$TERM" != "dumb" ]; then
+    BOLD="\033[1m"
+    DIM="\033[2m"
+    RESET="\033[0m"
+    RED="\033[31m"
+    GREEN="\033[32m"
+    YELLOW="\033[33m"
+    BLUE="\033[34m"
+    MAGENTA="\033[35m"
+    CYAN="\033[36m"
+    WHITE="\033[37m"
+    BG_GREEN="\033[42m"
+    BG_BLUE="\033[44m"
+  else
+    BOLD="" DIM="" RESET=""
+    RED="" GREEN="" YELLOW="" BLUE="" MAGENTA="" CYAN="" WHITE=""
+    BG_GREEN="" BG_BLUE=""
+  fi
+}
+setup_colors
+
+# =============================================================================
+# Icons (Unicode)
+# =============================================================================
+ICON_CHECK="✓"
+ICON_CROSS="✗"
+ICON_ARROW="→"
+ICON_LINK="🔗"
+ICON_BACKUP="📦"
+ICON_SKIP="⏭"
+ICON_INFO="ℹ"
+ICON_WARN="⚠"
+ICON_ROCKET="🚀"
+ICON_FOLDER="📁"
+ICON_GIT="🔄"
+ICON_QUESTION="❓"
+
+# =============================================================================
+# Output Helpers
+# =============================================================================
+print_header() {
+  printf "\n"
+  printf "${BOLD}${BLUE}%s${RESET}\n" "═══════════════════════════════════════════════════════════════════"
+  printf "${BOLD}${BLUE}  %s${RESET}\n" "$1"
+  printf "${BOLD}${BLUE}%s${RESET}\n" "═══════════════════════════════════════════════════════════════════"
+}
+
+print_section() {
+  printf "\n${BOLD}${CYAN}%s %s${RESET}\n" "$ICON_ARROW" "$1"
+  printf "${DIM}%s${RESET}\n" "───────────────────────────────────────────────────────────────────"
+}
+
+say() { printf "${WHITE}%s${RESET}\n" "$*"; }
+
+info() { printf "${CYAN}${ICON_INFO}${RESET}  %s\n" "$*"; }
+
+success() { printf "${GREEN}${ICON_CHECK}${RESET}  ${GREEN}%s${RESET}\n" "$*"; }
+
+warn() { printf "${YELLOW}${ICON_WARN}${RESET}  ${YELLOW}%s${RESET}\n" "$*"; }
+
+err() { printf "${RED}${ICON_CROSS}${RESET}  ${RED}ERROR: %s${RESET}\n" "$*" >&2; }
+
 die() { err "$*"; exit 1; }
 
+skip() { printf "${DIM}${ICON_SKIP}${RESET}  ${DIM}%s${RESET}\n" "$*"; }
+
+link_msg() { printf "${GREEN}${ICON_LINK}${RESET}  ${WHITE}%s${RESET} ${ICON_ARROW} ${CYAN}%s${RESET}\n" "$1" "$2"; }
+
+backup_msg() { printf "${YELLOW}${ICON_BACKUP}${RESET}  ${DIM}backup:${RESET} %s\n" "$1"; }
+
+ok_msg() { printf "${GREEN}${ICON_CHECK}${RESET}  ${DIM}unchanged:${RESET} %s\n" "$1"; }
+
+dry_run_msg() { printf "${MAGENTA}[dry-run]${RESET} %s\n" "$*"; }
+
+# Progress indicator
+TOTAL_ITEMS=0
+CURRENT_ITEM=0
+
+set_total_items() { TOTAL_ITEMS=$1; CURRENT_ITEM=0; }
+
+progress() {
+  CURRENT_ITEM=$((CURRENT_ITEM + 1))
+  _name="$1"
+  printf "${DIM}[%d/%d]${RESET} ${BOLD}%s${RESET}\n" "$CURRENT_ITEM" "$TOTAL_ITEMS" "$_name"
+}
+
+# =============================================================================
+# Utilities
+# =============================================================================
 need_cmd() {
   command -v "$1" >/dev/null 2>&1 || die "Required command not found: $1"
 }
 
 realpath_compat() {
-  # Prints a canonical absolute path (resolves symlinks) if possible.
-  # Falls back to the input path if no suitable tool exists.
   _p="$1"
   if command -v python3 >/dev/null 2>&1; then
     python3 - "$_p" <<'PY'
@@ -47,10 +134,22 @@ PY
 }
 
 timestamp() {
-  # YYYYMMDD-HHMMSS
   date "+%Y%m%d-%H%M%S"
 }
 
+short_path() {
+  # Replace $HOME with ~ for display
+  _path="$1"
+  case "$_path" in
+    "$HOME"/*) printf "~/%s" "${_path#"$HOME"/}" ;;
+    "$HOME") printf "~" ;;
+    *) printf "%s" "$_path" ;;
+  esac
+}
+
+# =============================================================================
+# Configuration
+# =============================================================================
 DRY_RUN=0
 FORCE=0
 NO_UPDATE=0
@@ -61,12 +160,12 @@ BRANCH="${BRANCH:-main}"
 BACKUP_ROOT="${BACKUP_ROOT:-$HOME/.dotfiles-backup}"
 
 has_tty() {
-  # curl | sh makes stdin non-tty; read prompts from /dev/tty instead.
-  [ -r /dev/tty ] && [ -c /dev/tty ]
+  # Check if /dev/tty is available for interactive prompts
+  # Use subshell to suppress any error messages
+  ( [ -r /dev/tty ] && [ -c /dev/tty ] && printf "" >/dev/tty ) 2>/dev/null
 }
 
 confirm() {
-  # Usage: confirm "Question"  (returns 0 for yes, 1 for no)
   _q="$1"
   if [ "$FORCE" -eq 1 ]; then
     return 0
@@ -74,7 +173,7 @@ confirm() {
   if ! has_tty; then
     die "No TTY available for interactive prompt. Re-run with --yes (or --force)."
   fi
-  printf "%s [y/N]: " "$_q" >/dev/tty
+  printf "${YELLOW}${ICON_QUESTION}${RESET}  ${BOLD}%s${RESET} ${DIM}[y/N]:${RESET} " "$_q" >/dev/tty
   IFS= read -r _ans </dev/tty || _ans=""
   case "$_ans" in
     y|Y|yes|YES) return 0 ;;
@@ -82,28 +181,81 @@ confirm() {
   esac
 }
 
+confirm_update() {
+  _file="$1"
+  _short="$(short_path "$_file")"
+  if [ "$FORCE" -eq 1 ]; then
+    return 0
+  fi
+  if ! has_tty; then
+    # No TTY, skip by default in non-forced mode
+    return 1
+  fi
+
+  # All TTY output in a subshell to catch redirection errors
+  {
+    printf "\n"
+    printf "${YELLOW}${ICON_WARN}${RESET}  ${BOLD}File already exists:${RESET} ${CYAN}%s${RESET}\n" "$_short"
+
+    # Show what it currently points to if it's a symlink
+    if [ -L "$_file" ]; then
+      _target="$(readlink "$_file" 2>/dev/null || echo "unknown")"
+      printf "   ${DIM}Current link target:${RESET} %s\n" "$(short_path "$_target")"
+    elif [ -f "$_file" ]; then
+      printf "   ${DIM}Type: regular file${RESET}\n"
+    elif [ -d "$_file" ]; then
+      printf "   ${DIM}Type: directory${RESET}\n"
+    fi
+
+    printf "${YELLOW}${ICON_QUESTION}${RESET}  ${BOLD}Replace with new symlink?${RESET} ${DIM}[y/N]:${RESET} "
+  } >/dev/tty 2>/dev/null || return 1
+
+  IFS= read -r _ans </dev/tty 2>/dev/null || _ans=""
+  case "$_ans" in
+    y|Y|yes|YES) return 0 ;;
+    *) return 1 ;;
+  esac
+}
+
 usage() {
+  printf "${BOLD}${BLUE}%s${RESET}\n" "╔═══════════════════════════════════════════════════════════════════╗"
+  printf "${BOLD}${BLUE}%s${RESET}\n" "║                     Dotfiles Installer                            ║"
+  printf "${BOLD}${BLUE}%s${RESET}\n" "╚═══════════════════════════════════════════════════════════════════╝"
+  printf "\n"
   cat <<EOF
-install.sh - safely apply this dotfiles repo to your home directory.
+${BOLD}USAGE:${RESET}
+    ${CYAN}curl -fsSL https://raw.githubusercontent.com/posaune0423/dotfiles/main/install.sh | sh${RESET}
+    ${CYAN}curl -fsSL ... | sh -s -- --dry-run${RESET}
 
-Options:
-  --dry-run        Print actions without changing anything
-  --yes            Answer yes to all prompts (non-interactive)
-  --force          Alias of --yes
-  --no-update      Do not git pull if repo already exists
-  --no-backup      Do not backup existing files (NOT recommended)
-  --dotfiles-dir   Install location (default: \$HOME/.dotfiles)
-  --repo           Git repo URL (default: $REPO_URL)
-  --branch         Git branch (default: $BRANCH)
-  -h, --help       Show this help
+${BOLD}OPTIONS:${RESET}
+    ${GREEN}--dry-run${RESET}        Print actions without changing anything
+    ${GREEN}--yes${RESET}            Answer yes to all prompts (non-interactive)
+    ${GREEN}--force${RESET}          Alias of --yes
+    ${GREEN}--no-update${RESET}      Do not git pull if repo already exists
+    ${GREEN}--no-backup${RESET}      Do not backup existing files (${YELLOW}NOT recommended${RESET})
+    ${GREEN}--dotfiles-dir${RESET}   Install location (default: ${DIM}\$HOME/.dotfiles${RESET})
+    ${GREEN}--repo${RESET}           Git repo URL
+    ${GREEN}--branch${RESET}         Git branch (default: ${DIM}main${RESET})
+    ${GREEN}-h, --help${RESET}       Show this help
 
-Examples:
-  curl -fsSL https://raw.githubusercontent.com/posaune0423/dotfiles/main/install.sh | sh
-  curl -fsSL https://raw.githubusercontent.com/posaune0423/dotfiles/main/install.sh | sh -s -- --dry-run
-  DOTFILES_DIR="\$HOME/src/dotfiles" curl -fsSL https://raw.githubusercontent.com/posaune0423/dotfiles/main/install.sh | sh
+${BOLD}EXAMPLES:${RESET}
+    ${DIM}# Normal install${RESET}
+    ${CYAN}curl -fsSL https://raw.githubusercontent.com/posaune0423/dotfiles/main/install.sh | sh${RESET}
+
+    ${DIM}# Preview changes${RESET}
+    ${CYAN}curl -fsSL ... | sh -s -- --dry-run${RESET}
+
+    ${DIM}# Non-interactive install${RESET}
+    ${CYAN}curl -fsSL ... | sh -s -- --yes${RESET}
+
+    ${DIM}# Custom location${RESET}
+    ${CYAN}DOTFILES_DIR="\$HOME/src/dotfiles" curl -fsSL ... | sh${RESET}
 EOF
 }
 
+# =============================================================================
+# Parse Arguments
+# =============================================================================
 while [ $# -gt 0 ]; do
   case "$1" in
     --dry-run) DRY_RUN=1 ;;
@@ -136,12 +288,14 @@ done
 
 need_cmd git
 
+# =============================================================================
+# Core Functions
+# =============================================================================
 run() {
   if [ "$DRY_RUN" -eq 1 ]; then
-    say "[dry-run] $*"
+    dry_run_msg "$*"
     return 0
   fi
-  # shellcheck disable=SC2086
   "$@"
 }
 
@@ -162,15 +316,24 @@ link_item() {
   _src="$1"
   _dest="$2"
   _ts="$3"
+  _name="$(basename "$_dest")"
+  _short_dest="$(short_path "$_dest")"
+  _short_src="$(short_path "$_src")"
 
-  [ -e "$_src" ] || die "Source does not exist: $_src"
+  progress "$_name"
+
+  # Skip if source doesn't exist (optional config)
+  if [ ! -e "$_src" ]; then
+    skip "Source not found: $_short_src ${DIM}(skipping)${RESET}"
+    return 0
+  fi
 
   # Already correct?
   if [ -e "$_dest" ] || [ -L "$_dest" ]; then
     _src_r="$(realpath_compat "$_src")"
     _dest_r="$(realpath_compat "$_dest")"
     if [ "$_src_r" = "$_dest_r" ]; then
-      say "ok: $_dest"
+      ok_msg "$_short_dest"
       return 0
     fi
   fi
@@ -179,10 +342,10 @@ link_item() {
   _parent="$(dirname "$_dest")"
   [ -d "$_parent" ] || run mkdir -p "$_parent"
 
-  # Prompt only when we're going to change something on disk.
-  if ( [ -e "$_dest" ] || [ -L "$_dest" ] ); then
-    if ! confirm "Update $_dest ?"; then
-      say "skip: $_dest"
+  # Prompt when destination exists
+  if [ -e "$_dest" ] || [ -L "$_dest" ]; then
+    if ! confirm_update "$_dest"; then
+      skip "Skipped: $_short_dest"
       return 0
     fi
   fi
@@ -192,46 +355,73 @@ link_item() {
     _bk="$(backup_path "$_dest" "$_ts")"
     _bk_parent="$(dirname "$_bk")"
     [ -d "$_bk_parent" ] || run mkdir -p "$_bk_parent"
-    say "backup: $_dest -> $_bk"
+    backup_msg "$(short_path "$_dest") ${ICON_ARROW} $(short_path "$_bk")"
     run mv "$_dest" "$_bk"
-  elif ( [ -e "$_dest" ] || [ -L "$_dest" ] ); then
+  elif [ -e "$_dest" ] || [ -L "$_dest" ]; then
     if [ "$FORCE" -ne 1 ]; then
       die "Destination exists (use --force or keep backup enabled): $_dest"
     fi
-    say "remove: $_dest"
+    warn "Removing: $_short_dest"
     run rm -rf "$_dest"
   fi
 
-  say "link: $_dest -> $_src"
+  link_msg "$_short_dest" "$_short_src"
   run ln -s "$_src" "$_dest"
 }
 
-say "dotfiles: $REPO_URL ($BRANCH)"
-say "install:  $DOTFILES_DIR"
+# =============================================================================
+# Main Installation
+# =============================================================================
+print_header "${ICON_ROCKET} Dotfiles Installer"
+
+printf "\n"
+info "Repository: ${BOLD}$REPO_URL${RESET}"
+info "Branch:     ${BOLD}$BRANCH${RESET}"
+info "Install to: ${BOLD}$(short_path "$DOTFILES_DIR")${RESET}"
+
+if [ "$DRY_RUN" -eq 1 ]; then
+  printf "\n"
+  warn "${BOLD}DRY RUN MODE${RESET} - No changes will be made"
+fi
+
+# =============================================================================
+# Clone or Update Repository
+# =============================================================================
+print_section "${ICON_GIT} Repository Setup"
 
 if [ ! -d "$DOTFILES_DIR" ]; then
-  say "clone:   $REPO_URL -> $DOTFILES_DIR"
+  info "Cloning repository..."
   run git clone --depth 1 --branch "$BRANCH" "$REPO_URL" "$DOTFILES_DIR"
+  success "Cloned to $(short_path "$DOTFILES_DIR")"
 else
   [ -d "$DOTFILES_DIR/.git" ] || die "DOTFILES_DIR exists but is not a git repo: $DOTFILES_DIR"
   if [ "$NO_UPDATE" -eq 0 ]; then
-    if confirm "Pull latest changes into $DOTFILES_DIR ?"; then
-      say "update:  git pull (ff-only)"
+    if confirm "Pull latest changes into $(short_path "$DOTFILES_DIR")?"; then
+      info "Updating repository..."
       run git -C "$DOTFILES_DIR" fetch --prune origin
       run git -C "$DOTFILES_DIR" checkout "$BRANCH"
       run git -C "$DOTFILES_DIR" pull --ff-only
+      success "Repository updated"
     else
-      say "update:  skipped (user declined)"
+      skip "Repository update skipped (user declined)"
     fi
   else
-    say "update:  skipped (--no-update)"
+    skip "Repository update skipped (--no-update)"
   fi
 fi
 
 TS="$(timestamp)"
 
+# =============================================================================
+# Create Symlinks
+# =============================================================================
+print_section "${ICON_FOLDER} Creating Symlinks"
+
 # Ensure XDG config home exists
 run mkdir -p "$HOME/.config"
+
+# Count total items (4 root + 8 config = 12)
+set_total_items 12
 
 # Root dotfiles
 link_item "$DOTFILES_DIR/.zshenv"    "$HOME/.zshenv"    "$TS"
@@ -240,15 +430,28 @@ link_item "$DOTFILES_DIR/.zprofile"  "$HOME/.zprofile"  "$TS"
 link_item "$DOTFILES_DIR/.gitconfig" "$HOME/.gitconfig" "$TS"
 
 # XDG configs (link individual apps, not ~/.config as a whole)
-link_item "$DOTFILES_DIR/.config/zsh"       "$HOME/.config/zsh"       "$TS"
-link_item "$DOTFILES_DIR/.config/nvim"      "$HOME/.config/nvim"      "$TS"
-link_item "$DOTFILES_DIR/.config/wezterm"   "$HOME/.config/wezterm"   "$TS"
-link_item "$DOTFILES_DIR/.config/mise"      "$HOME/.config/mise"      "$TS"
-link_item "$DOTFILES_DIR/.config/karabiner" "$HOME/.config/karabiner" "$TS"
-link_item "$DOTFILES_DIR/.config/ghosty"    "$HOME/.config/ghosty"    "$TS"
+link_item "$DOTFILES_DIR/.config/zsh"           "$HOME/.config/zsh"           "$TS"
+link_item "$DOTFILES_DIR/.config/sheldon"       "$HOME/.config/sheldon"       "$TS"
+link_item "$DOTFILES_DIR/.config/nvim"          "$HOME/.config/nvim"          "$TS"
+link_item "$DOTFILES_DIR/.config/wezterm"       "$HOME/.config/wezterm"       "$TS"
+link_item "$DOTFILES_DIR/.config/mise"          "$HOME/.config/mise"          "$TS"
+link_item "$DOTFILES_DIR/.config/karabiner"     "$HOME/.config/karabiner"     "$TS"
+link_item "$DOTFILES_DIR/.config/ghostty"       "$HOME/.config/ghostty"       "$TS"
 link_item "$DOTFILES_DIR/.config/starship.toml" "$HOME/.config/starship.toml" "$TS"
 
-say "done."
+# =============================================================================
+# Summary
+# =============================================================================
+print_section "${ICON_CHECK} Installation Complete"
+
+success "Dotfiles installed successfully!"
+
 if [ "$NO_BACKUP" -eq 0 ]; then
-  say "backup dir: $BACKUP_ROOT/$TS"
+  printf "\n"
+  info "Backup location: ${DIM}$(short_path "$BACKUP_ROOT/$TS")${RESET}"
 fi
+
+printf "\n"
+printf "${DIM}%s${RESET}\n" "To apply changes, restart your shell or run:"
+printf "  ${CYAN}source ~/.zshrc${RESET}\n"
+printf "\n"

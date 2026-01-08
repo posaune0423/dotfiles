@@ -2,20 +2,14 @@
 # Load Modular Zsh Configuration
 #---------------------------
 
-# Define load order: Core -> Completion/Plugins -> Prompt
-# Comment out 'plugin/autocomplete' and uncomment 'completion' for standard zsh behavior.
-# To use autocomplete, swap them.
+# Define load order: Core -> Completion -> Features -> Prompt
+# NOTE: Plugins (autosuggestions, syntax-highlighting) are managed by sheldon
 
 typeset -a _zsh_configs=(
   core                        # Basic settings (History, Options)
 
-  # --- Choose ONE completion system ---
-  # plugins/autocomplete      # zsh-autocomplete (Handles compinit itself)
+  # --- Completion ---
   completion                  # Standard zsh completion (Use this if autocomplete is disabled)
-
-  # --- Plugins ---
-  plugins/autosuggestions     # zsh-autosuggestions
-  plugins/syntax-highlighting # zsh-syntax-highlighting (Should be late)
 
   # --- Features ---
   aliases                     # Aliases
@@ -33,3 +27,11 @@ done
 
 # Clean up
 unset _zsh_configs _cfg
+
+#---------------------------
+# Sheldon Plugin Manager
+#---------------------------
+# Load zsh plugins via sheldon (zsh-autosuggestions, zsh-syntax-highlighting, etc.)
+if command -v sheldon &>/dev/null; then
+  eval "$(sheldon source)"
+fi

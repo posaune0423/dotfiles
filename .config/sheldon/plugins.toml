@@ -1,0 +1,38 @@
+# Sheldon Plugin Manager Configuration
+# https://github.com/rossmacarthur/sheldon
+
+shell = "zsh"
+
+#---------------------------
+# Deferred Loading Templates
+#---------------------------
+# Use `defer` to load plugins after prompt is displayed (improves startup time)
+
+[templates]
+defer = "{{ hooks?.pre | nl }}{% for file in files %}zsh-defer source \"{{ file }}\"\n{% endfor %}{{ hooks?.post | nl }}"
+
+#---------------------------
+# Plugins
+#---------------------------
+
+# zsh-defer: Required for deferred loading
+[plugins.zsh-defer]
+github = "romkatv/zsh-defer"
+
+# zsh-autosuggestions: Fish-like autosuggestions
+# https://github.com/zsh-users/zsh-autosuggestions
+[plugins.zsh-autosuggestions]
+github = "zsh-users/zsh-autosuggestions"
+apply = ["defer"]
+
+# zsh-syntax-highlighting: Fish-like syntax highlighting (must be loaded late)
+# https://github.com/zsh-users/zsh-syntax-highlighting
+[plugins.zsh-syntax-highlighting]
+github = "zsh-users/zsh-syntax-highlighting"
+apply = ["defer"]
+
+# zsh-autocomplete: Real-time type-ahead completion
+# https://github.com/marlonrichert/zsh-autocomplete
+# NOTE: Uncomment to enable (handles compinit internally)
+# [plugins.zsh-autocomplete]
+# github = "marlonrichert/zsh-autocomplete"
