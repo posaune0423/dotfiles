@@ -1,145 +1,29 @@
 # Modular Zsh Configuration
 
-この設定は機能別に**合理的に**分割され、環境変数は`.zshenv`に集約されたモジュラー構成になっています。
+Nix-first のモジュラー Zsh 設定です。
 
-## 📁 ファイル構成
+## ファイル構成
 
 ```
-~/.zshenv                  # 環境変数・PATH設定（統合）
-~/.zprofile                # ログインシェル専用設定・GUI アプリ用環境変数
-~/.zshrc                   # メイン設定ファイル（他ファイルを読み込み）
-~/.config/zsh/             # モジュール化された設定ファイル群
-├── autocomplete.zsh       # zsh-autocomplete 設定（最初に読み込み）
-├── zsh-config.zsh         # zsh基本設定（履歴・オプション・補完）
-├── ui.zsh                 # UI・プラグイン・プロンプト（最後に読み込み）
-├── aliases.zsh            # コマンドエイリアス・ショートカット
-├── functions.zsh          # カスタムシェル関数
-└── tools.zsh              # 開発ツール読み込み
+~/.zshenv          # PATH設定（Nix優先）
+~/.zprofile        # ログインシェル・GUI環境変数
+~/.zshrc           # モジュール読み込み
+~/.config/zsh/
+├── core.zsh       # 履歴・オプション
+├── completion.zsh # 補完（Nix site-functions）
+├── aliases.zsh    # エイリアス
+├── functions.zsh  # カスタム関数
+├── tools.zsh      # zoxide, atuin, mcfly 初期化
+└── prompt.zsh     # Starship
 ```
 
-## 🔧 各ファイルの役割
+## カスタマイズ
 
-### `.zshenv` - 環境変数とPATH設定
-- **全ての環境変数とPATH設定を統合**
-- PATH重複防止ヘルパー関数（`path_prepend`, `path_append`）
-- XDG Base Directory準拠
-- 開発ツール別に整理された環境変数
-- エディタ設定（`EDITOR`, `VISUAL`, `PAGER`）
-- 言語ランタイムのPATH初期化（pyenv等）
-- **シェル起動時に最初に読み込まれる**
+### 新しいツールを追加
+`nix/darwin/default.nix` → `environment.systemPackages` に追加後、`nix run .#switch`
 
-### `.zprofile` - ログインシェル専用設定
-- **GUI アプリケーション用環境変数の設定**
-- macOS の `launchctl` による環境変数の登録
-- 開発ツール環境変数のGUI共有
-- ログイン時のみ必要な処理（locate DB更新等）
-- **ログインシェルでのみ実行**
-
-### `.zshrc` - メイン設定ファイル
-- `~/.config/zsh/`ディレクトリ内の全ファイルを自動読み込み
-- Amazon Q の前後処理を含む
-- **シンプルなファイル読み込み専用**
-
-### `~/.config/zsh/` ディレクトリ内のファイル
-
-| ファイル | 内容 | 主な機能 |
-|---------|------|----------|
-| `autocomplete.zsh` | **zsh-autocomplete設定**<br>• リアルタイム型補完<br>• 非同期補完処理<br>• カスタムキーバインド | 高速な補完体験 |
-| `zsh-config.zsh` | **zsh本体の基本設定**<br>• 履歴設定（XDG準拠、50,000件）<br>• 基本オプション（auto_cd, extended_glob等）<br>• 高度な補完設定 | zshの動作を制御 |
-| `ui.zsh` | **UI・見た目関連**<br>• プラグイン（autosuggestions, syntax-highlighting）<br>• Starshipプロンプト（最後に初期化） | ユーザー体験の向上 |
-| `aliases.zsh` | **コマンドエイリアス**<br>• ファイル操作ショートカット<br>• 開発ツールエイリアス<br>• エディタ・ユーティリティコマンド | 作業効率化 |
-| `functions.zsh` | **カスタム関数**<br>• ディレクトリ作成・ナビゲーションヘルパー<br>• ファイル検索・操作ユーティリティ<br>• アーカイブ展開関数<br>• 画像対応cat関数 | 高度な機能提供 |
-| `tools.zsh` | **開発ツール読み込み**<br>• 言語ランタイム初期化（pyenv, rbenv等）<br>• ライブラリ読み込み（nvm, asdf等）<br>• 特殊ツール初期化 | 開発環境構築 |
-
-## ✨ 主な改善点・特徴
-
-### 🎯 適切な責務分離
-1. **環境変数の完全統合**: 全て`.zshenv`に集約、GUI対応
-2. **ログイン処理の分離**: `.zprofile`でGUI環境変数設定
-3. **設定の論理的分割**: 機能別に適切にグループ化
-4. **エイリアス・関数の分離**: 単純な置換と複雑な処理を分離
-
-### 🚀 パフォーマンス最適化
-5. **補完システムの高速化**: キャッシュ利用、条件付き初期化
-6. **プラグイン読み込みの最適化**: エラーハンドリング付き
-7. **履歴管理の改善**: XDG準拠、重複排除、大容量対応
-8. **PATH重複防止**: ヘルパー関数による効率的な管理
-
-### 🔧 開発者体験の向上
-9. **XDG Base Directory準拠**: 設定ファイルの整理
-10. **エラーハンドリング**: 堅牢な条件チェック
-11. **GUI アプリケーション対応**: IDE等での開発ツール利用
-12. **包括的な補完設定**: 詳細な補完スタイル設定
-
-## 🚀 使用方法
-
-1. ターミナルを再起動するか `source ~/.zshrc` を実行
-2. **環境変数変更**: `.zshenv` を編集
-3. **GUI環境設定**: `.zprofile` を編集
-4. **zsh基本設定変更**: `zsh-config.zsh` を編集
-5. **見た目・プラグイン変更**: `ui.zsh` を編集
-6. **エイリアス変更**: `aliases.zsh` を編集
-7. **カスタム関数変更**: `functions.zsh` を編集
-8. **開発ツール変更**: `tools.zsh` を編集
-9. 変更後は `reload` エイリアスまたは `source ~/.zshrc` で反映
-
-## 📝 カスタマイズガイド
-
-### 新しい環境変数を追加
-`.zshenv` に追記（PATH設定はヘルパー関数を使用）
-
-### GUI用環境変数を追加
-`.zprofile` に `launchctl setenv` を追記
-
-### 新しいzsh設定を追加
-`zsh-config.zsh` に追記
-
-### 新しいプラグインを追加
-`zz-ui.zsh` に追記（エラーハンドリング付き）
-
-### zsh-autocomplete のインストール
-
-```bash
-# Homebrew（推奨）
-brew install zsh-autocomplete
-
-# または手動インストール
-git clone --depth 1 -- https://github.com/marlonrichert/zsh-autocomplete.git \
-  "${XDG_DATA_HOME:-$HOME/.local/share}/zsh/plugins/zsh-autocomplete"
-```
-
-設定は `autocomplete.zsh` で管理されています。
-
-### 新しいエイリアスを追加
+### 新しいエイリアス
 `aliases.zsh` に追記
 
-### 新しいカスタム関数を追加
+### 新しい関数
 `functions.zsh` に追記
-
-### 新しい開発ツールを追加
-1. 環境変数: `.zshenv` に追記
-2. 初期化処理: `tools.zsh` に追記
-
-## 🔧 PATH管理
-
-`.zshenv`では以下のヘルパー関数を使用：
-
-```bash
-path_prepend "/path/to/dir"  # PATHの先頭に追加（重複チェック付き）
-path_append "/path/to/dir"   # PATHの末尾に追加（重複チェック付き）
-```
-
-これにより、PATH変数の重複や肥大化を防げます。
-
-## 📊 構成の特徴
-
-| 項目 | 従来構成 | 現在構成 |
-|------|----------|----------|
-| ファイル数 | 8〜9個（細分化） | **6個（合理化）** |
-| 環境変数管理 | 分散 | **`.zshenv`に統合** |
-| GUI対応 | なし | **`.zprofile`で対応** |
-| エラーハンドリング | 最小限 | **包括的** |
-| パフォーマンス | 標準 | **最適化済み** |
-| XDG準拠 | 部分的 | **完全対応** |
-| 保守性 | 中程度 | **高い** |
-| 拡張性 | 中程度 | **高い** | 

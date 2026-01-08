@@ -1,9 +1,10 @@
 #!/bin/sh
 #
-# Safe dotfiles installer/updater.
+# Dotfiles installer (Nix-first).
+#
 # Usage:
 #   curl -fsSL https://raw.githubusercontent.com/posaune0423/dotfiles/main/install.sh | sh
-#   curl -fsSL https://raw.githubusercontent.com/posaune0423/dotfiles/main/install.sh | sh -s -- --dry-run
+#   curl -fsSL ... | sh -s -- --dry-run
 #
 set -eu
 
@@ -24,15 +25,10 @@ setup_colors() {
     GREEN="\033[32m"
     YELLOW="\033[33m"
     BLUE="\033[34m"
-    MAGENTA="\033[35m"
     CYAN="\033[36m"
-    WHITE="\033[37m"
-    BG_GREEN="\033[42m"
-    BG_BLUE="\033[44m"
   else
     BOLD="" DIM="" RESET=""
-    RED="" GREEN="" YELLOW="" BLUE="" MAGENTA="" CYAN="" WHITE=""
-    BG_GREEN="" BG_BLUE=""
+    RED="" GREEN="" YELLOW="" BLUE="" CYAN=""
   fi
 }
 setup_colors
@@ -43,15 +39,11 @@ setup_colors
 ICON_CHECK="✓"
 ICON_CROSS="✗"
 ICON_ARROW="→"
-ICON_LINK="🔗"
-ICON_BACKUP="📦"
-ICON_SKIP="⏭"
 ICON_INFO="ℹ"
 ICON_WARN="⚠"
 ICON_ROCKET="🚀"
-ICON_FOLDER="📁"
 ICON_GIT="🔄"
-ICON_QUESTION="❓"
+ICON_NIX="❄️"
 
 # =============================================================================
 # Output Helpers
@@ -68,77 +60,14 @@ print_section() {
   printf "${DIM}%s${RESET}\n" "───────────────────────────────────────────────────────────────────"
 }
 
-say() { printf "${WHITE}%s${RESET}\n" "$*"; }
-
 info() { printf "${CYAN}${ICON_INFO}${RESET}  %s\n" "$*"; }
-
 success() { printf "${GREEN}${ICON_CHECK}${RESET}  ${GREEN}%s${RESET}\n" "$*"; }
-
 warn() { printf "${YELLOW}${ICON_WARN}${RESET}  ${YELLOW}%s${RESET}\n" "$*"; }
-
 err() { printf "${RED}${ICON_CROSS}${RESET}  ${RED}ERROR: %s${RESET}\n" "$*" >&2; }
-
 die() { err "$*"; exit 1; }
-
-skip() { printf "${DIM}${ICON_SKIP}${RESET}  ${DIM}%s${RESET}\n" "$*"; }
-
-link_msg() { printf "${GREEN}${ICON_LINK}${RESET}  ${WHITE}%s${RESET} ${ICON_ARROW} ${CYAN}%s${RESET}\n" "$1" "$2"; }
-
-backup_msg() { printf "${YELLOW}${ICON_BACKUP}${RESET}  ${DIM}backup:${RESET} %s\n" "$1"; }
-
-ok_msg() { printf "${GREEN}${ICON_CHECK}${RESET}  ${DIM}unchanged:${RESET} %s\n" "$1"; }
-
-dry_run_msg() { printf "${MAGENTA}[dry-run]${RESET} %s\n" "$*"; }
-
-# Progress indicator
-TOTAL_ITEMS=0
-CURRENT_ITEM=0
-
-set_total_items() { TOTAL_ITEMS=$1; CURRENT_ITEM=0; }
-
-progress() {
-  CURRENT_ITEM=$((CURRENT_ITEM + 1))
-  _name="$1"
-  printf "${DIM}[%d/%d]${RESET} ${BOLD}%s${RESET}\n" "$CURRENT_ITEM" "$TOTAL_ITEMS" "$_name"
-}
-
-# =============================================================================
-# Utilities
-# =============================================================================
-need_cmd() {
-  command -v "$1" >/dev/null 2>&1 || die "Required command not found: $1"
-}
-
-realpath_compat() {
-  _p="$1"
-  if command -v python3 >/dev/null 2>&1; then
-    python3 - "$_p" <<'PY'
-import os, sys
-print(os.path.realpath(sys.argv[1]))
-PY
-    return 0
-  fi
-  if command -v python >/dev/null 2>&1; then
-    python - "$_p" <<'PY'
-import os, sys
-print(os.path.realpath(sys.argv[1]))
-PY
-    return 0
-  fi
-  if command -v perl >/dev/null 2>&1; then
-    perl -MCwd -e 'print Cwd::realpath($ARGV[0])' "$_p" 2>/dev/null || printf "%s" "$_p"
-    printf "\n"
-    return 0
-  fi
-  printf "%s\n" "$_p"
-}
-
-timestamp() {
-  date "+%Y%m%d-%H%M%S"
-}
+dry_run_msg() { printf "${YELLOW}[dry-run]${RESET} %s\n" "$*"; }
 
 short_path() {
-  # Replace $HOME with ~ for display
   _path="$1"
   case "$_path" in
     "$HOME"/*) printf "~/%s" "${_path#"$HOME"/}" ;;
@@ -151,105 +80,30 @@ short_path() {
 # Configuration
 # =============================================================================
 DRY_RUN=0
-FORCE=0
-NO_UPDATE=0
-NO_BACKUP=0
 DOTFILES_DIR="${DOTFILES_DIR:-$HOME/.dotfiles}"
 REPO_URL="${REPO_URL:-https://github.com/posaune0423/dotfiles.git}"
 BRANCH="${BRANCH:-main}"
-BACKUP_ROOT="${BACKUP_ROOT:-$HOME/.dotfiles-backup}"
-
-has_tty() {
-  # Check if /dev/tty is available for interactive prompts
-  # Use subshell to suppress any error messages
-  ( [ -r /dev/tty ] && [ -c /dev/tty ] && printf "" >/dev/tty ) 2>/dev/null
-}
-
-confirm() {
-  _q="$1"
-  if [ "$FORCE" -eq 1 ]; then
-    return 0
-  fi
-  if ! has_tty; then
-    die "No TTY available for interactive prompt. Re-run with --yes (or --force)."
-  fi
-  printf "${YELLOW}${ICON_QUESTION}${RESET}  ${BOLD}%s${RESET} ${DIM}[y/N]:${RESET} " "$_q" >/dev/tty
-  IFS= read -r _ans </dev/tty || _ans=""
-  case "$_ans" in
-    y|Y|yes|YES) return 0 ;;
-    *) return 1 ;;
-  esac
-}
-
-confirm_update() {
-  _file="$1"
-  _short="$(short_path "$_file")"
-  if [ "$FORCE" -eq 1 ]; then
-    return 0
-  fi
-  if ! has_tty; then
-    # No TTY, skip by default in non-forced mode
-    return 1
-  fi
-
-  # All TTY output in a subshell to catch redirection errors
-  {
-    printf "\n"
-    printf "${YELLOW}${ICON_WARN}${RESET}  ${BOLD}File already exists:${RESET} ${CYAN}%s${RESET}\n" "$_short"
-
-    # Show what it currently points to if it's a symlink
-    if [ -L "$_file" ]; then
-      _target="$(readlink "$_file" 2>/dev/null || echo "unknown")"
-      printf "   ${DIM}Current link target:${RESET} %s\n" "$(short_path "$_target")"
-    elif [ -f "$_file" ]; then
-      printf "   ${DIM}Type: regular file${RESET}\n"
-    elif [ -d "$_file" ]; then
-      printf "   ${DIM}Type: directory${RESET}\n"
-    fi
-
-    printf "${YELLOW}${ICON_QUESTION}${RESET}  ${BOLD}Replace with new symlink?${RESET} ${DIM}[y/N]:${RESET} "
-  } >/dev/tty 2>/dev/null || return 1
-
-  IFS= read -r _ans </dev/tty 2>/dev/null || _ans=""
-  case "$_ans" in
-    y|Y|yes|YES) return 0 ;;
-    *) return 1 ;;
-  esac
-}
+HOST="${HOST:-mac}"
 
 usage() {
-  printf "${BOLD}${BLUE}%s${RESET}\n" "╔═══════════════════════════════════════════════════════════════════╗"
-  printf "${BOLD}${BLUE}%s${RESET}\n" "║                     Dotfiles Installer                            ║"
-  printf "${BOLD}${BLUE}%s${RESET}\n" "╚═══════════════════════════════════════════════════════════════════╝"
-  printf "\n"
   cat <<EOF
+${BOLD}${BLUE}Dotfiles Installer (Nix-first)${RESET}
+
 ${BOLD}USAGE:${RESET}
-    ${CYAN}curl -fsSL https://raw.githubusercontent.com/posaune0423/dotfiles/main/install.sh | sh${RESET}
-    ${CYAN}curl -fsSL ... | sh -s -- --dry-run${RESET}
+    curl -fsSL https://raw.githubusercontent.com/posaune0423/dotfiles/main/install.sh | sh
 
 ${BOLD}OPTIONS:${RESET}
     ${GREEN}--dry-run${RESET}        Print actions without changing anything
-    ${GREEN}--yes${RESET}            Answer yes to all prompts (non-interactive)
-    ${GREEN}--force${RESET}          Alias of --yes
-    ${GREEN}--no-update${RESET}      Do not git pull if repo already exists
-    ${GREEN}--no-backup${RESET}      Do not backup existing files (${YELLOW}NOT recommended${RESET})
-    ${GREEN}--dotfiles-dir${RESET}   Install location (default: ${DIM}\$HOME/.dotfiles${RESET})
+    ${GREEN}--dotfiles-dir${RESET}   Install location (default: \$HOME/.dotfiles)
     ${GREEN}--repo${RESET}           Git repo URL
-    ${GREEN}--branch${RESET}         Git branch (default: ${DIM}main${RESET})
+    ${GREEN}--branch${RESET}         Git branch (default: main)
+    ${GREEN}--host${RESET}           nix-darwin host name (default: mac)
     ${GREEN}-h, --help${RESET}       Show this help
 
-${BOLD}EXAMPLES:${RESET}
-    ${DIM}# Normal install${RESET}
-    ${CYAN}curl -fsSL https://raw.githubusercontent.com/posaune0423/dotfiles/main/install.sh | sh${RESET}
-
-    ${DIM}# Preview changes${RESET}
-    ${CYAN}curl -fsSL ... | sh -s -- --dry-run${RESET}
-
-    ${DIM}# Non-interactive install${RESET}
-    ${CYAN}curl -fsSL ... | sh -s -- --yes${RESET}
-
-    ${DIM}# Custom location${RESET}
-    ${CYAN}DOTFILES_DIR="\$HOME/src/dotfiles" curl -fsSL ... | sh${RESET}
+${BOLD}WHAT THIS DOES:${RESET}
+    1. Install Nix (Determinate Systems installer) if not present
+    2. Clone/update this dotfiles repo to ~/.dotfiles
+    3. Run nix-darwin switch to apply system + home configuration
 EOF
 }
 
@@ -259,38 +113,28 @@ EOF
 while [ $# -gt 0 ]; do
   case "$1" in
     --dry-run) DRY_RUN=1 ;;
-    --yes) FORCE=1 ;;
-    --force) FORCE=1 ;;
-    --no-update) NO_UPDATE=1 ;;
-    --no-backup) NO_BACKUP=1 ;;
     --dotfiles-dir)
-      shift || true
-      [ $# -gt 0 ] || die "--dotfiles-dir requires a value"
+      shift; [ $# -gt 0 ] || die "--dotfiles-dir requires a value"
       DOTFILES_DIR="$1"
       ;;
     --repo)
-      shift || true
-      [ $# -gt 0 ] || die "--repo requires a value"
+      shift; [ $# -gt 0 ] || die "--repo requires a value"
       REPO_URL="$1"
       ;;
     --branch)
-      shift || true
-      [ $# -gt 0 ] || die "--branch requires a value"
+      shift; [ $# -gt 0 ] || die "--branch requires a value"
       BRANCH="$1"
       ;;
-    -h|--help) usage; exit 0 ;;
-    *)
-      die "Unknown option: $1 (use --help)"
+    --host)
+      shift; [ $# -gt 0 ] || die "--host requires a value"
+      HOST="$1"
       ;;
+    -h|--help) usage; exit 0 ;;
+    *) die "Unknown option: $1 (use --help)" ;;
   esac
   shift
 done
 
-need_cmd git
-
-# =============================================================================
-# Core Functions
-# =============================================================================
 run() {
   if [ "$DRY_RUN" -eq 1 ]; then
     dry_run_msg "$*"
@@ -299,85 +143,24 @@ run() {
   "$@"
 }
 
-backup_path() {
-  _dest="$1"
-  _ts="$2"
-  _backup_dir="$BACKUP_ROOT/$_ts"
-
-  case "$_dest" in
-    "$HOME"/*) _rel="${_dest#"$HOME"/}" ;;
-    *) _rel="nonhome/$_dest" ;;
-  esac
-
-  printf "%s\n" "$_backup_dir/$_rel"
+# =============================================================================
+# Check Dependencies
+# =============================================================================
+need_cmd() {
+  command -v "$1" >/dev/null 2>&1 || die "Required command not found: $1"
 }
-
-link_item() {
-  _src="$1"
-  _dest="$2"
-  _ts="$3"
-  _name="$(basename "$_dest")"
-  _short_dest="$(short_path "$_dest")"
-  _short_src="$(short_path "$_src")"
-
-  progress "$_name"
-
-  # Skip if source doesn't exist (optional config)
-  if [ ! -e "$_src" ]; then
-    skip "Source not found: $_short_src ${DIM}(skipping)${RESET}"
-    return 0
-  fi
-
-  # Already correct?
-  if [ -e "$_dest" ] || [ -L "$_dest" ]; then
-    _src_r="$(realpath_compat "$_src")"
-    _dest_r="$(realpath_compat "$_dest")"
-    if [ "$_src_r" = "$_dest_r" ]; then
-      ok_msg "$_short_dest"
-      return 0
-    fi
-  fi
-
-  # Ensure parent dir exists
-  _parent="$(dirname "$_dest")"
-  [ -d "$_parent" ] || run mkdir -p "$_parent"
-
-  # Prompt when destination exists
-  if [ -e "$_dest" ] || [ -L "$_dest" ]; then
-    if ! confirm_update "$_dest"; then
-      skip "Skipped: $_short_dest"
-      return 0
-    fi
-  fi
-
-  # Backup existing
-  if [ "$NO_BACKUP" -eq 0 ] && ( [ -e "$_dest" ] || [ -L "$_dest" ] ); then
-    _bk="$(backup_path "$_dest" "$_ts")"
-    _bk_parent="$(dirname "$_bk")"
-    [ -d "$_bk_parent" ] || run mkdir -p "$_bk_parent"
-    backup_msg "$(short_path "$_dest") ${ICON_ARROW} $(short_path "$_bk")"
-    run mv "$_dest" "$_bk"
-  elif [ -e "$_dest" ] || [ -L "$_dest" ]; then
-    if [ "$FORCE" -ne 1 ]; then
-      die "Destination exists (use --force or keep backup enabled): $_dest"
-    fi
-    warn "Removing: $_short_dest"
-    run rm -rf "$_dest"
-  fi
-
-  link_msg "$_short_dest" "$_short_src"
-  run ln -s "$_src" "$_dest"
-}
+need_cmd git
 
 # =============================================================================
 # Main Installation
 # =============================================================================
-print_header "${ICON_ROCKET} Dotfiles Installer"
+print_header "${ICON_ROCKET} Dotfiles Installer (Nix-first)"
 
 printf "\n"
 info "Repository: ${BOLD}$REPO_URL${RESET}"
 info "Branch:     ${BOLD}$BRANCH${RESET}"
 info "Install to: ${BOLD}$(short_path "$DOTFILES_DIR")${RESET}"
+info "Host:       ${BOLD}$HOST${RESET}"
 
 if [ "$DRY_RUN" -eq 1 ]; then
   printf "\n"
@@ -385,7 +168,28 @@ if [ "$DRY_RUN" -eq 1 ]; then
 fi
 
 # =============================================================================
-# Clone or Update Repository
+# Step 1: Install Nix (if needed)
+# =============================================================================
+print_section "${ICON_NIX} Nix Setup"
+
+if command -v nix >/dev/null 2>&1; then
+  success "Nix is already installed"
+else
+  info "Installing Nix (Determinate Systems installer)..."
+  if [ "$DRY_RUN" -eq 0 ]; then
+    curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
+    # Source Nix for current shell
+    if [ -e '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh' ]; then
+      . '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
+    fi
+    success "Nix installed"
+  else
+    dry_run_msg "curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install"
+  fi
+fi
+
+# =============================================================================
+# Step 2: Clone or Update Repository
 # =============================================================================
 print_section "${ICON_GIT} Repository Setup"
 
@@ -395,49 +199,32 @@ if [ ! -d "$DOTFILES_DIR" ]; then
   success "Cloned to $(short_path "$DOTFILES_DIR")"
 else
   [ -d "$DOTFILES_DIR/.git" ] || die "DOTFILES_DIR exists but is not a git repo: $DOTFILES_DIR"
-  if [ "$NO_UPDATE" -eq 0 ]; then
-    if confirm "Pull latest changes into $(short_path "$DOTFILES_DIR")?"; then
-      info "Updating repository..."
-      run git -C "$DOTFILES_DIR" fetch --prune origin
-      run git -C "$DOTFILES_DIR" checkout "$BRANCH"
-      run git -C "$DOTFILES_DIR" pull --ff-only
-      success "Repository updated"
-    else
-      skip "Repository update skipped (user declined)"
-    fi
-  else
-    skip "Repository update skipped (--no-update)"
-  fi
+  info "Updating repository..."
+  run git -C "$DOTFILES_DIR" fetch --prune origin
+  run git -C "$DOTFILES_DIR" checkout "$BRANCH"
+  run git -C "$DOTFILES_DIR" pull --ff-only
+  success "Repository updated"
 fi
 
-TS="$(timestamp)"
-
 # =============================================================================
-# Create Symlinks
+# Step 3: Run nix-darwin switch
 # =============================================================================
-print_section "${ICON_FOLDER} Creating Symlinks"
+print_section "${ICON_NIX} Applying Nix Configuration"
 
-# Ensure XDG config home exists
-run mkdir -p "$HOME/.config"
+info "Running nix-darwin switch (this may take a while on first run)..."
 
-# Count total items (4 root + 8 config = 12)
-set_total_items 12
-
-# Root dotfiles
-link_item "$DOTFILES_DIR/.zshenv"    "$HOME/.zshenv"    "$TS"
-link_item "$DOTFILES_DIR/.zshrc"     "$HOME/.zshrc"     "$TS"
-link_item "$DOTFILES_DIR/.zprofile"  "$HOME/.zprofile"  "$TS"
-link_item "$DOTFILES_DIR/.gitconfig" "$HOME/.gitconfig" "$TS"
-
-# XDG configs (link individual apps, not ~/.config as a whole)
-link_item "$DOTFILES_DIR/.config/zsh"           "$HOME/.config/zsh"           "$TS"
-link_item "$DOTFILES_DIR/.config/sheldon"       "$HOME/.config/sheldon"       "$TS"
-link_item "$DOTFILES_DIR/.config/nvim"          "$HOME/.config/nvim"          "$TS"
-link_item "$DOTFILES_DIR/.config/wezterm"       "$HOME/.config/wezterm"       "$TS"
-link_item "$DOTFILES_DIR/.config/mise"          "$HOME/.config/mise"          "$TS"
-link_item "$DOTFILES_DIR/.config/karabiner"     "$HOME/.config/karabiner"     "$TS"
-link_item "$DOTFILES_DIR/.config/ghostty"       "$HOME/.config/ghostty"       "$TS"
-link_item "$DOTFILES_DIR/.config/starship.toml" "$HOME/.config/starship.toml" "$TS"
+if [ "$DRY_RUN" -eq 0 ]; then
+  cd "$DOTFILES_DIR"
+  # First time: use nix run nix-darwin; afterwards darwin-rebuild is in PATH
+  if command -v darwin-rebuild >/dev/null 2>&1; then
+    sudo darwin-rebuild switch --flake ".#$HOST"
+  else
+    sudo nix run nix-darwin -- switch --flake ".#$HOST"
+  fi
+  success "Configuration applied"
+else
+  dry_run_msg "cd $DOTFILES_DIR && sudo nix run nix-darwin -- switch --flake .#$HOST"
+fi
 
 # =============================================================================
 # Summary
@@ -446,12 +233,10 @@ print_section "${ICON_CHECK} Installation Complete"
 
 success "Dotfiles installed successfully!"
 
-if [ "$NO_BACKUP" -eq 0 ]; then
-  printf "\n"
-  info "Backup location: ${DIM}$(short_path "$BACKUP_ROOT/$TS")${RESET}"
-fi
-
 printf "\n"
-printf "${DIM}%s${RESET}\n" "To apply changes, restart your shell or run:"
-printf "  ${CYAN}source ~/.zshrc${RESET}\n"
+printf "${DIM}%s${RESET}\n" "To apply future changes, run:"
+printf "  ${CYAN}cd $(short_path "$DOTFILES_DIR") && nix run .#switch${RESET}\n"
+printf "\n"
+printf "${DIM}%s${RESET}\n" "Or restart your shell to pick up PATH changes:"
+printf "  ${CYAN}exec zsh -l${RESET}\n"
 printf "\n"

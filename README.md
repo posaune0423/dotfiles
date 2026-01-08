@@ -1,319 +1,205 @@
 # dotfiles
 
-Modern, modular dotfiles configuration inspired by [Takuya Matsuyama](https://github.com/craftzdog/dotfiles-public), optimized for macOS development environments.
+Modern, declarative macOS dotfiles managed by **Nix** (nix-darwin + home-manager).
 
-## ✨ Features
+Inspired by [Takuya Matsuyama](https://github.com/craftzdog/dotfiles-public), [ryoppippi/dotfiles](https://github.com/ryoppippi/dotfiles), and [shunkakinoki/dotfiles](https://github.com/shunkakinoki/dotfiles).
 
-- **🔧 Modular Zsh Configuration**: Clean, organized shell setup with [sheldon](https://github.com/rossmacarthur/sheldon) plugin manager
-- **🚀 mise Integration**: All language runtimes and CLI tools managed via [mise](https://mise.jdx.dev/)
-- **🎨 Beautiful Prompt**: Starship prompt with Git integration
-- **⚡ Performance Optimized**: Fast startup with PATH deduplication
-- **🛠️ Neovim Ready**: Modern Neovim configuration with Lua
-- **🎯 XDG Base Directory**: Follows XDG standards for clean home directory
-- **🔄 Easy Setup**: One-command installation with backup support
-- **🔒 Safe Defaults**: `HOMEBREW_FORBIDDEN_FORMULAE` prevents accidental tool overwrites
+## Features
 
-## 📁 Project Structure
+- **Nix-first**: All CLI tools, language runtimes, and system configuration managed via Nix flakes
+- **Declarative macOS settings**: Key repeat, Dock, Finder, trackpad settings all in code
+- **Modular Zsh configuration**: Clean, organized shell setup with [sheldon](https://github.com/rossmacarthur/sheldon) plugin manager
+- **Beautiful Prompt**: Starship prompt with Git integration
+- **One-command setup**: `nix run .#switch` applies everything
+- **CI-verified**: GitHub Actions builds the configuration on every push
 
-```
-dotfiles/
-├── install.sh                  # Safe installer/updater (curl | sh)
-├── .zshenv                     # Environment variables & PATH setup
-├── .zprofile                   # Login shell configuration
-├── .zshrc                      # Interactive shell configuration
-├── .gitconfig                  # Git configuration
-└── .config/                    # Application configurations
-    ├── zsh/                    # Modular Zsh configurations
-    │   ├── core.zsh            # History, options, basic settings
-    │   ├── completion.zsh      # Standard zsh completion
-    │   ├── aliases.zsh         # Command aliases
-    │   ├── functions.zsh       # Custom functions
-    │   ├── tools.zsh           # Development tools setup
-    │   ├── prompt.zsh          # Starship prompt initialization
-    │   └── plugins/            # Zsh plugins (configuration only)
-    │       └── autocomplete.zsh      # zsh-autocomplete config (optional)
-    ├── sheldon/                # sheldon plugin manager config
-    │   └── plugins.toml        # Zsh plugin definitions
-    ├── mise/                   # mise version manager config
-    │   └── config.toml         # Tool versions & CLI tools
-    ├── nvim/                   # Neovim configuration
-    │   ├── init.lua
-    │   └── lua/
-    │       ├── config/         # Core config (keymaps, options, etc.)
-    │       ├── plugins/        # Plugin configurations
-    │       └── util/           # Utility modules
-    ├── wezterm/                # WezTerm terminal config
-    │   ├── init.lua
-    │   ├── appearance.lua
-    │   ├── font.lua
-    │   ├── keys.lua
-    │   └── events.lua
-    ├── karabiner/              # Karabiner-Elements config
-    │   └── karabiner.json
-    ├── ghosty/                 # Ghostty terminal config
-    │   └── config
-    └── starship.toml           # Starship prompt configuration
-```
+## Quick Start
 
-## 🚀 Quick Start
-
-### Prerequisites
-
-- **macOS** (tested on macOS 15.0+)
-- **Homebrew** installed
-- **Git** configured
-
-### Installation
-
-#### One-liner (recommended)
-
-This will clone/pull into `~/.dotfiles`, **backup existing files**, then symlink configs into your home directory.
+### One-liner Install
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/posaune0423/dotfiles/main/install.sh | sh
 ```
 
-#### Dry-run first (safe preview)
+This will:
+1. Install Nix (Determinate Systems installer) if not present
+2. Clone this repo to `~/.dotfiles`
+3. Run `nix-darwin switch` to apply system + home configuration
+
+### Manual Setup
+
+1. **Install Nix** (Determinate Systems installer):
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/posaune0423/dotfiles/main/install.sh | sh -s -- --dry-run
+curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
 ```
 
-#### Interactive yes/no prompts (default on update)
-
-When the repo already exists, the installer will ask before pulling and before replacing existing dotfiles.
-
-If you want to skip prompts (CI / scripts), use:
+2. **Clone this repository**:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/posaune0423/dotfiles/main/install.sh | sh -s -- --yes
+git clone https://github.com/posaune0423/dotfiles.git ~/.dotfiles
+cd ~/.dotfiles
 ```
 
-#### Local usage (when already cloned)
+3. **Apply the configuration**:
 
 ```bash
-sh ./install.sh --no-update
+# First time (nix-darwin not yet in PATH)
+sudo nix run nix-darwin -- switch --flake .#mac
+
+# After first run
+nix run .#switch
 ```
 
-## 🛠️ Configuration Details
+4. **Restart your shell**:
 
-### Zsh Configuration Loading Order
+```bash
+exec zsh -l
+```
 
-The shell configuration follows a specific load order:
+## Daily Usage
 
-1. **`.zshenv`** - Sourced by all Zsh invocations (interactive/non-interactive):
-   - PATH helper functions (`path_prepend`, `path_append`) with deduplication
-   - XDG Base Directory exports
-   - Editor/locale defaults
-   - mise shims PATH setup
+```bash
+# Apply configuration changes
+nix run .#switch
 
-2. **`.zprofile`** - Login shell only:
-   - GUI app environment via `launchctl setenv`
-   - One-time runtime configurations
+# Update flake inputs (nixpkgs, home-manager, etc.)
+nix run .#update
 
-3. **`.zshrc`** - Interactive shells. Loads modules from `~/.config/zsh/` in this order:
-   - `core.zsh` - History, options
-   - `completion.zsh` OR `plugins/autocomplete.zsh` (choose one)
-   - `aliases.zsh`
-   - `functions.zsh`
-   - `tools.zsh`
-   - `prompt.zsh` - Starship (must be last)
-   - **sheldon** - Plugin loading (zsh-autosuggestions, zsh-syntax-highlighting)
+# Build without applying (dry run)
+nix run .#build
 
-### Version Management with mise
+# Check flake for errors
+nix run .#check
+```
 
-All language runtimes and CLI tools are managed via **mise** (not Homebrew). Configuration in `.config/mise/config.toml`:
+## Project Structure
 
-#### Language Runtimes
+```
+dotfiles/
+├── flake.nix                   # Nix flake entry point
+├── flake.lock                  # Locked dependency versions
+├── install.sh                  # Bootstrap installer
+├── nix/
+│   ├── darwin/
+│   │   └── default.nix         # nix-darwin: system packages & macOS settings
+│   └── home/
+│       └── default.nix         # home-manager: dotfile symlinks
+├── .zshenv                     # Environment variables & PATH
+├── .zprofile                   # Login shell configuration
+├── .zshrc                      # Interactive shell configuration
+├── .gitconfig                  # Git configuration
+└── .config/
+    ├── zsh/                    # Modular Zsh configurations
+    │   ├── core.zsh            # History, options
+    │   ├── completion.zsh      # Completion setup
+    │   ├── aliases.zsh         # Command aliases
+    │   ├── functions.zsh       # Custom functions
+    │   ├── tools.zsh           # Tool initialization (zoxide, atuin)
+    │   └── prompt.zsh          # Starship prompt
+    ├── sheldon/                # sheldon plugin manager config
+    ├── nvim/                   # Neovim configuration
+    ├── wezterm/                # WezTerm terminal config
+    ├── karabiner/              # Karabiner-Elements config
+    ├── ghosty/                 # Ghostty terminal config
+    └── starship.toml           # Starship prompt configuration
+```
 
-| Runtime | Command |
-|---------|---------|
-| Node.js | `node`, `npm` |
-| Python | `python`, `python3` |
-| Ruby | `ruby`, `gem` |
-| Go | `go` |
-| Java | `java`, `javac` |
-| Bun | `bun` |
-| Deno | `deno` |
+## What Gets Installed
 
-#### CLI Tools (partial list)
+### CLI Tools
 
 | Category | Tools |
 |----------|-------|
-| **File Operations** | `bat`, `eza`, `fd`, `ripgrep`, `yazi`, `zoxide` |
-| **Git Tools** | `gh`, `lazygit`, `delta`, `difftastic`, `ghq` |
-| **Text Processing** | `jq`, `sd`, `choose` |
-| **System Monitoring** | `bottom`, `procs`, `dust`, `gping` |
-| **Search & Navigation** | `fzf`, `peco`, `mcfly` |
-| **Development** | `neovim`, `tmux`, `zellij`, `just`, `watchexec` |
-| **Cloud & Infra** | `aws`, `terraform`, `docker-cli`, `act` |
-| **Code Quality** | `biome`, `buf` |
-| **Shell** | `sheldon` |
+| **File Operations** | bat, eza, fd, ripgrep, fzf, yazi, zoxide |
+| **Git Tools** | gh, hub, delta, difftastic, lazygit, ghq |
+| **Text Processing** | jq, sd |
+| **System Monitoring** | bottom, procs, dust, gping, tokei |
+| **Shell** | sheldon, starship, atuin, mcfly |
+| **Development** | neovim, tmux, zellij, just, watchexec |
+| **Cloud/Infra** | awscli2, terraform, act |
 
-> **Note**: `HOMEBREW_FORBIDDEN_FORMULAE` is set to prevent accidentally installing version-managed tools via Homebrew.
+### Language Runtimes
 
-### Plugin Management with sheldon
+- Node.js, Python, Ruby, Go, Java, Bun, Deno (all via Nixpkgs)
 
-Zsh plugins are managed via [sheldon](https://github.com/rossmacarthur/sheldon), a fast plugin manager written in Rust. Configuration in `.config/sheldon/plugins.toml`:
+### macOS Settings (via nix-darwin)
 
-| Plugin | Description |
-|--------|-------------|
-| `zsh-autosuggestions` | Fish-like command autosuggestions |
-| `zsh-syntax-highlighting` | Fish-like syntax highlighting |
-| `zsh-autocomplete` | Real-time type-ahead completion (optional) |
+- **Keyboard**: Fast key repeat (KeyRepeat=1, InitialKeyRepeat=15), disable press-and-hold
+- **Dock**: Auto-hide, no recent apps, minimize to app icon
+- **Finder**: Show all extensions, path bar, status bar, list view
+- **Trackpad**: Tap to click, right-click
+- **Security**: Touch ID for sudo
 
-To add new plugins, edit `.config/sheldon/plugins.toml`:
-
-```toml
-[plugins.my-plugin]
-github = "user/my-plugin"
-```
-
-Then run:
-
-```bash
-sheldon lock --update
-```
-
-### Editor Configuration
-
-- **Neovim**: Modern Vim-based editor with Lua configuration
-- **Default Editor**: `nvim` set as default `$EDITOR` and `$VISUAL`
-- **Pager**: `less` configured for better terminal output
-
-### Prompt Configuration
-
-- **Starship**: Fast, customizable prompt with Git integration
-- **Custom Symbols**: Colorful success/error indicators
-- **Directory Display**: Smart truncation with repository awareness
-- **Cloud Integration**: AWS region and Docker context display
-
-## 📝 Customization
-
-### Adding New Zsh Configurations
-
-1. Create a `.zsh` file in `.config/zsh/`:
-
-```bash
-echo 'export MY_CUSTOM_VAR="value"' > ~/.config/zsh/my-config.zsh
-```
-
-2. Add it to the `_zsh_configs` array in `.zshrc`:
-
-```bash
-typeset -a _zsh_configs=(
-  core
-  # ... existing configs ...
-  my-config    # Add your new config here
-  prompt       # Keep prompt last
-)
-```
-
-### Modifying PATH
-
-Use the built-in helper functions in `.zshenv`:
-
-```bash
-# Add to beginning of PATH (higher priority)
-path_prepend "/my/custom/bin"
-
-# Add to end of PATH (lower priority)
-path_append "/my/other/bin"
-```
+## Customization
 
 ### Adding New Tools
 
-Add tools to `.config/mise/config.toml` (not Homebrew for version-managed software):
+Edit `nix/darwin/default.nix`:
 
-```toml
-[tools]
-my-tool = "latest"
-"npm:my-npm-tool" = "latest"
-"pipx:my-python-tool" = "latest"
+```nix
+environment.systemPackages = with pkgs; [
+  # ... existing packages ...
+  my-new-tool
+];
 ```
 
-Then run:
+Then run `nix run .#switch`.
 
-```bash
-mise install
-```
+### Adding New Zsh Configuration
 
-### Starship Prompt
+1. Create a `.zsh` file in `.config/zsh/`
+2. Add it to `_zsh_configs` array in `.zshrc`
 
-Edit `~/.config/starship.toml` to customize your prompt. See [Starship documentation](https://starship.rs/config/) for options.
+### Modifying macOS Settings
 
-## 🔧 Troubleshooting
+Edit `system.defaults` in `nix/darwin/default.nix`. See [nix-darwin options](https://daiderd.com/nix-darwin/manual/index.html) for available settings.
+
+## CI
+
+GitHub Actions runs on every push to verify the configuration builds:
+
+- `nix flake check` - Validates flake structure
+- `nix build .#darwinConfigurations.mac.system` - Builds the full system config
+
+## Troubleshooting
 
 ### Slow Shell Startup
 
-1. Check which tools are being initialized:
+Check which tools are being initialized:
 
 ```bash
 zsh -xvs
 ```
 
-2. Review mise shim loading in `.zshenv`
-
-### GUI Applications Can't Find Tools
-
-The `.zprofile` handles GUI app environment setup. If needed, restart or run:
-
-```bash
-source ~/.zprofile
-```
-
 ### PATH Issues
 
-Check PATH deduplication is working:
+Nix paths should be at the front:
 
 ```bash
-echo $PATH | tr ':' '\n' | sort | uniq -d
+echo $PATH | tr ':' '\n' | head -5
+# Should show:
+# /run/current-system/sw/bin
+# /Users/<you>/.nix-profile/bin
+# ...
 ```
 
-### mise Not Working
+### Rebuild After Changing Nix Files
 
-Ensure mise is installed and shims are on PATH:
+Always run after editing `nix/`:
 
 ```bash
-# Check mise installation
-mise --version
-
-# Verify shims path
-echo $PATH | tr ':' '\n' | grep mise
+nix run .#switch
 ```
 
-## 🆘 Legacy Tool Setup
-
-If you need additional tools mentioned in the original README:
-
-### dein.vim (Vim Plugin Manager)
-
-```bash
-mkdir -p ~/.cache/dein
-curl https://raw.githubusercontent.com/Shougo/dein.vim/master/bin/installer.sh | sh -s ~/.cache/dein
-```
-
-### Python3 Support for Vim Plugins
-
-```bash
-pip3 install --user pynvim
-```
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch: `git checkout -b my-feature`
-3. Commit your changes: `git commit -am 'Add feature'`
-4. Push to the branch: `git push origin my-feature`
-5. Submit a pull request
-
-## ⚖️ License
+## License
 
 This project is open source and available under the [MIT License](LICENSE).
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
-- [Takuya Matsuyama](https://github.com/craftzdog/dotfiles-public) for the original inspiration
-- [Starship](https://starship.rs/) for the amazing prompt
-- [mise](https://mise.jdx.dev/) for unified version management
-- The open source community for all the amazing tools
+- [ryoppippi/dotfiles](https://github.com/ryoppippi/dotfiles) - Nix flake structure inspiration
+- [shunkakinoki/dotfiles](https://github.com/shunkakinoki/dotfiles) - nix-darwin patterns
+- [Takuya Matsuyama](https://github.com/craftzdog/dotfiles-public) - Original dotfiles inspiration
+- [Starship](https://starship.rs/) - Amazing prompt
+- [Determinate Systems](https://determinate.systems/) - Nix installer

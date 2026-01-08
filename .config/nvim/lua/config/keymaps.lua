@@ -58,7 +58,3 @@ keymap.set("n", "<C-w><down>", "<C-w>-")
 keymap.set("n", "<C-j>", function()
     vim.diagnostic.goto_next()
 end, opts)
-
--- Swap colon and semicolon
-keymap.set("n", ";", ":", opts)
-keymap.set("n", ":", ";", opts)

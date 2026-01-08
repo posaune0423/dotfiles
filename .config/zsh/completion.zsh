@@ -14,9 +14,12 @@ function _is_compinit_done() {
 # Only run if completion system is not yet initialized
 if ! _is_compinit_done; then
 
-  # Add homebrew completions to fpath if exists
-  if [[ -d /opt/homebrew/share/zsh-completions ]]; then
-    fpath=(/opt/homebrew/share/zsh-completions $fpath)
+  # Add Nix-provided completions to fpath (nix-darwin / home-manager)
+  if [[ -d /run/current-system/sw/share/zsh/site-functions ]]; then
+    fpath=(/run/current-system/sw/share/zsh/site-functions $fpath)
+  fi
+  if [[ -d "$HOME/.nix-profile/share/zsh/site-functions" ]]; then
+    fpath=("$HOME/.nix-profile/share/zsh/site-functions" $fpath)
   fi
 
   # Initialize completion system
