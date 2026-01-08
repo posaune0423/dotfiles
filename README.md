@@ -4,7 +4,7 @@ Modern, modular dotfiles configuration inspired by [Takuya Matsuyama](https://gi
 
 ## ✨ Features
 
-- **🔧 Modular Zsh Configuration**: Clean, organized shell setup with automatic loading
+- **🔧 Modular Zsh Configuration**: Clean, organized shell setup with [sheldon](https://github.com/rossmacarthur/sheldon) plugin manager
 - **🚀 mise Integration**: All language runtimes and CLI tools managed via [mise](https://mise.jdx.dev/)
 - **🎨 Beautiful Prompt**: Starship prompt with Git integration
 - **⚡ Performance Optimized**: Fast startup with PATH deduplication
@@ -30,10 +30,10 @@ dotfiles/
     │   ├── functions.zsh       # Custom functions
     │   ├── tools.zsh           # Development tools setup
     │   ├── prompt.zsh          # Starship prompt initialization
-    │   └── plugins/            # Zsh plugins
-    │       ├── autocomplete.zsh      # zsh-autocomplete (optional)
-    │       ├── autosuggestions.zsh   # zsh-autosuggestions
-    │       └── syntax-highlighting.zsh
+    │   └── plugins/            # Zsh plugins (configuration only)
+    │       └── autocomplete.zsh      # zsh-autocomplete config (optional)
+    ├── sheldon/                # sheldon plugin manager config
+    │   └── plugins.toml        # Zsh plugin definitions
     ├── mise/                   # mise version manager config
     │   └── config.toml         # Tool versions & CLI tools
     ├── nvim/                   # Neovim configuration
@@ -114,12 +114,11 @@ The shell configuration follows a specific load order:
 3. **`.zshrc`** - Interactive shells. Loads modules from `~/.config/zsh/` in this order:
    - `core.zsh` - History, options
    - `completion.zsh` OR `plugins/autocomplete.zsh` (choose one)
-   - `plugins/autosuggestions.zsh`
-   - `plugins/syntax-highlighting.zsh`
    - `aliases.zsh`
    - `functions.zsh`
    - `tools.zsh`
    - `prompt.zsh` - Starship (must be last)
+   - **sheldon** - Plugin loading (zsh-autosuggestions, zsh-syntax-highlighting)
 
 ### Version Management with mise
 
@@ -149,8 +148,32 @@ All language runtimes and CLI tools are managed via **mise** (not Homebrew). Con
 | **Development** | `neovim`, `tmux`, `zellij`, `just`, `watchexec` |
 | **Cloud & Infra** | `aws`, `terraform`, `docker-cli`, `act` |
 | **Code Quality** | `biome`, `buf` |
+| **Shell** | `sheldon` |
 
 > **Note**: `HOMEBREW_FORBIDDEN_FORMULAE` is set to prevent accidentally installing version-managed tools via Homebrew.
+
+### Plugin Management with sheldon
+
+Zsh plugins are managed via [sheldon](https://github.com/rossmacarthur/sheldon), a fast plugin manager written in Rust. Configuration in `.config/sheldon/plugins.toml`:
+
+| Plugin | Description |
+|--------|-------------|
+| `zsh-autosuggestions` | Fish-like command autosuggestions |
+| `zsh-syntax-highlighting` | Fish-like syntax highlighting |
+| `zsh-autocomplete` | Real-time type-ahead completion (optional) |
+
+To add new plugins, edit `.config/sheldon/plugins.toml`:
+
+```toml
+[plugins.my-plugin]
+github = "user/my-plugin"
+```
+
+Then run:
+
+```bash
+sheldon lock --update
+```
 
 ### Editor Configuration
 

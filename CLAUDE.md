@@ -36,12 +36,18 @@ The shell configuration follows a specific load order defined in `.zshrc`:
 3. **`.zshrc`** - Interactive shells. Loads modules from `~/.config/zsh/` in this order:
    - `core.zsh` - History, options
    - `completion.zsh` OR `plugins/autocomplete.zsh` (choose one)
-   - `plugins/autosuggestions.zsh`
-   - `plugins/syntax-highlighting.zsh`
    - `aliases.zsh`
    - `functions.zsh`
    - `tools.zsh`
    - `prompt.zsh` - Starship (must be last)
+   - **sheldon plugins** - zsh-autosuggestions, zsh-syntax-highlighting (loaded via `eval "$(sheldon source)"`)
+
+### Plugin Management with sheldon
+
+Zsh plugins are managed via [sheldon](https://github.com/rossmacarthur/sheldon), a fast plugin manager written in Rust. Configuration in `.config/sheldon/plugins.toml`:
+- `zsh-autosuggestions` - Fish-like command autosuggestions
+- `zsh-syntax-highlighting` - Fish-like syntax highlighting
+- `zsh-autocomplete` (optional) - Real-time type-ahead completion
 
 ### Version Management with mise
 
