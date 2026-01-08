@@ -23,6 +23,8 @@ dotfiles/
 ├── .zprofile                   # Login shell configuration
 ├── .zshrc                      # Interactive shell configuration
 ├── .gitconfig                  # Git configuration
+├── .vscode/
+│   └── settings.json           # VS Code / Cursor user settings
 └── .config/                    # Application configurations
     ├── zsh/                    # Modular Zsh configurations
     │   ├── core.zsh            # History, options, basic settings
@@ -212,6 +214,9 @@ fisher update
 - **Neovim**: Modern Vim-based editor with Lua configuration
 - **Default Editor**: `nvim` set as default `$EDITOR` and `$VISUAL`
 - **Pager**: `less` configured for better terminal output
+- **VS Code / Cursor**: `install.sh` will symlink `.vscode/settings.json` to the app user settings on macOS when detected:
+  - `~/Library/Application Support/Code/User/settings.json`
+  - `~/Library/Application Support/Cursor/User/settings.json`
 
 ### Prompt Configuration
 
