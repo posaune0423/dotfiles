@@ -17,18 +17,20 @@ fi
 # =============================================================================
 setup_colors() {
   if [ -t 1 ] && [ -n "${TERM:-}" ] && [ "$TERM" != "dumb" ]; then
-    BOLD="\033[1m"
-    DIM="\033[2m"
-    RESET="\033[0m"
-    RED="\033[31m"
-    GREEN="\033[32m"
-    YELLOW="\033[33m"
-    BLUE="\033[34m"
-    MAGENTA="\033[35m"
-    CYAN="\033[36m"
-    WHITE="\033[37m"
-    BG_GREEN="\033[42m"
-    BG_BLUE="\033[44m"
+    # Use printf to create actual escape character (POSIX-compliant)
+    ESC=$(printf '\033')
+    BOLD="${ESC}[1m"
+    DIM="${ESC}[2m"
+    RESET="${ESC}[0m"
+    RED="${ESC}[31m"
+    GREEN="${ESC}[32m"
+    YELLOW="${ESC}[33m"
+    BLUE="${ESC}[34m"
+    MAGENTA="${ESC}[35m"
+    CYAN="${ESC}[36m"
+    WHITE="${ESC}[37m"
+    BG_GREEN="${ESC}[42m"
+    BG_BLUE="${ESC}[44m"
   else
     BOLD="" DIM="" RESET=""
     RED="" GREEN="" YELLOW="" BLUE="" MAGENTA="" CYAN="" WHITE=""
