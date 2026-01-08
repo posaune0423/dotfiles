@@ -43,7 +43,7 @@
   "html.format.enable": true,
   "terminal.external.osxExec": "WezTerm",
   "terminal.integrated.fontFamily": "SauceCodePro Nerd Font",
-  "terminal.integrated.fontSize": 16,
+  "terminal.integrated.fontSize": 15,
   "terminal.integrated.fontWeight": "200",
   "workbench.preferredDarkColorTheme": "Default Light+",
   "workbench.iconTheme": "material-icon-theme",
