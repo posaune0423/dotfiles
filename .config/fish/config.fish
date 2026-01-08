@@ -39,17 +39,15 @@ if status is-interactive
     # Syntax Highlighting Colors
     #---------------------------
     # Fish has built-in syntax highlighting, configure colors here
-    set -g fish_color_command green            # Valid commands
-    set -g fish_color_error red                # Invalid commands
-    set -g fish_color_param cyan               # Command parameters
-    set -g fish_color_quote yellow             # Quoted strings
-    set -g fish_color_redirection magenta      # Redirections (>, <, |)
-    set -g fish_color_end green                # End of command (;, &)
-    set -g fish_color_comment brblack          # Comments
-    set -g fish_color_autosuggestion brblack   # Autosuggestions
-    set -g fish_color_operator cyan            # Operators ($, *, etc.)
-    set -g fish_color_escape cyan              # Escape sequences (\n, etc.)
-    set -g fish_color_valid_path --underline   # Valid file paths
-    set -g fish_bell none # Disable terminal bell
-    set -g fish_autosuggestion_accept_do_bell no # Disable autosuggestion bell
+    set -g fish_color_command green # Valid commands
+    set -g fish_color_error red # Invalid commands
+    set -g fish_color_param cyan # Command parameters
+    set -g fish_color_quote yellow # Quoted strings
+    set -g fish_color_redirection magenta # Redirections (>, <, |)
+    set -g fish_color_end green # End of command (;, &)
+    set -g fish_color_comment brblack # Comments
+    set -g fish_color_autosuggestion brblack # Autosuggestions
+    set -g fish_color_operator cyan # Operators ($, *, etc.)
+    set -g fish_color_escape cyan # Escape sequences (\n, etc.)
+    set -g fish_color_valid_path --underline # Valid file paths
 end
