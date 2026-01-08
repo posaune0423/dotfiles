@@ -51,4 +51,5 @@ if status is-interactive
     set -g fish_color_escape cyan              # Escape sequences (\n, etc.)
     set -g fish_color_valid_path --underline   # Valid file paths
     set -g fish_bell none # Disable terminal bell
+    set -g fish_autosuggestion_accept_do_bell no # Disable autosuggestion bell
 end
