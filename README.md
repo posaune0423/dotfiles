@@ -17,7 +17,7 @@ Modern, modular dotfiles configuration inspired by [Takuya Matsuyama](https://gi
 
 ```
 dotfiles/
-├── setup_dotfiles.sh          # Automated setup script
+├── install.sh                 # Safe installer/updater (curl | sh)
 ├── .zshenv                     # Environment variables & PATH setup
 ├── .zprofile                   # Login shell configuration
 ├── .zshrc                      # Interactive shell configuration
@@ -44,21 +44,35 @@ dotfiles/
 
 ### Installation
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/yourusername/dotfiles.git ~/dotfiles
-   cd ~/dotfiles
-   ```
+#### One-liner (recommended)
 
-2. **Run the setup script**
-   ```bash
-   ./setup_dotfiles.sh
-   ```
+This will clone/pull into `~/.dotfiles`, **backup existing files**, then symlink configs into your home directory.
 
-3. **Restart your terminal** or source the configuration
-   ```bash
-   source ~/.zshrc
-   ```
+```bash
+curl -fsSL https://raw.githubusercontent.com/posaune0423/dotfiles/main/install.sh | sh
+```
+
+#### Dry-run first (safe preview)
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/posaune0423/dotfiles/main/install.sh | sh -s -- --dry-run
+```
+
+#### Interactive yes/no prompts (default on update)
+
+When the repo already exists, the installer will ask before pulling and before replacing existing dotfiles.
+
+If you want to skip prompts (CI / scripts), use:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/posaune0423/dotfiles/main/install.sh | sh -s -- --yes
+```
+
+#### Local usage (when already cloned)
+
+```bash
+sh ./install.sh --no-update
+```
 
 ## 🛠️ Configuration Details
 

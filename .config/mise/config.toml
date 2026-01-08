@@ -1,15 +1,82 @@
 [settings]
 experimental = true
 disable_backends = ["vfox"]
+# Automatically install tools when they're missing
+auto_install = true
 
 [settings.pipx]
 uvx = true
 
 [tools]
-# [CLI Tools]
-aws = "latest"
-terraform = "latest"
-github-cli = "latest"
+# [CLI Tools - File Operations]
+bat = "latest"              # cat with syntax highlighting
+eza = "latest"              # modern ls replacement
+fd = "latest"               # fast find alternative
+ripgrep = "latest"          # fast grep alternative
+yazi = "latest"             # terminal file manager
+zoxide = "latest"           # smart cd replacement
+
+# [CLI Tools - Text Processing]
+jq = "latest"               # JSON processor
+sd = "latest"               # sed replacement
+choose = "latest"           # cut replacement
+
+# [CLI Tools - Git Tools]
+github-cli = "latest"       # GitHub CLI
+hub = "latest"             # GitHub wrapper
+delta = "latest"            # git diff viewer
+difftastic = "latest"       # structural diff tool
+lazygit = "latest"         # Git TUI
+ghq = "latest"             # Git repository manager
+
+# [CLI Tools - System Monitoring]
+gping = "latest"           # ping with graph
+bottom = "latest"          # htop replacement
+"aqua:dalance/procs" = "latest"  # ps replacement
+dust = "latest"            # du replacement
+tokei = "latest"           # code statistics
+
+# [CLI Tools - Search & Navigation]
+fzf = "latest"             # fuzzy finder
+peco = "latest"            # interactive filtering
+"aqua:cantino/mcfly" = "latest"  # command history search
+
+# [CLI Tools - Documentation]
+"aqua:dbrgn/tealdeer" = "latest"  # tldr Rust implementation (use 'tldr' command)
+
+# [CLI Tools - Development]
+neovim = "latest"          # modern vim
+tmux = "latest"            # terminal multiplexer
+zellij = "latest"          # tmux alternative
+just = "latest"            # command runner
+watchexec = "latest"      # file watcher
+dotenvx = "latest"         # .env file runner
+
+# [CLI Tools - Cloud & Infrastructure]
+aws = "latest"             # AWS CLI
+terraform = "latest"       # Infrastructure as Code
+act = "latest"             # GitHub Actions locally
+railway = "latest"         # Railway CLI
+supabase = "latest"        # Supabase CLI
+docker-cli = "latest"      # Docker CLI
+
+# [CLI Tools - Utilities]
+coreutils = "latest"        # GNU core utilities
+cmake = "latest"           # build system
+ffmpeg = "latest"          # media processing
+resvg = "latest"           # SVG rendering
+spark = "latest"          # sparklines
+
+# [CLI Tools - Code Quality]
+biome = "latest"           # formatter & linter
+buf = "latest"             # Protocol Buffers tool
+
+# [CLI Tools - Other]
+1password = "latest"       # 1Password CLI
+chromedriver = "latest"    # ChromeDriver
+codex = "latest"           # Codex CLI
+hyperfine = "latest"       # benchmarking tool
+atuin = "latest"          # shell history manager
 
 # [Node.js]
 node = "latest"
