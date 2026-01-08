@@ -422,8 +422,9 @@ print_section "${ICON_FOLDER} Creating Symlinks"
 # Ensure XDG config home exists
 run mkdir -p "$HOME/.config"
 
-# Count total items (4 root + 9 config = 13)
-set_total_items 13
+# Count total items
+# 4 root + 9 XDG configs + up to 4 editor settings = 17
+set_total_items 17
 
 # Root dotfiles
 link_item "$DOTFILES_DIR/.zshenv"    "$HOME/.zshenv"    "$TS"
@@ -441,6 +442,43 @@ link_item "$DOTFILES_DIR/.config/karabiner"     "$HOME/.config/karabiner"     "$
 link_item "$DOTFILES_DIR/.config/ghostty"       "$HOME/.config/ghostty"       "$TS"
 link_item "$DOTFILES_DIR/.config/starship.toml" "$HOME/.config/starship.toml" "$TS"
 link_item "$DOTFILES_DIR/.config/fish"          "$HOME/.config/fish"          "$TS"
+
+# Editor settings (macOS)
+if [ "$(uname -s 2>/dev/null || echo unknown)" = "Darwin" ]; then
+  VSCODE_USER_DIR="$HOME/Library/Application Support/Code/User"
+  VSCODE_INSIDERS_USER_DIR="$HOME/Library/Application Support/Code - Insiders/User"
+  CURSOR_USER_DIR="$HOME/Library/Application Support/Cursor/User"
+  VSCODIUM_USER_DIR="$HOME/Library/Application Support/VSCodium/User"
+
+  SETTINGS_SRC="$DOTFILES_DIR/.vscode/settings.json"
+
+  # Only apply when the app's data dir already exists (avoid creating dirs for apps not installed)
+  if [ -d "$VSCODE_USER_DIR" ]; then
+    link_item "$SETTINGS_SRC" "$VSCODE_USER_DIR/settings.json" "$TS"
+  else
+    skip "VS Code not detected (${DIM}skipping settings.json${RESET})"
+  fi
+
+  if [ -d "$VSCODE_INSIDERS_USER_DIR" ]; then
+    link_item "$SETTINGS_SRC" "$VSCODE_INSIDERS_USER_DIR/settings.json" "$TS"
+  else
+    skip "VS Code Insiders not detected (${DIM}skipping settings.json${RESET})"
+  fi
+
+  if [ -d "$CURSOR_USER_DIR" ]; then
+    link_item "$SETTINGS_SRC" "$CURSOR_USER_DIR/settings.json" "$TS"
+  else
+    skip "Cursor not detected (${DIM}skipping settings.json${RESET})"
+  fi
+
+  if [ -d "$VSCODIUM_USER_DIR" ]; then
+    link_item "$SETTINGS_SRC" "$VSCODIUM_USER_DIR/settings.json" "$TS"
+  else
+    skip "VSCodium not detected (${DIM}skipping settings.json${RESET})"
+  fi
+else
+  skip "Non-macOS detected (${DIM}skipping editor settings${RESET})"
+fi
 
 # =============================================================================
 # Summary
