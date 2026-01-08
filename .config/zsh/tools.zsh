@@ -1,9 +1,18 @@
 #---------------------------
-# Development Tools Library Loading
+# Development Tools Initialization
 #---------------------------
 
-# z (directory jumping)
-[[ -f /opt/homebrew/etc/profile.d/z.sh ]] && . /opt/homebrew/etc/profile.d/z.sh
+# zoxide (smarter cd replacement, installed via Nix)
+if command -v zoxide &>/dev/null; then
+  eval "$(zoxide init zsh)"
+fi
 
-# Note: Version management (Node/Python/Ruby/Go/Java/Bun/Deno) is now handled by mise
-# See ~/.zshrc for mise activation
+# atuin (shell history manager, installed via Nix)
+if command -v atuin &>/dev/null; then
+  eval "$(atuin init zsh --disable-up-arrow)"
+fi
+
+# mcfly (history search, installed via Nix)
+if command -v mcfly &>/dev/null; then
+  eval "$(mcfly init zsh)"
+fi

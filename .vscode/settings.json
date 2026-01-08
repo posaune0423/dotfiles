@@ -180,5 +180,8 @@
     "editor.defaultFormatter": "tamasfe.even-better-toml"
   },
   "editor.fontSize": 11,
-  "workbench.colorTheme": "Ayu Mirage Bordered"
+  "workbench.colorTheme": "Ayu Mirage Bordered",
+  "[lua]": {
+    "editor.defaultFormatter": "JohnnyMorganz.stylua"
+  }
 }

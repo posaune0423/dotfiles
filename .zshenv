@@ -21,19 +21,16 @@ path_append() {
   esac
 }
 
-# Minimal base PATH (Homebrew first)
-path_prepend "/opt/homebrew/bin"
-path_prepend "/opt/homebrew/sbin"
+# --------------------------
+# Nix paths (managed by nix-darwin)
+# --------------------------
+# nix-darwin places binaries here; keep it at the front.
+path_prepend "/run/current-system/sw/bin"
+path_prepend "$HOME/.nix-profile/bin"
+
+# System fallback
 path_prepend "/usr/local/bin"
 path_prepend "$HOME/bin"
-
-# --------------------------
-# mise (version manager) shims
-# --------------------------
-# Ensure mise shims are on PATH for all shells (interactive/non-interactive).
-# This is intentionally lightweight and avoids running `eval` here.
-path_prepend "${MISE_DATA_DIR:-$HOME/.local/share/mise}/shims"
-path_prepend "${MISE_DATA_DIR:-$HOME/.local/share/mise}/bin"
 
 # --------------------------
 # Language & locale
@@ -66,15 +63,8 @@ export LSCOLORS="${LSCOLORS:-gxfxcxdxbxegedabagacad}"
 # --------------------------
 # Tool roots (consumed by ~/.zshrc modules)
 # --------------------------
-# Note: Version management is now handled by mise (see ~/.zshrc)
-# Only non-version-manager tool roots are kept here
-
 export GOPATH="${GOPATH:-$HOME/go}"
 export PNPM_HOME="${PNPM_HOME:-$HOME/Library/pnpm}"
 
 # Convenience PATH entries that are cheap and widely useful
 path_append "$PNPM_HOME"
-
-# HOMEBREW_FORBIDDEN_FORMULAEを設定して、不要なパッケージをインストールしないようにする
-# Version-managed tools are added to prevent accidental Homebrew installation
-export HOMEBREW_FORBIDDEN_FORMULAE="node python python3 pip npm pnpm yarn claude ruby go openjdk bun deno"
