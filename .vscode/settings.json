@@ -1,5 +1,6 @@
 {
   "breadcrumbs.enabled": true,
+  "terminal.integrated.defaultProfile.osx": "fish",
   "workbench.sideBar.location": "left",
   "workbench.startupEditor": "newUntitledFile",
   "workbench.editor.enablePreview": false,
@@ -157,8 +158,6 @@
   "terminal.integrated.env.osx": {
     "Q_NEW_SESSION": "1"
   },
-  "update.releaseTrack": "dev",
-  "update.mode": "silentlyApplyOnQuit",
   "cursor.composer.shouldChimeAfterChatFinishes": true,
   "editor.accessibilitySupport": "on",
   "git.confirmSync": false,
