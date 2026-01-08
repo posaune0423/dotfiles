@@ -50,4 +50,5 @@ if status is-interactive
     set -g fish_color_operator cyan            # Operators ($, *, etc.)
     set -g fish_color_escape cyan              # Escape sequences (\n, etc.)
     set -g fish_color_valid_path --underline   # Valid file paths
+    set -g fish_bell none # Disable terminal bell
 end
