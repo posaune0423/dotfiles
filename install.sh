@@ -422,8 +422,8 @@ print_section "${ICON_FOLDER} Creating Symlinks"
 # Ensure XDG config home exists
 run mkdir -p "$HOME/.config"
 
-# Count total items (4 root + 8 config = 12)
-set_total_items 12
+# Count total items (4 root + 9 config = 13)
+set_total_items 13
 
 # Root dotfiles
 link_item "$DOTFILES_DIR/.zshenv"    "$HOME/.zshenv"    "$TS"
@@ -440,6 +440,7 @@ link_item "$DOTFILES_DIR/.config/mise"          "$HOME/.config/mise"          "$
 link_item "$DOTFILES_DIR/.config/karabiner"     "$HOME/.config/karabiner"     "$TS"
 link_item "$DOTFILES_DIR/.config/ghostty"       "$HOME/.config/ghostty"       "$TS"
 link_item "$DOTFILES_DIR/.config/starship.toml" "$HOME/.config/starship.toml" "$TS"
+link_item "$DOTFILES_DIR/.config/fish"          "$HOME/.config/fish"          "$TS"
 
 # =============================================================================
 # Summary
