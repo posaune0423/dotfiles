@@ -54,5 +54,6 @@ if status is-interactive
     set -g fish_color_autosuggestion brblack # Autosuggestions
     set -g fish_color_operator cyan # Operators ($, *, etc.)
     set -g fish_color_escape cyan # Escape sequences (\n, etc.)
-    set -g fish_color_valid_path --underline # Valid file paths
+    # Disable valid_path check to prevent input lag during fast key repeat
+    # set -g fish_color_valid_path --underline # Valid file paths
 end
