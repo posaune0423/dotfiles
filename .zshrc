@@ -6,18 +6,18 @@
 # NOTE: Plugins (autosuggestions, syntax-highlighting) are managed by sheldon
 
 typeset -a _zsh_configs=(
-  core                        # Basic settings (History, Options)
+  core # Basic settings (History, Options)
 
   # --- Completion ---
-  completion                  # Standard zsh completion (Use this if autocomplete is disabled)
+  completion # Standard zsh completion (Use this if autocomplete is disabled)
 
   # --- Features ---
-  aliases                     # Aliases
-  functions                   # Custom functions
-  tools                       # Dev tools
+  aliases   # Aliases
+  functions # Custom functions
+  tools     # Dev tools
 
   # --- UI ---
-  prompt                      # Starship prompt (Must be initialized last)
+  prompt # Starship prompt (Must be initialized last)
 )
 
 # Source files in order
@@ -32,6 +32,6 @@ unset _zsh_configs _cfg
 # Sheldon Plugin Manager
 #---------------------------
 # Load zsh plugins via sheldon (zsh-autosuggestions, zsh-syntax-highlighting, etc.)
-if command -v sheldon &>/dev/null; then
+if command -v sheldon &> /dev/null; then
   eval "$(sheldon source)"
 fi
