@@ -38,3 +38,12 @@ if status is-interactive
         mise activate fish | source
     end
 end
+
+#---------------------------
+# fzf (Fuzzy Finder)
+#---------------------------
+if status is-interactive
+    if type -q fzf
+        fzf --fish | source
+    end
+end
