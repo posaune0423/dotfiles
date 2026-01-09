@@ -10,7 +10,7 @@ Fish の設定は `~/.config/fish/` に集約しています（XDG 準拠）。
 
 ## Layout
 
-```
+```text
 .config/fish/
 ├── config.fish
 ├── conf.d/
