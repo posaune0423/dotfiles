@@ -7,7 +7,12 @@
       "Bash(git -C /Users/asumayamada/Private/posaune0423/dotfiles add CLAUDE.md)",
       "Bash(git -C /Users/asumayamada/Private/posaune0423/dotfiles commit -m \"$\\(cat <<''EOF''\ndocs: add CLAUDE.md for Claude Code guidance\n\nProvides architecture overview, installation commands, and key conventions\nfor AI-assisted development in this dotfiles repository.\n\n🤖 Generated with [Claude Code]\\(https://claude.ai/code\\)\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
       "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(git -C /Users/asumayamada/.dotfiles status)",
+      "Bash(git -C /Users/asumayamada/.dotfiles diff)",
+      "Bash(git -C /Users/asumayamada/.dotfiles log --oneline -5)",
+      "Bash(git -C /Users/asumayamada/.dotfiles add .config/zsh/aliases.zsh .config/fish/functions/gho.fish)",
+      "Bash(git -C /Users/asumayamada/.dotfiles commit -m \"$\\(cat <<''EOF''\nfeat\\(aliases\\): add gho command to open GitHub PR or repo page\n\nOpens the PR page if one exists for the current branch, otherwise\nfalls back to opening the repository page. Added for both zsh and fish.\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")"
     ]
   }
 }

@@ -42,9 +42,9 @@ vim.opt.pumblend = 0 -- ポップアップメニューの不透明度
 vim.opt.list = true
 vim.opt.listchars = {
   tab = "» ", -- Tab characters
-  trail = "·", -- Trailing spaces
-  lead = "·", -- Leading spaces (indentation)
-  space = "·", -- Regular spaces (optional, for boundary whitespace)
+  trail = "•", -- Trailing spaces
+  lead = "•", -- Leading spaces (indentation)
+  space = "•", -- Regular spaces (optional, for boundary whitespace)
 }
 
 -- Undercurl
