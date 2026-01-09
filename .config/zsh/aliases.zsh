@@ -25,8 +25,10 @@ alias g='git'
 alias pn='pnpm'
 alias pip=pip3
 
-# Node.js
-alias nodets="node --experimental-strip-types --experimental-transform-types --experimental-detect-module --no-warnings=ExperimentalWarning"
+# GitHub: open PR page if exists, otherwise repo page
+gho() {
+  gh pr view --web 2>/dev/null || gh browse
+}
 
 # Cursor内でのみqコマンドを無効化
 if [[ "$TERM_PROGRAM" == "vscode" ]] || [[ -n "$CURSOR_TRACE_ID" ]]; then
