@@ -23,4 +23,3 @@ function update_completions --description "Update fish completions (generated + 
 
     echo "Updated completions in: $outdir"
 end
-
