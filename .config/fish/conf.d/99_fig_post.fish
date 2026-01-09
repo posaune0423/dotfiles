@@ -17,30 +17,49 @@ function __kiro_cli_validate_output --description "Validate kiro-cli output file
     # Read file and validate each line
     # Use cat and process substitution for proper line-by-line reading
     for line in (cat $file_path)
-        # Skip empty lines and comments
+        # Remove leading/trailing whitespace first
+        set line (string trim "$line")
+
+        # Skip empty lines and comments (check after trimming)
         if test -z "$line"; or string match -q "#*" "$line"
             continue
         end
 
-        # Remove leading/trailing whitespace
-        set line (string trim "$line")
-
         # Check for dangerous patterns that could execute arbitrary code:
-        # - eval, exec commands
+        # - eval, exec commands (as standalone commands, not part of words)
         # - Dynamic source/load with variables
-        # - Command substitution with variables: $(...), `...`
-        # - Redirections that could be exploited
-        if string match -qr '(eval|exec|source\s+.*\$|\.\s+.*\$|\$\(|`|command\s+.*\$)' "$line"
+        # - Command substitution where variable is used as command: ($VAR)
+        # - Dangerous commands with variables: (eval $VAR), (source $VAR), etc.
+        # - Backtick command substitution
+        # Match eval/exec as commands: start of line or after whitespace/semicolon/pipe/ampersand
+        if string match -qr '(^|\s|;|\||&)(eval|exec)(\s|$)' "$line"
             return 1
         end
 
-        # Check for command substitution with variables (more specific)
-        if string match -qr '\([^)]*\$\w' "$line"
+        # Check for dynamic source/load with variables (dangerous)
+        if string match -qr '(source|\.)\s+.*\$' "$line"
             return 1
         end
 
-        # Check for backtick command substitution
+        # Check for command substitution where variable is used directly as command: ($VAR)
+        # This catches patterns like ($CMD) but not (string join $argv) where $argv is an argument
+        if string match -qr '\(\$\w+' "$line"
+            return 1
+        end
+
+        # Check for dangerous commands in command substitution with variables
+        # Patterns like (eval $VAR), (source $VAR), (. $VAR), (exec $VAR)
+        if string match -qr '\((eval|exec|source|\.)\s+\$' "$line"
+            return 1
+        end
+
+        # Check for backtick command substitution (bash-style, not fish)
         if string match -qr '`[^`]*`' "$line"
+            return 1
+        end
+
+        # Check for bash-style command substitution $(...)
+        if string match -qr '\$\([^)]*\)' "$line"
             return 1
         end
     end
