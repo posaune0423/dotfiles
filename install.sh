@@ -8,7 +8,7 @@
 set -eu
 
 # Best-effort pipefail (not POSIX, but harmless when supported)
-if (set -o pipefail) 2>/dev/null; then
+if (set -o pipefail) 2> /dev/null; then
   set -o pipefail
 fi
 
@@ -80,7 +80,10 @@ warn() { printf "${YELLOW}${ICON_WARN}${RESET}  ${YELLOW}%s${RESET}\n" "$*"; }
 
 err() { printf "${RED}${ICON_CROSS}${RESET}  ${RED}ERROR: %s${RESET}\n" "$*" >&2; }
 
-die() { err "$*"; exit 1; }
+die() {
+  err "$*"
+  exit 1
+}
 
 skip() { printf "${DIM}${ICON_SKIP}${RESET}  ${DIM}%s${RESET}\n" "$*"; }
 
@@ -96,7 +99,10 @@ dry_run_msg() { printf "${MAGENTA}[dry-run]${RESET} %s\n" "$*"; }
 TOTAL_ITEMS=0
 CURRENT_ITEM=0
 
-set_total_items() { TOTAL_ITEMS=$1; CURRENT_ITEM=0; }
+set_total_items() {
+  TOTAL_ITEMS=$1
+  CURRENT_ITEM=0
+}
 
 progress() {
   CURRENT_ITEM=$((CURRENT_ITEM + 1))
@@ -108,27 +114,27 @@ progress() {
 # Utilities
 # =============================================================================
 need_cmd() {
-  command -v "$1" >/dev/null 2>&1 || die "Required command not found: $1"
+  command -v "$1" > /dev/null 2>&1 || die "Required command not found: $1"
 }
 
 realpath_compat() {
   _p="$1"
-  if command -v python3 >/dev/null 2>&1; then
-    python3 - "$_p" <<'PY'
+  if command -v python3 > /dev/null 2>&1; then
+    python3 - "$_p" << 'PY'
 import os, sys
 print(os.path.realpath(sys.argv[1]))
 PY
     return 0
   fi
-  if command -v python >/dev/null 2>&1; then
-    python - "$_p" <<'PY'
+  if command -v python > /dev/null 2>&1; then
+    python - "$_p" << 'PY'
 import os, sys
 print(os.path.realpath(sys.argv[1]))
 PY
     return 0
   fi
-  if command -v perl >/dev/null 2>&1; then
-    perl -MCwd -e 'print Cwd::realpath($ARGV[0])' "$_p" 2>/dev/null || printf "%s" "$_p"
+  if command -v perl > /dev/null 2>&1; then
+    perl -MCwd -e 'print Cwd::realpath($ARGV[0])' "$_p" 2> /dev/null || printf "%s" "$_p"
     printf "\n"
     return 0
   fi
@@ -164,7 +170,7 @@ BACKUP_ROOT="${BACKUP_ROOT:-$HOME/.dotfiles-backup}"
 has_tty() {
   # Check if /dev/tty is available for interactive prompts
   # Use subshell to suppress any error messages
-  ( [ -r /dev/tty ] && [ -c /dev/tty ] && printf "" >/dev/tty ) 2>/dev/null
+  ([ -r /dev/tty ] && [ -c /dev/tty ] && printf "" > /dev/tty) 2> /dev/null
 }
 
 confirm() {
@@ -175,10 +181,10 @@ confirm() {
   if ! has_tty; then
     die "No TTY available for interactive prompt. Re-run with --yes (or --force)."
   fi
-  printf "${YELLOW}${ICON_QUESTION}${RESET}  ${BOLD}%s${RESET} ${DIM}[y/N]:${RESET} " "$_q" >/dev/tty
-  IFS= read -r _ans </dev/tty || _ans=""
+  printf "${YELLOW}${ICON_QUESTION}${RESET}  ${BOLD}%s${RESET} ${DIM}[y/N]:${RESET} " "$_q" > /dev/tty
+  IFS= read -r _ans < /dev/tty || _ans=""
   case "$_ans" in
-    y|Y|yes|YES) return 0 ;;
+    y | Y | yes | YES) return 0 ;;
     *) return 1 ;;
   esac
 }
@@ -201,7 +207,7 @@ confirm_update() {
 
     # Show what it currently points to if it's a symlink
     if [ -L "$_file" ]; then
-      _target="$(readlink "$_file" 2>/dev/null || echo "unknown")"
+      _target="$(readlink "$_file" 2> /dev/null || echo "unknown")"
       printf "   ${DIM}Current link target:${RESET} %s\n" "$(short_path "$_target")"
     elif [ -f "$_file" ]; then
       printf "   ${DIM}Type: regular file${RESET}\n"
@@ -210,11 +216,11 @@ confirm_update() {
     fi
 
     printf "${YELLOW}${ICON_QUESTION}${RESET}  ${BOLD}Replace with new symlink?${RESET} ${DIM}[y/N]:${RESET} "
-  } >/dev/tty 2>/dev/null || return 1
+  } > /dev/tty 2> /dev/null || return 1
 
-  IFS= read -r _ans </dev/tty 2>/dev/null || _ans=""
+  IFS= read -r _ans < /dev/tty 2> /dev/null || _ans=""
   case "$_ans" in
-    y|Y|yes|YES) return 0 ;;
+    y | Y | yes | YES) return 0 ;;
     *) return 1 ;;
   esac
 }
@@ -224,7 +230,7 @@ usage() {
   printf "${BOLD}${BLUE}%s${RESET}\n" "║                     Dotfiles Installer                            ║"
   printf "${BOLD}${BLUE}%s${RESET}\n" "╚═══════════════════════════════════════════════════════════════════╝"
   printf "\n"
-  cat <<EOF
+  cat << EOF
 ${BOLD}USAGE:${RESET}
     ${CYAN}curl -fsSL https://raw.githubusercontent.com/posaune0423/dotfiles/main/install.sh | sh${RESET}
     ${CYAN}curl -fsSL ... | sh -s -- --dry-run${RESET}
@@ -280,7 +286,10 @@ while [ $# -gt 0 ]; do
       [ $# -gt 0 ] || die "--branch requires a value"
       BRANCH="$1"
       ;;
-    -h|--help) usage; exit 0 ;;
+    -h | --help)
+      usage
+      exit 0
+      ;;
     *)
       die "Unknown option: $1 (use --help)"
       ;;
@@ -353,7 +362,7 @@ link_item() {
   fi
 
   # Backup existing
-  if [ "$NO_BACKUP" -eq 0 ] && ( [ -e "$_dest" ] || [ -L "$_dest" ] ); then
+  if [ "$NO_BACKUP" -eq 0 ] && ([ -e "$_dest" ] || [ -L "$_dest" ]); then
     _bk="$(backup_path "$_dest" "$_ts")"
     _bk_parent="$(dirname "$_bk")"
     [ -d "$_bk_parent" ] || run mkdir -p "$_bk_parent"
@@ -427,24 +436,24 @@ run mkdir -p "$HOME/.config"
 set_total_items 17
 
 # Root dotfiles
-link_item "$DOTFILES_DIR/.zshenv"    "$HOME/.zshenv"    "$TS"
-link_item "$DOTFILES_DIR/.zshrc"     "$HOME/.zshrc"     "$TS"
-link_item "$DOTFILES_DIR/.zprofile"  "$HOME/.zprofile"  "$TS"
+link_item "$DOTFILES_DIR/.zshenv" "$HOME/.zshenv" "$TS"
+link_item "$DOTFILES_DIR/.zshrc" "$HOME/.zshrc" "$TS"
+link_item "$DOTFILES_DIR/.zprofile" "$HOME/.zprofile" "$TS"
 link_item "$DOTFILES_DIR/.gitconfig" "$HOME/.gitconfig" "$TS"
 
 # XDG configs (link individual apps, not ~/.config as a whole)
-link_item "$DOTFILES_DIR/.config/zsh"           "$HOME/.config/zsh"           "$TS"
-link_item "$DOTFILES_DIR/.config/sheldon"       "$HOME/.config/sheldon"       "$TS"
-link_item "$DOTFILES_DIR/.config/nvim"          "$HOME/.config/nvim"          "$TS"
-link_item "$DOTFILES_DIR/.config/wezterm"       "$HOME/.config/wezterm"       "$TS"
-link_item "$DOTFILES_DIR/.config/mise"          "$HOME/.config/mise"          "$TS"
-link_item "$DOTFILES_DIR/.config/karabiner"     "$HOME/.config/karabiner"     "$TS"
-link_item "$DOTFILES_DIR/.config/ghostty"       "$HOME/.config/ghostty"       "$TS"
+link_item "$DOTFILES_DIR/.config/zsh" "$HOME/.config/zsh" "$TS"
+link_item "$DOTFILES_DIR/.config/sheldon" "$HOME/.config/sheldon" "$TS"
+link_item "$DOTFILES_DIR/.config/nvim" "$HOME/.config/nvim" "$TS"
+link_item "$DOTFILES_DIR/.config/wezterm" "$HOME/.config/wezterm" "$TS"
+link_item "$DOTFILES_DIR/.config/mise" "$HOME/.config/mise" "$TS"
+link_item "$DOTFILES_DIR/.config/karabiner" "$HOME/.config/karabiner" "$TS"
+link_item "$DOTFILES_DIR/.config/ghostty" "$HOME/.config/ghostty" "$TS"
 link_item "$DOTFILES_DIR/.config/starship.toml" "$HOME/.config/starship.toml" "$TS"
-link_item "$DOTFILES_DIR/.config/fish"          "$HOME/.config/fish"          "$TS"
+link_item "$DOTFILES_DIR/.config/fish" "$HOME/.config/fish" "$TS"
 
 # Editor settings (macOS)
-if [ "$(uname -s 2>/dev/null || echo unknown)" = "Darwin" ]; then
+if [ "$(uname -s 2> /dev/null || echo unknown)" = "Darwin" ]; then
   VSCODE_USER_DIR="$HOME/Library/Application Support/Code/User"
   VSCODE_INSIDERS_USER_DIR="$HOME/Library/Application Support/Code - Insiders/User"
   CURSOR_USER_DIR="$HOME/Library/Application Support/Cursor/User"

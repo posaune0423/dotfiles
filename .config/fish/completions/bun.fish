@@ -45,7 +45,7 @@ function __bun_complete_bins_scripts --inherit-variable bun_builtin_cmds_without
     # Do nothing if we already have a builtin subcommand,
     # or any subcommand other than "run".
     if __fish_seen_subcommand_from $bun_builtin_cmds_without_run
-    or not __fish_use_subcommand && not __fish_seen_subcommand_from run
+        or not __fish_use_subcommand && not __fish_seen_subcommand_from run
         return
     end
     # Do we already have a bin or script subcommand?
@@ -74,7 +74,6 @@ function __bun_complete_bins_scripts --inherit-variable bun_builtin_cmds_without
     end
 end
 
-
 # Clear existing completions
 complete -e -c bun
 
@@ -84,50 +83,48 @@ complete -c bun -f -a "(__bun_complete_bins_scripts)"
 # Complete flags if we have no subcommand or a flag-friendly one.
 set -l flag_applies "__fish_use_subcommand; or __fish_seen_subcommand_from $bun_builtin_cmds_accepting_flags"
 complete -c bun \
-    -n $flag_applies --no-files -s 'u' -l 'origin' -r -d 'Server URL. Rewrites import paths'
+    -n $flag_applies --no-files -s u -l origin -r -d 'Server URL. Rewrites import paths'
 complete -c bun \
-    -n $flag_applies --no-files  -s 'p' -l 'port' -r -d 'Port number to start server from'
+    -n $flag_applies --no-files -s p -l port -r -d 'Port number to start server from'
 complete -c bun \
-    -n $flag_applies --no-files  -s 'd' -l 'define' -r -d 'Substitute K:V while parsing, e.g. --define process.env.NODE_ENV:\"development\"'
+    -n $flag_applies --no-files -s d -l define -r -d 'Substitute K:V while parsing, e.g. --define process.env.NODE_ENV:\"development\"'
 complete -c bun \
-    -n $flag_applies --no-files  -s 'e' -l 'external' -r -d 'Exclude module from transpilation (can use * wildcards). ex: -e react'
+    -n $flag_applies --no-files -s e -l external -r -d 'Exclude module from transpilation (can use * wildcards). ex: -e react'
 complete -c bun \
-    -n $flag_applies --no-files -l 'use' -r -d 'Use a framework (ex: next)'
+    -n $flag_applies --no-files -l use -r -d 'Use a framework (ex: next)'
 complete -c bun \
-    -n $flag_applies --no-files -l 'hot' -r -d 'Enable hot reloading in Bun\'s JavaScript runtime'
+    -n $flag_applies --no-files -l hot -r -d 'Enable hot reloading in Bun\'s JavaScript runtime'
 
 # Complete dev and create as first subcommand.
 complete -c bun \
-    -n "__fish_use_subcommand" -a 'dev' -d 'Start dev server'
+    -n __fish_use_subcommand -a dev -d 'Start dev server'
 complete -c bun \
-    -n "__fish_use_subcommand" -a 'create' -f -d 'Create a new project from a template'
+    -n __fish_use_subcommand -a create -f -d 'Create a new project from a template'
 
 # Complete "next" and "react" if we've seen "create".
 complete -c bun \
-    -n "__fish_seen_subcommand_from create" -a 'next' -d 'new Next.js project'
+    -n "__fish_seen_subcommand_from create" -a next -d 'new Next.js project'
 
 complete -c bun \
-    -n "__fish_seen_subcommand_from create" -a 'react' -d 'new React project'
+    -n "__fish_seen_subcommand_from create" -a react -d 'new React project'
 
 # Complete "upgrade" as first subcommand.
 complete -c bun \
-    -n "__fish_use_subcommand" -a 'upgrade' -d 'Upgrade bun to the latest version' -x
+    -n __fish_use_subcommand -a upgrade -d 'Upgrade bun to the latest version' -x
 # Complete "-h/--help" unconditionally.
 complete -c bun \
-    -s "h" -l "help" -d 'See all commands and flags' -x
+    -s h -l help -d 'See all commands and flags' -x
 
 # Complete "-v/--version" if we have no subcommand.
 complete -c bun \
-    -n "not __fish_use_subcommand" -l "version" -s "v" -d 'Bun\'s version' -x
+    -n "not __fish_use_subcommand" -l version -s v -d 'Bun\'s version' -x
 
 # Complete additional subcommands.
 complete -c bun \
-    -n "__fish_use_subcommand" -a 'discord' -d 'Open bun\'s Discord server' -x
-
+    -n __fish_use_subcommand -a discord -d 'Open bun\'s Discord server' -x
 
 complete -c bun \
-    -n "__fish_use_subcommand" -a 'bun' -d 'Generate a new bundle'
-
+    -n __fish_use_subcommand -a bun -d 'Generate a new bundle'
 
 complete -c bun \
     -n "__fish_seen_subcommand_from bun" -F -d 'Bundle this'
@@ -135,19 +132,17 @@ complete -c bun \
 complete -c bun \
     -n "__fish_seen_subcommand_from create; and __fish_seen_subcommand_from react next" -F -d "Create in directory"
 
+complete -c bun \
+    -n __fish_use_subcommand -a init -F -d 'Start an empty Bun project'
 
 complete -c bun \
-    -n "__fish_use_subcommand" -a 'init' -F -d 'Start an empty Bun project'
+    -n __fish_use_subcommand -a install -f -d 'Install packages from package.json'
 
 complete -c bun \
-    -n "__fish_use_subcommand" -a 'install' -f -d 'Install packages from package.json'
+    -n __fish_use_subcommand -a add -F -d 'Add a package to package.json'
 
 complete -c bun \
-    -n "__fish_use_subcommand" -a 'add' -F -d 'Add a package to package.json'
-
-complete -c bun \
-    -n "__fish_use_subcommand" -a 'remove' -F -d 'Remove a package from package.json'
-
+    -n __fish_use_subcommand -a remove -F -d 'Remove a package from package.json'
 
 for i in (seq (count $bun_install_boolean_flags))
     complete -c bun \
@@ -155,35 +150,35 @@ for i in (seq (count $bun_install_boolean_flags))
 end
 
 complete -c bun \
-    -n "__fish_seen_subcommand_from install add remove" -l 'cwd' -d 'Change working directory'
+    -n "__fish_seen_subcommand_from install add remove" -l cwd -d 'Change working directory'
 
 complete -c bun \
-    -n "__fish_seen_subcommand_from install add remove" -l 'cache-dir' -d 'Choose a cache directory (default: $HOME/.bun/install/cache)'
+    -n "__fish_seen_subcommand_from install add remove" -l cache-dir -d 'Choose a cache directory (default: $HOME/.bun/install/cache)'
 
 complete -c bun \
-    -n "__fish_seen_subcommand_from add" -d 'Popular' -a '(__fish__get_bun_packages)'
+    -n "__fish_seen_subcommand_from add" -d Popular -a '(__fish__get_bun_packages)'
 
 complete -c bun \
-    -n "__fish_seen_subcommand_from add" -d 'History' -a '(__history_completions)'
+    -n "__fish_seen_subcommand_from add" -d History -a '(__history_completions)'
 
 complete -c bun \
     -n "__fish_seen_subcommand_from pm; and not __fish_seen_subcommand_from (__fish__get_bun_bins) (__fish__get_bun_scripts) cache;" -a 'bin ls cache hash hash-print hash-string' -f
 
 complete -c bun \
-    -n "__fish_seen_subcommand_from pm; and __fish_seen_subcommand_from cache; and not __fish_seen_subcommand_from (__fish__get_bun_bins) (__fish__get_bun_scripts);" -a 'rm' -f
+    -n "__fish_seen_subcommand_from pm; and __fish_seen_subcommand_from cache; and not __fish_seen_subcommand_from (__fish__get_bun_bins) (__fish__get_bun_scripts);" -a rm -f
 
 # Add built-in subcommands with descriptions.
-complete -c bun -n "__fish_use_subcommand" -a "create" -f -d "Create a new project from a template"
-complete -c bun -n "__fish_use_subcommand" -a "build bun" --require-parameter -F -d "Transpile and bundle one or more files"
-complete -c bun -n "__fish_use_subcommand" -a "upgrade" -d "Upgrade Bun"
-complete -c bun -n "__fish_use_subcommand" -a "run" -d "Run a script or package binary"
-complete -c bun -n "__fish_use_subcommand" -a "install" -d "Install dependencies from package.json" -f
-complete -c bun -n "__fish_use_subcommand" -a "remove" -d "Remove a dependency from package.json" -f
-complete -c bun -n "__fish_use_subcommand" -a "add" -d "Add a dependency to package.json" -f
-complete -c bun -n "__fish_use_subcommand" -a "init" -d "Initialize a Bun project in this directory" -f
-complete -c bun -n "__fish_use_subcommand" -a "link" -d "Register or link a local npm package" -f
-complete -c bun -n "__fish_use_subcommand" -a "unlink" -d "Unregister a local npm package" -f
-complete -c bun -n "__fish_use_subcommand" -a "pm" -d "Additional package management utilities" -f
-complete -c bun -n "__fish_use_subcommand" -a "x" -d "Execute a package binary, installing if needed" -f
-complete -c bun -n "__fish_use_subcommand" -a "outdated" -d "Display the latest versions of outdated dependencies" -f
-complete -c bun -n "__fish_use_subcommand" -a "publish" -d "Publish your package from local to npm" -f
+complete -c bun -n __fish_use_subcommand -a create -f -d "Create a new project from a template"
+complete -c bun -n __fish_use_subcommand -a "build bun" --require-parameter -F -d "Transpile and bundle one or more files"
+complete -c bun -n __fish_use_subcommand -a upgrade -d "Upgrade Bun"
+complete -c bun -n __fish_use_subcommand -a run -d "Run a script or package binary"
+complete -c bun -n __fish_use_subcommand -a install -d "Install dependencies from package.json" -f
+complete -c bun -n __fish_use_subcommand -a remove -d "Remove a dependency from package.json" -f
+complete -c bun -n __fish_use_subcommand -a add -d "Add a dependency to package.json" -f
+complete -c bun -n __fish_use_subcommand -a init -d "Initialize a Bun project in this directory" -f
+complete -c bun -n __fish_use_subcommand -a link -d "Register or link a local npm package" -f
+complete -c bun -n __fish_use_subcommand -a unlink -d "Unregister a local npm package" -f
+complete -c bun -n __fish_use_subcommand -a pm -d "Additional package management utilities" -f
+complete -c bun -n __fish_use_subcommand -a x -d "Execute a package binary, installing if needed" -f
+complete -c bun -n __fish_use_subcommand -a outdated -d "Display the latest versions of outdated dependencies" -f
+complete -c bun -n __fish_use_subcommand -a publish -d "Publish your package from local to npm" -f
