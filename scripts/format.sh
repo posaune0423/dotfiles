@@ -12,18 +12,18 @@ set -eu
 # =============================================================================
 # Configuration
 # =============================================================================
-SHFMT_OPTS="-i 2 -ci -sr"  # 2-space indent, case indent, redirect after
+SHFMT_OPTS="-i 2 -ci -sr" # 2-space indent, case indent, redirect after
 CHECK_MODE=0
 
 # Parse arguments
 for arg in "$@"; do
   case "$arg" in
-    --check) CHECK_MODE=1 ;;
-    -h|--help)
-      echo "Usage: $0 [--check]"
-      echo "  --check   Check formatting without modifying files"
-      exit 0
-      ;;
+  --check) CHECK_MODE=1 ;;
+  -h | --help)
+    echo "Usage: $0 [--check]"
+    echo "  --check   Check formatting without modifying files"
+    exit 0
+    ;;
   esac
 done
 
@@ -41,11 +41,11 @@ else
   RED='' GREEN='' YELLOW='' CYAN='' DIM='' RESET=''
 fi
 
-info()    { printf "${CYAN}[info]${RESET} %s\n" "$*"; }
+info() { printf "${CYAN}[info]${RESET} %s\n" "$*"; }
 success() { printf "${GREEN}[ok]${RESET}   %s\n" "$*"; }
-warn()    { printf "${YELLOW}[warn]${RESET} %s\n" "$*"; }
-error()   { printf "${RED}[err]${RESET}  %s\n" "$*" >&2; }
-skip()    { printf "${DIM}[skip]${RESET} %s\n" "$*"; }
+warn() { printf "${YELLOW}[warn]${RESET} %s\n" "$*"; }
+error() { printf "${RED}[err]${RESET}  %s\n" "$*" >&2; }
+skip() { printf "${DIM}[skip]${RESET} %s\n" "$*"; }
 
 # =============================================================================
 # Dependency Check
@@ -117,7 +117,7 @@ if [ "$HAS_FISH_INDENT" -eq 1 ] && [ -s "$FISH_FILE_LIST" ]; then
     FISH_COUNT=$((FISH_COUNT + 1))
     if [ "$CHECK_MODE" -eq 1 ]; then
       # Check mode: compare formatted output with original
-      if ! fish_indent < "$f" | diff -q - "$f" >/dev/null 2>&1; then
+      if ! fish_indent <"$f" | diff -q - "$f" >/dev/null 2>&1; then
         warn "Would reformat: $f"
         FISH_CHANGED=$((FISH_CHANGED + 1))
       else

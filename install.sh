@@ -432,8 +432,8 @@ print_section "${ICON_FOLDER} Creating Symlinks"
 run mkdir -p "$HOME/.config"
 
 # Count total items
-# 4 root + 9 XDG configs + up to 4 editor settings = 17
-set_total_items 17
+# 4 root + 9 XDG configs + up to 8 editor settings (4 apps × 2 files) = 21
+set_total_items 21
 
 # Root dotfiles
 link_item "$DOTFILES_DIR/.zshenv" "$HOME/.zshenv" "$TS"
@@ -460,30 +460,35 @@ if [ "$(uname -s 2> /dev/null || echo unknown)" = "Darwin" ]; then
   VSCODIUM_USER_DIR="$HOME/Library/Application Support/VSCodium/User"
 
   SETTINGS_SRC="$DOTFILES_DIR/.vscode/settings.json"
+  KEYBINDINGS_SRC="$DOTFILES_DIR/.vscode/keybindings.json"
 
   # Only apply when the app's data dir already exists (avoid creating dirs for apps not installed)
   if [ -d "$VSCODE_USER_DIR" ]; then
     link_item "$SETTINGS_SRC" "$VSCODE_USER_DIR/settings.json" "$TS"
+    link_item "$KEYBINDINGS_SRC" "$VSCODE_USER_DIR/keybindings.json" "$TS"
   else
-    skip "VS Code not detected (${DIM}skipping settings.json${RESET})"
+    skip "VS Code not detected (${DIM}skipping settings.json, keybindings.json${RESET})"
   fi
 
   if [ -d "$VSCODE_INSIDERS_USER_DIR" ]; then
     link_item "$SETTINGS_SRC" "$VSCODE_INSIDERS_USER_DIR/settings.json" "$TS"
+    link_item "$KEYBINDINGS_SRC" "$VSCODE_INSIDERS_USER_DIR/keybindings.json" "$TS"
   else
-    skip "VS Code Insiders not detected (${DIM}skipping settings.json${RESET})"
+    skip "VS Code Insiders not detected (${DIM}skipping settings.json, keybindings.json${RESET})"
   fi
 
   if [ -d "$CURSOR_USER_DIR" ]; then
     link_item "$SETTINGS_SRC" "$CURSOR_USER_DIR/settings.json" "$TS"
+    link_item "$KEYBINDINGS_SRC" "$CURSOR_USER_DIR/keybindings.json" "$TS"
   else
-    skip "Cursor not detected (${DIM}skipping settings.json${RESET})"
+    skip "Cursor not detected (${DIM}skipping settings.json, keybindings.json${RESET})"
   fi
 
   if [ -d "$VSCODIUM_USER_DIR" ]; then
     link_item "$SETTINGS_SRC" "$VSCODIUM_USER_DIR/settings.json" "$TS"
+    link_item "$KEYBINDINGS_SRC" "$VSCODIUM_USER_DIR/keybindings.json" "$TS"
   else
-    skip "VSCodium not detected (${DIM}skipping settings.json${RESET})"
+    skip "VSCodium not detected (${DIM}skipping settings.json, keybindings.json${RESET})"
   fi
 else
   skip "Non-macOS detected (${DIM}skipping editor settings${RESET})"

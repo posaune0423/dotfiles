@@ -17,11 +17,11 @@ install:
 
 # Format shell scripts
 format:
-	./scripts/format
+	./scripts/format.sh
 
 # Check formatting (for CI)
 format-check:
-	./scripts/format --check
+	./scripts/format.sh --check
 
 # Lint shell scripts with shellcheck (fails on errors, for CI)
 lint:

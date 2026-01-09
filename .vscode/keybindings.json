@@ -1,0 +1,20 @@
+[
+  {
+    "key": "cmd+y",
+    "command": "redo",
+    "when": "textInputFocus && !editorReadonly"
+  },
+  {
+    "key": "shift+cmd+z",
+    "command": "-redo",
+    "when": "textInputFocus && !editorReadonly"
+  },
+  {
+    "key": "shift+alt+g",
+    "command": "workbench.scm.focus"
+  },
+  {
+    "key": "ctrl+cmd+g",
+    "command": "cursor.generateGitCommitMessage"
+  }
+]

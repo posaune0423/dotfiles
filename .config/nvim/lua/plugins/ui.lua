@@ -155,6 +155,12 @@ return {
     enabled = false,
   },
 
+  -- Disable indent blankline (vertical indent guides)
+  {
+    "lukas-reineke/indent-blankline.nvim",
+    enabled = false,
+  },
+
   {
     "folke/snacks.nvim",
     opts = {

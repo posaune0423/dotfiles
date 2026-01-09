@@ -35,6 +35,13 @@ return {
         VertSplit = {
           bg = "None",
         },
+        -- スペース/タブ表示の色を白寄りのグレーに調整（背景透過に合わせる）
+        NonText = {
+          fg = "#8b8fa3", -- 白寄りのグレー（eol, tab用）
+        },
+        SpecialKey = {
+          fg = "#8b8fa3", -- 白寄りのグレー（trail, lead, space用）
+        },
       },
     })
     -- カラースキームを適用
