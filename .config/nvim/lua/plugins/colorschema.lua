@@ -4,7 +4,7 @@ return {
     require("ayu").setup({
       mirage = true, -- `true` にすると "mirage" バリアントを使用
       styles = {
-        sidebars = "transparent",
+        sidebars = "dark",
         floats = "transparent",
       },
       overrides = {
@@ -33,6 +33,18 @@ return {
           bg = "None",
         },
         VertSplit = {
+          bg = "None",
+          fg = "#8b8fa3", -- テーマに合う控えめなグレー（NonTextと同じ色）
+        },
+        WinSeparator = {
+          bg = "None",
+          fg = "#8b8fa3", -- テーマに合う控えめなグレー
+        },
+        -- サイドバーの背景をエディタと同じ色にする
+        NormalFloat = {
+          bg = "None",
+        },
+        NormalNC = {
           bg = "None",
         },
         -- スペース/タブ表示の色を白寄りのグレーに調整（背景透過に合わせる）

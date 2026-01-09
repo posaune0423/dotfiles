@@ -18,12 +18,12 @@ CHECK_MODE=0
 # Parse arguments
 for arg in "$@"; do
   case "$arg" in
-  --check) CHECK_MODE=1 ;;
-  -h | --help)
-    echo "Usage: $0 [--check]"
-    echo "  --check   Check formatting without modifying files"
-    exit 0
-    ;;
+    --check) CHECK_MODE=1 ;;
+    -h | --help)
+      echo "Usage: $0 [--check]"
+      echo "  --check   Check formatting without modifying files"
+      exit 0
+      ;;
   esac
 done
 
@@ -52,12 +52,12 @@ skip() { printf "${DIM}[skip]${RESET} %s\n" "$*"; }
 # =============================================================================
 MISSING_DEPS=0
 
-if ! command -v shfmt >/dev/null 2>&1; then
+if ! command -v shfmt > /dev/null 2>&1; then
   error "shfmt not found. Install via: mise install shfmt"
   MISSING_DEPS=1
 fi
 
-if ! command -v fish_indent >/dev/null 2>&1; then
+if ! command -v fish_indent > /dev/null 2>&1; then
   warn "fish_indent not found. Fish files will be skipped."
   warn "Install fish shell to get fish_indent."
   HAS_FISH_INDENT=0
@@ -99,8 +99,8 @@ cleanup() {
 trap cleanup EXIT HUP INT TERM
 
 # Use NUL-separated output to safely handle any filename
-git ls-files -z -- '.config/fish/**/*.fish' >"$FISH_FILE_LIST" 2>/dev/null || true
-git ls-files -z -- '*.sh' '.zshrc' '.zshenv' '.zprofile' '.config/zsh/*.zsh' >"$SH_FILE_LIST" 2>/dev/null || true
+git ls-files -z -- '.config/fish/**/*.fish' > "$FISH_FILE_LIST" 2> /dev/null || true
+git ls-files -z -- '*.sh' '.zshrc' '.zshenv' '.zprofile' '.config/zsh/*.zsh' > "$SH_FILE_LIST" 2> /dev/null || true
 
 # =============================================================================
 # Format Fish Files
@@ -117,7 +117,7 @@ if [ "$HAS_FISH_INDENT" -eq 1 ] && [ -s "$FISH_FILE_LIST" ]; then
     FISH_COUNT=$((FISH_COUNT + 1))
     if [ "$CHECK_MODE" -eq 1 ]; then
       # Check mode: compare formatted output with original
-      if ! fish_indent <"$f" | diff -q - "$f" >/dev/null 2>&1; then
+      if ! fish_indent < "$f" | diff -q - "$f" > /dev/null 2>&1; then
         warn "Would reformat: $f"
         FISH_CHANGED=$((FISH_CHANGED + 1))
       else
@@ -125,13 +125,13 @@ if [ "$HAS_FISH_INDENT" -eq 1 ] && [ -s "$FISH_FILE_LIST" ]; then
       fi
     else
       # Format in place
-      if fish_indent -w "$f" 2>/dev/null; then
+      if fish_indent -w "$f" 2> /dev/null; then
         success "$f"
       else
         warn "fish_indent failed: $f"
       fi
     fi
-  done <"$FISH_FILE_LIST"
+  done < "$FISH_FILE_LIST"
   echo ""
 fi
 
@@ -153,10 +153,10 @@ if [ -s "$SH_FILE_LIST" ]; then
     if [ "$CHECK_MODE" -eq 1 ]; then
       # Check mode: try to diff
       # shellcheck disable=SC2086
-      if ! shfmt $SHFMT_OPTS "$f" 2>/dev/null | diff -q - "$f" >/dev/null 2>&1; then
+      if ! shfmt $SHFMT_OPTS "$f" 2> /dev/null | diff -q - "$f" > /dev/null 2>&1; then
         # Could be parse error or actual diff
         # shellcheck disable=SC2086
-        if shfmt $SHFMT_OPTS "$f" >/dev/null 2>&1; then
+        if shfmt $SHFMT_OPTS "$f" > /dev/null 2>&1; then
           warn "Would reformat: $f"
           SH_CHANGED=$((SH_CHANGED + 1))
         else
@@ -169,14 +169,14 @@ if [ -s "$SH_FILE_LIST" ]; then
     else
       # Format mode: try to format, skip on error
       # shellcheck disable=SC2086
-      if shfmt $SHFMT_OPTS -w "$f" 2>/dev/null; then
+      if shfmt $SHFMT_OPTS -w "$f" 2> /dev/null; then
         success "$f"
       else
         skip "$f (shfmt parse error, zsh-specific syntax?)"
         SH_SKIPPED=$((SH_SKIPPED + 1))
       fi
     fi
-  done <"$SH_FILE_LIST"
+  done < "$SH_FILE_LIST"
   echo ""
 fi
 

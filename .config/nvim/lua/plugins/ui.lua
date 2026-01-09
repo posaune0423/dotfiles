@@ -1,4 +1,23 @@
 return {
+  -- snacks
+  {
+    "folke/snacks.nvim",
+    opts = {
+      picker = {
+        sources = {
+          explorer = {
+            hidden = true,
+            ignored = true,
+          },
+          files = {
+            hidden = true, -- show dotfiles in fuzzy finder
+            ignored = true, -- optional: show gitignored files
+          },
+        },
+      },
+    },
+  },
+
   -- messages, cmdline and the popupmenu
   {
     "folke/noice.nvim",
@@ -60,14 +79,6 @@ return {
     },
   },
 
-  {
-    "snacks.nvim",
-    opts = {
-      scroll = { enabled = false },
-    },
-    keys = {},
-  },
-
   -- buffer line
   {
     "akinsho/bufferline.nvim",
@@ -89,16 +100,28 @@ return {
   -- filename
   {
     "b0o/incline.nvim",
-    dependencies = { "craftzdog/solarized-osaka.nvim" },
     event = "BufReadPre",
     priority = 1200,
     config = function()
-      local colors = require("solarized-osaka.colors").setup()
+      -- ayu-mirage の色を取得
+      local function get_color(group, attr)
+        local hl = vim.api.nvim_get_hl(0, { name = group, link = false })
+        if hl[attr] then
+          return string.format("#%06x", hl[attr])
+        end
+        return nil
+      end
+
+      -- ayu-mirage のデフォルト色（フォールバック）
+      local accent_color = get_color("Statement", "fg") or "#ffcc66"
+      local bg_color = get_color("Normal", "bg") or "#1f2430"
+      local fg_color = get_color("Normal", "fg") or "#cbccc6"
+
       require("incline").setup({
         highlight = {
           groups = {
-            InclineNormal = { guibg = colors.magenta500, guifg = colors.base04 },
-            InclineNormalNC = { guifg = colors.violet500, guibg = colors.base03 },
+            InclineNormal = { guibg = accent_color, guifg = bg_color },
+            InclineNormalNC = { guifg = accent_color, guibg = bg_color },
           },
         },
         window = { margin = { vertical = 0, horizontal = 1 } },
@@ -153,29 +176,5 @@ return {
   {
     "MeanderingProgrammer/render-markdown.nvim",
     enabled = false,
-  },
-
-  -- Disable indent blankline (vertical indent guides)
-  {
-    "lukas-reineke/indent-blankline.nvim",
-    enabled = false,
-  },
-
-  {
-    "folke/snacks.nvim",
-    opts = {
-      dashboard = {
-        preset = {
-          header = [[
-            ██████╗ ███████╗██╗   ██╗ █████╗ ███████╗██╗     ██╗███████╗███████╗
-            ██╔══██╗██╔════╝██║   ██║██╔══██╗██╔════╝██║     ██║██╔════╝██╔════╝
-            ██║  ██║█████╗  ██║   ██║███████║███████╗██║     ██║█████╗  █████╗
-            ██║  ██║██╔══╝  ╚██╗ ██╔╝██╔══██║╚════██║██║     ██║██╔══╝  ██╔══╝
-            ██████╔╝███████╗ ╚████╔╝ ██║  ██║███████║███████╗██║██║     ███████╗
-            ╚═════╝ ╚══════╝  ╚═══╝  ╚═╝  ╚═╝╚══════╝╚══════╝╚═╝╚═╝     ╚══════╝
-   ]],
-        },
-      },
-    },
   },
 }
