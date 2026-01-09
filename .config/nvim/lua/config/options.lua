@@ -38,6 +38,15 @@ vim.opt.termguicolors = true
 vim.opt.winblend = 0 -- ウィンドウの不透明度
 vim.opt.pumblend = 0 -- ポップアップメニューの不透明度
 
+-- Show whitespace characters like VSCode
+vim.opt.list = true
+vim.opt.listchars = {
+  tab = "» ", -- Tab characters
+  trail = "·", -- Trailing spaces
+  lead = "·", -- Leading spaces (indentation)
+  space = "·", -- Regular spaces (optional, for boundary whitespace)
+}
+
 -- Undercurl
 vim.cmd([[let &t_Cs = "\e[4:3m"]])
 vim.cmd([[let &t_Ce = "\e[4:0m"]])
