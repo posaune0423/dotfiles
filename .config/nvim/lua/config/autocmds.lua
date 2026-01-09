@@ -15,10 +15,11 @@ vim.api.nvim_create_autocmd("FileType", {
 
 -- Unbind <C-l> in terminal mode to allow normal terminal clearing behavior
 -- Fixes issue where <C-l> moves cursor to right window instead of clearing terminal
-vim.api.nvim_create_autocmd("TermOpen", {
+-- Use TermEnter (not TermOpen) to ensure it runs after LazyVim's keymaps are loaded
+vim.api.nvim_create_autocmd("TermEnter", {
   pattern = "*",
   callback = function()
-    -- unbind <c-l> in terminal
+    -- Send <C-l> directly to the terminal instead of letting Neovim handle it
     vim.api.nvim_buf_set_keymap(0, "t", "<C-l>", "<C-l>", { noremap = true, silent = true })
   end,
 })

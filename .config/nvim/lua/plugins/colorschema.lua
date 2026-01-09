@@ -57,6 +57,22 @@ return {
         Whitespace = {
           fg = "#3b4048", -- 暗めのグレー（space, tab, lead, trail用）
         },
+        -- Dashboard colors (snacks.nvim)
+        SnacksDashboardHeader = {
+          fg = "#ffcc66", -- ayu-mirage accent (golden)
+        },
+        SnacksDashboardIcon = {
+          fg = "#73d0ff", -- ayu-mirage blue
+        },
+        SnacksDashboardKey = {
+          fg = "#ffa759", -- ayu-mirage orange
+        },
+        SnacksDashboardDesc = {
+          fg = "#cbccc6", -- ayu-mirage foreground
+        },
+        SnacksDashboardFooter = {
+          fg = "#bae67e", -- ayu-mirage green
+        },
       },
     })
     -- カラースキームを適用

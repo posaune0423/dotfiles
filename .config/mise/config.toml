@@ -15,7 +15,6 @@ fd = "latest"               # fast find alternative
 ripgrep = "latest"          # fast grep alternative
 yazi = "latest"             # terminal file manager
 zoxide = "latest"           # smart cd replacement
-
 # [CLI Tools - Text Processing]
 jq = "latest"               # JSON processor
 sd = "latest"               # sed replacement

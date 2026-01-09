@@ -27,7 +27,7 @@ alias pip=pip3
 
 # GitHub: open PR page if exists, otherwise repo page
 gho() {
-  gh pr view --web 2>/dev/null || gh browse
+  gh pr view --web 2> /dev/null || gh browse
 }
 
 # Cursor内でのみqコマンドを無効化
