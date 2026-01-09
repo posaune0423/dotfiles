@@ -170,7 +170,7 @@ BACKUP_ROOT="${BACKUP_ROOT:-$HOME/.dotfiles-backup}"
 has_tty() {
   # Check if /dev/tty is available for interactive prompts
   # Use subshell to suppress any error messages
-  ([ -r /dev/tty ] && [ -c /dev/tty ] && printf "" > /dev/tty) 2> /dev/null
+  ([ -r /dev/tty ] && [ -w /dev/tty ] && [ -c /dev/tty ]) 2> /dev/null
 }
 
 confirm() {
