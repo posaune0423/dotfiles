@@ -47,12 +47,15 @@ return {
         NormalNC = {
           bg = "None",
         },
-        -- スペース/タブ表示の色を白寄りのグレーに調整（背景透過に合わせる）
+        -- スペース/タブ表示の色（控えめに）
         NonText = {
-          fg = "#8b8fa3", -- 白寄りのグレー（eol, tab用）
+          fg = "#3b4048", -- 暗めのグレー（eol, tab用）
         },
         SpecialKey = {
-          fg = "#8b8fa3", -- 白寄りのグレー（trail, lead, space用）
+          fg = "#3b4048", -- 暗めのグレー（trail, lead, space用）
+        },
+        Whitespace = {
+          fg = "#3b4048", -- 暗めのグレー（space, tab, lead, trail用）
         },
       },
     })
