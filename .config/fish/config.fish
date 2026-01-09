@@ -34,7 +34,8 @@ if status is-interactive
 
     # fish 4.1+: some terminals don't reply to the DA1 (Primary Device Attributes) query fast enough.
     # We disable that startup query via the universal `fish_features` flag `no-query-term`
-    # (tracked in `fish_variables` so it applies before fish starts).
+    # Set as universal variable so it persists across sessions
+    set -U fish_features no-query-term
 
     # Enable vi mode (optional, uncomment if you prefer vi keybindings)
     # fish_vi_key_bindings
