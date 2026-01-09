@@ -86,11 +86,21 @@ echo ""
 # =============================================================================
 # Collect Files
 # =============================================================================
-# sh/bash/zsh files
-SH_FILES=$(git ls-files '*.sh' '.zshrc' '.zshenv' '.zprofile' '.config/zsh/*.zsh' 2>/dev/null || true)
+tmp_file() {
+  mktemp "${TMPDIR:-/tmp}/dotfiles-format.XXXXXX"
+}
 
-# fish files
-FISH_FILES=$(git ls-files '.config/fish/**/*.fish' 2>/dev/null || true)
+FISH_FILE_LIST="$(tmp_file)"
+SH_FILE_LIST="$(tmp_file)"
+
+cleanup() {
+  rm -f "$FISH_FILE_LIST" "$SH_FILE_LIST"
+}
+trap cleanup EXIT HUP INT TERM
+
+# Use NUL-separated output to safely handle any filename
+git ls-files -z -- '.config/fish/**/*.fish' >"$FISH_FILE_LIST" 2>/dev/null || true
+git ls-files -z -- '*.sh' '.zshrc' '.zshenv' '.zprofile' '.config/zsh/*.zsh' >"$SH_FILE_LIST" 2>/dev/null || true
 
 # =============================================================================
 # Format Fish Files
@@ -98,9 +108,9 @@ FISH_FILES=$(git ls-files '.config/fish/**/*.fish' 2>/dev/null || true)
 FISH_COUNT=0
 FISH_CHANGED=0
 
-if [ "$HAS_FISH_INDENT" -eq 1 ] && [ -n "$FISH_FILES" ]; then
+if [ "$HAS_FISH_INDENT" -eq 1 ] && [ -s "$FISH_FILE_LIST" ]; then
   info "Formatting fish files..."
-  for f in $FISH_FILES; do
+  while IFS= read -r -d '' f; do
     if [ ! -f "$f" ]; then
       continue
     fi
@@ -121,7 +131,7 @@ if [ "$HAS_FISH_INDENT" -eq 1 ] && [ -n "$FISH_FILES" ]; then
         warn "fish_indent failed: $f"
       fi
     fi
-  done
+  done <"$FISH_FILE_LIST"
   echo ""
 fi
 
@@ -132,9 +142,9 @@ SH_COUNT=0
 SH_CHANGED=0
 SH_SKIPPED=0
 
-if [ -n "$SH_FILES" ]; then
+if [ -s "$SH_FILE_LIST" ]; then
   info "Formatting sh/zsh files..."
-  for f in $SH_FILES; do
+  while IFS= read -r -d '' f; do
     if [ ! -f "$f" ]; then
       continue
     fi
@@ -166,7 +176,7 @@ if [ -n "$SH_FILES" ]; then
         SH_SKIPPED=$((SH_SKIPPED + 1))
       fi
     fi
-  done
+  done <"$SH_FILE_LIST"
   echo ""
 fi
 
