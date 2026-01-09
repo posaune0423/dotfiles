@@ -432,14 +432,15 @@ print_section "${ICON_FOLDER} Creating Symlinks"
 run mkdir -p "$HOME/.config"
 
 # Count total items
-# 4 root + 9 XDG configs + up to 8 editor settings (4 apps × 2 files) = 21
-set_total_items 21
+# 5 root + 9 XDG configs + up to 8 editor settings (4 apps × 2 files) = 22
+set_total_items 22
 
 # Root dotfiles
 link_item "$DOTFILES_DIR/.zshenv" "$HOME/.zshenv" "$TS"
 link_item "$DOTFILES_DIR/.zshrc" "$HOME/.zshrc" "$TS"
 link_item "$DOTFILES_DIR/.zprofile" "$HOME/.zprofile" "$TS"
 link_item "$DOTFILES_DIR/.gitconfig" "$HOME/.gitconfig" "$TS"
+link_item "$DOTFILES_DIR/.commit_template" "$HOME/.commit_template" "$TS"
 
 # XDG configs (link individual apps, not ~/.config as a whole)
 link_item "$DOTFILES_DIR/.config/zsh" "$HOME/.config/zsh" "$TS"

@@ -1,3 +1,4 @@
+// Place your key bindings in this file to override the defaults
 [
   {
     "key": "cmd+y",
@@ -16,5 +17,9 @@
   {
     "key": "ctrl+cmd+g",
     "command": "cursor.generateGitCommitMessage"
+  },
+  {
+    "key": "ctrl+cmd+s",
+    "command": "git.stageAll"
   }
 ]
