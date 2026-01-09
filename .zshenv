@@ -75,6 +75,9 @@ export PNPM_HOME="${PNPM_HOME:-$HOME/Library/pnpm}"
 # Convenience PATH entries that are cheap and widely useful
 path_append "$PNPM_HOME"
 
+# Bun global binaries
+path_append "$HOME/.cache/.bun/bin"
+
 # HOMEBREW_FORBIDDEN_FORMULAEを設定して、不要なパッケージをインストールしないようにする
 # Version-managed tools are added to prevent accidental Homebrew installation
 export HOMEBREW_FORBIDDEN_FORMULAE="node python python3 pip npm pnpm yarn claude ruby go openjdk bun deno"

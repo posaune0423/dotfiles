@@ -46,6 +46,9 @@ __append_path_if_exists $GOPATH/bin
 # pnpm
 __append_path_if_exists $PNPM_HOME
 
+# Bun global binaries
+__append_path_if_exists $HOME/.cache/.bun/bin
+
 # LM Studio CLI
 __append_path_if_exists $HOME/.cache/lm-studio/bin
 
