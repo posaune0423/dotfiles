@@ -32,9 +32,9 @@ if status is-interactive
     # Disable greeting message
     set -g fish_greeting
 
-    # Disable Primary Device Attribute query to suppress terminal compatibility warnings
-    # Some terminals don't respond to this query, causing warnings on startup
-    set -g fish_use_primary_device_attribute 0
+    # fish 4.1+: some terminals don't reply to the DA1 (Primary Device Attributes) query fast enough.
+    # We disable that startup query via the universal `fish_features` flag `no-query-term`
+    # (tracked in `fish_variables` so it applies before fish starts).
 
     # Enable vi mode (optional, uncomment if you prefer vi keybindings)
     # fish_vi_key_bindings

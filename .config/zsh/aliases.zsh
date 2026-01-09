@@ -20,7 +20,6 @@ alias restart='exec $SHELL -l'
 alias sleepon='sudo pmset -a disablesleep 0'
 alias sleepoff='sudo pmset -a disablesleep 1'
 
-
 # Development tools
 alias g='git'
 alias pn='pnpm'
@@ -31,5 +30,5 @@ alias nodets="node --experimental-strip-types --experimental-transform-types --e
 
 # Cursor内でのみqコマンドを無効化
 if [[ "$TERM_PROGRAM" == "vscode" ]] || [[ -n "$CURSOR_TRACE_ID" ]]; then
-    alias q='echo "q command disabled in Cursor terminal"'
+  alias q='echo "q command disabled in Cursor terminal"'
 fi

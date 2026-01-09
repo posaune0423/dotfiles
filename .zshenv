@@ -9,15 +9,15 @@
 # PATH重複を防ぐヘルパー関数
 path_prepend() {
   [[ -d "$1" ]] && case ":$PATH:" in
-  *":$1:"*) ;;
-  *) export PATH="$1:$PATH" ;;
+    *":$1:"*) ;;
+    *) export PATH="$1:$PATH" ;;
   esac
 }
 
 path_append() {
   [[ -d "$1" ]] && case ":$PATH:" in
-  *":$1:"*) ;;
-  *) export PATH="$PATH:$1" ;;
+    *":$1:"*) ;;
+    *) export PATH="$PATH:$1" ;;
   esac
 }
 

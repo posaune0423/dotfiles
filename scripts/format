@@ -1,0 +1,190 @@
+#!/bin/sh
+#
+# Format shell scripts in this repository
+# Usage: ./scripts/format [--check]
+#
+# Formats:
+#   - *.sh, .zshrc, .zshenv, .zprofile, *.zsh  -> shfmt (skip on parse error)
+#   - *.fish                                    -> fish_indent
+#
+set -eu
+
+# =============================================================================
+# Configuration
+# =============================================================================
+SHFMT_OPTS="-i 2 -ci -sr"  # 2-space indent, case indent, redirect after
+CHECK_MODE=0
+
+# Parse arguments
+for arg in "$@"; do
+  case "$arg" in
+    --check) CHECK_MODE=1 ;;
+    -h|--help)
+      echo "Usage: $0 [--check]"
+      echo "  --check   Check formatting without modifying files"
+      exit 0
+      ;;
+  esac
+done
+
+# =============================================================================
+# Colors
+# =============================================================================
+if [ -t 1 ]; then
+  RED='\033[31m'
+  GREEN='\033[32m'
+  YELLOW='\033[33m'
+  CYAN='\033[36m'
+  DIM='\033[2m'
+  RESET='\033[0m'
+else
+  RED='' GREEN='' YELLOW='' CYAN='' DIM='' RESET=''
+fi
+
+info()    { printf "${CYAN}[info]${RESET} %s\n" "$*"; }
+success() { printf "${GREEN}[ok]${RESET}   %s\n" "$*"; }
+warn()    { printf "${YELLOW}[warn]${RESET} %s\n" "$*"; }
+error()   { printf "${RED}[err]${RESET}  %s\n" "$*" >&2; }
+skip()    { printf "${DIM}[skip]${RESET} %s\n" "$*"; }
+
+# =============================================================================
+# Dependency Check
+# =============================================================================
+MISSING_DEPS=0
+
+if ! command -v shfmt >/dev/null 2>&1; then
+  error "shfmt not found. Install via: mise install shfmt"
+  MISSING_DEPS=1
+fi
+
+if ! command -v fish_indent >/dev/null 2>&1; then
+  warn "fish_indent not found. Fish files will be skipped."
+  warn "Install fish shell to get fish_indent."
+  HAS_FISH_INDENT=0
+else
+  HAS_FISH_INDENT=1
+fi
+
+if [ "$MISSING_DEPS" -eq 1 ]; then
+  exit 1
+fi
+
+# =============================================================================
+# Find Repository Root
+# =============================================================================
+REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+cd "$REPO_ROOT"
+
+info "Repository: $REPO_ROOT"
+if [ "$CHECK_MODE" -eq 1 ]; then
+  info "Mode: check (no files will be modified)"
+else
+  info "Mode: format (files will be modified in place)"
+fi
+echo ""
+
+# =============================================================================
+# Collect Files
+# =============================================================================
+# sh/bash/zsh files
+SH_FILES=$(git ls-files '*.sh' '.zshrc' '.zshenv' '.zprofile' '.config/zsh/*.zsh' 2>/dev/null || true)
+
+# fish files
+FISH_FILES=$(git ls-files '.config/fish/**/*.fish' 2>/dev/null || true)
+
+# =============================================================================
+# Format Fish Files
+# =============================================================================
+FISH_COUNT=0
+FISH_CHANGED=0
+
+if [ "$HAS_FISH_INDENT" -eq 1 ] && [ -n "$FISH_FILES" ]; then
+  info "Formatting fish files..."
+  for f in $FISH_FILES; do
+    if [ ! -f "$f" ]; then
+      continue
+    fi
+    FISH_COUNT=$((FISH_COUNT + 1))
+    if [ "$CHECK_MODE" -eq 1 ]; then
+      # Check mode: compare formatted output with original
+      if ! fish_indent < "$f" | diff -q - "$f" >/dev/null 2>&1; then
+        warn "Would reformat: $f"
+        FISH_CHANGED=$((FISH_CHANGED + 1))
+      else
+        success "$f"
+      fi
+    else
+      # Format in place
+      if fish_indent -w "$f" 2>/dev/null; then
+        success "$f"
+      else
+        warn "fish_indent failed: $f"
+      fi
+    fi
+  done
+  echo ""
+fi
+
+# =============================================================================
+# Format sh/zsh Files
+# =============================================================================
+SH_COUNT=0
+SH_CHANGED=0
+SH_SKIPPED=0
+
+if [ -n "$SH_FILES" ]; then
+  info "Formatting sh/zsh files..."
+  for f in $SH_FILES; do
+    if [ ! -f "$f" ]; then
+      continue
+    fi
+    SH_COUNT=$((SH_COUNT + 1))
+
+    if [ "$CHECK_MODE" -eq 1 ]; then
+      # Check mode: try to diff
+      # shellcheck disable=SC2086
+      if ! shfmt $SHFMT_OPTS "$f" 2>/dev/null | diff -q - "$f" >/dev/null 2>&1; then
+        # Could be parse error or actual diff
+        # shellcheck disable=SC2086
+        if shfmt $SHFMT_OPTS "$f" >/dev/null 2>&1; then
+          warn "Would reformat: $f"
+          SH_CHANGED=$((SH_CHANGED + 1))
+        else
+          skip "$f (shfmt parse error, zsh-specific syntax?)"
+          SH_SKIPPED=$((SH_SKIPPED + 1))
+        fi
+      else
+        success "$f"
+      fi
+    else
+      # Format mode: try to format, skip on error
+      # shellcheck disable=SC2086
+      if shfmt $SHFMT_OPTS -w "$f" 2>/dev/null; then
+        success "$f"
+      else
+        skip "$f (shfmt parse error, zsh-specific syntax?)"
+        SH_SKIPPED=$((SH_SKIPPED + 1))
+      fi
+    fi
+  done
+  echo ""
+fi
+
+# =============================================================================
+# Summary
+# =============================================================================
+info "Summary:"
+echo "  Fish files: $FISH_COUNT processed"
+echo "  Shell files: $SH_COUNT processed, $SH_SKIPPED skipped"
+
+if [ "$CHECK_MODE" -eq 1 ]; then
+  TOTAL_CHANGED=$((FISH_CHANGED + SH_CHANGED))
+  if [ "$TOTAL_CHANGED" -gt 0 ]; then
+    echo ""
+    error "$TOTAL_CHANGED file(s) need formatting. Run ./scripts/format to fix."
+    exit 1
+  else
+    echo ""
+    success "All files are properly formatted!"
+  fi
+fi

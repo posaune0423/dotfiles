@@ -7,9 +7,7 @@ function M.apply(config)
   wezterm.on("toggle-opacity", function(window, _)
     local overrides = window:get_config_overrides() or {}
 
-    local current = overrides.window_background_opacity
-      or config.window_background_opacity
-      or 1.0
+    local current = overrides.window_background_opacity or config.window_background_opacity or 1.0
 
     -- 0.5と0.85の間の閾値（0.675）で判定して確実にトグル
     overrides.window_background_opacity = (current >= 0.675) and 0.5 or 0.85
@@ -29,11 +27,11 @@ function M.apply(config)
     -- 画像のUIに合わせた色調整
     -- アクティブタブ: 暗いグレー背景、白文字
     -- 非アクティブタブ: 明るいグレー背景、暗いグレー文字
-    local inactive_bg = "#3a3f4e"  -- 明るいグレー（非アクティブ）
-    local active_bg = "#2a2d38"    -- 暗いグレー（アクティブ）
-    local inactive_fg = "#6b7280"  -- 暗いグレー文字（非アクティブ）
+    local inactive_bg = "#3a3f4e" -- 明るいグレー（非アクティブ）
+    local active_bg = "#2a2d38" -- 暗いグレー（アクティブ）
+    local inactive_fg = "#6b7280" -- 暗いグレー文字（非アクティブ）
     if hover and not tab.is_active then
-      inactive_fg = "#9ca3af"      -- hover時は少し明るく
+      inactive_fg = "#9ca3af" -- hover時は少し明るく
       inactive_bg = "#404552"
     end
 

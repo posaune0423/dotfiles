@@ -70,6 +70,8 @@ spark = "latest"          # sparklines
 # [CLI Tools - Code Quality]
 biome = "latest"           # formatter & linter
 buf = "latest"             # Protocol Buffers tool
+shfmt = "latest"           # shell script formatter
+shellcheck = "latest"      # shell script linter
 
 # [CLI Tools - Other]
 1password = "latest"       # 1Password CLI

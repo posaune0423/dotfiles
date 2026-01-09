@@ -46,13 +46,13 @@ export STARKNET_RPC_URL="${STARKNET_RPC_URL:-https://starknet-mainnet.public.bla
 # --------------------------
 # Make environment variables available to GUI applications on macOS
 if [[ "$OSTYPE" == darwin* ]]; then
-  launchctl setenv PATH "$PATH" 2>/dev/null
-  launchctl setenv LANG "$LANG" 2>/dev/null
-  launchctl setenv LC_ALL "$LC_ALL" 2>/dev/null
-  launchctl setenv EDITOR "$EDITOR" 2>/dev/null
-  launchctl setenv VISUAL "$VISUAL" 2>/dev/null
+  launchctl setenv PATH "$PATH" 2> /dev/null
+  launchctl setenv LANG "$LANG" 2> /dev/null
+  launchctl setenv LC_ALL "$LC_ALL" 2> /dev/null
+  launchctl setenv EDITOR "$EDITOR" 2> /dev/null
+  launchctl setenv VISUAL "$VISUAL" 2> /dev/null
 
-  [[ -n "$GOPATH" ]] && launchctl setenv GOPATH "$GOPATH" 2>/dev/null
+  [[ -n "$GOPATH" ]] && launchctl setenv GOPATH "$GOPATH" 2> /dev/null
 fi
 
 # --------------------------
