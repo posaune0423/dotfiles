@@ -1,10 +1,10 @@
 # Theme
-theme = Ayu Mirage
+theme = Ayu
 background = #0d1117
 
 # Font
 font-family = JetBrains Mono
-font-size = 15
+font-size = 14
 
 # Window
 window-padding-x = 12
@@ -14,8 +14,8 @@ window-theme = ghostty
 macos-titlebar-style = transparent
 
 # Transparency
-background-opacity = 0.79
-background-blur-radius = 10
+background-opacity = 0.7
+background-blur-radius = 13
 
 # Keybindings
 keybind = shift+enter=text:\n

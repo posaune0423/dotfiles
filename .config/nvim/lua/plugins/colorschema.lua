@@ -1,10 +1,10 @@
-return {
+return({
   "Shatur/neovim-ayu",
   config = function()
     require("ayu").setup({
-      mirage = true, -- `true` にすると "mirage" バリアントを使用
+      mirage = false, -- ayu-dark に寄せる
       styles = {
-        sidebars = "dark",
+        sidebars = "transparent",
         floats = "transparent",
       },
       overrides = {
@@ -34,11 +34,11 @@ return {
         },
         VertSplit = {
           bg = "None",
-          fg = "#8b8fa3", -- テーマに合う控えめなグレー（NonTextと同じ色）
+          fg = "#3F4656", -- ayu dark寄りの控えめな区切り線
         },
         WinSeparator = {
           bg = "None",
-          fg = "#8b8fa3", -- テーマに合う控えめなグレー
+          fg = "#3F4656", -- ayu dark寄りの控えめな区切り線
         },
         -- サイドバーの背景をエディタと同じ色にする
         NormalFloat = {
@@ -49,13 +49,13 @@ return {
         },
         -- スペース/タブ表示の色（控えめに）
         NonText = {
-          fg = "#3b4048", -- 暗めのグレー（eol, tab用）
+          fg = "#232834", -- ui.fg を bg に薄くブレンドした近似（控えめ）
         },
         SpecialKey = {
-          fg = "#3b4048", -- 暗めのグレー（trail, lead, space用）
+          fg = "#232834", -- trail, lead, space 用
         },
         Whitespace = {
-          fg = "#3b4048", -- 暗めのグレー（space, tab, lead, trail用）
+          fg = "#232834", -- space, tab, lead, trail 用
         },
         -- Dashboard colors (snacks.nvim)
         SnacksDashboardHeader = {
@@ -76,6 +76,6 @@ return {
       },
     })
     -- カラースキームを適用
-    vim.cmd("colorscheme ayu-mirage")
+    vim.cmd("colorscheme ayu-dark")
   end,
-}
+})
