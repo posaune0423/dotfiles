@@ -44,7 +44,9 @@
 
 [user]
   name = posaune0423
-  email = yamadaasuma@gmail.com
+  email = posaune0423@users.noreply.github.com
   name = Asuma Yamada
 [init]
   defaultBranch = main
+[coderabbit]
+  machineId = cli/5e230c7ab7e04a689604bc38df53e81e
