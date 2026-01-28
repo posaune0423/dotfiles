@@ -15,6 +15,9 @@ return {
           },
         },
       },
+      lazygit = {
+        configure = true,
+      },
     },
   },
 

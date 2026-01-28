@@ -3,7 +3,7 @@ theme = Ayu
 background = #0d1117
 
 # Font
-font-family = JetBrains Mono
+font-family = Monaco Nerd Font
 font-size = 14
 
 # Window
