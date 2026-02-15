@@ -57,3 +57,5 @@ if status is-interactive
     # Disable valid_path check to prevent input lag during fast key repeat
     # set -g fish_color_valid_path --underline # Valid file paths
 end
+
+fish_add_path -a "/Users/asumayamada/.config/.foundry/bin"

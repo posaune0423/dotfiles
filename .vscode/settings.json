@@ -2,11 +2,11 @@
   // ============================================
   // Editor Settings
   // ============================================
-  "editor.fontFamily": "SauceCodePro Nerd Font",
+  "editor.fontFamily": "Monaco Nerd Font",
   "editor.fontSize": 11,
   "editor.fontWeight": "400",
-  "editor.codeLensFontFamily": "SauceCodePro Nerd Font",
-  "editor.inlayHints.fontFamily": "SauceCodePro Nerd Font",
+  "editor.codeLensFontFamily": "Monaco Nerd Font",
+  "editor.inlayHints.fontFamily": "Monaco Nerd Font",
   "editor.insertSpaces": false,
   "editor.renderWhitespace": "boundary",
   "editor.suggestSelection": "first",
@@ -16,8 +16,6 @@
   // ============================================
   "workbench.sideBar.location": "left",
   "workbench.startupEditor": "newUntitledFile",
-  "workbench.editor.enablePreview": false,
-  "workbench.colorTheme": "Ayu Dark Bordered",
   "workbench.preferredDarkColorTheme": "Default Light+",
   "workbench.iconTheme": "material-icon-theme",
 
@@ -25,8 +23,8 @@
   // Terminal Settings
   // ============================================
   "terminal.integrated.defaultProfile.osx": "fish",
-  "terminal.integrated.fontFamily": "SauceCodePro Nerd Font",
-  "terminal.integrated.fontSize": 13,
+  "terminal.integrated.fontFamily": "Monaco Nerd Font",
+  "terminal.integrated.fontSize": 12,
   "terminal.integrated.fontWeight": "200",
   "terminal.integrated.enableImages": true,
   "terminal.integrated.enableVisualBell": false,
@@ -254,16 +252,30 @@
     "agentic",
     "backtest",
     "bunx",
+    "Chainlink",
     "cooldown",
     "daiko",
+    "Initializable",
+    "moltworker",
     "neverthrow",
     "POLYMARKET",
     "posaune",
+    "Reentrancy",
     "Solana",
     "Substreams",
-    "timestamptz"
+    "timestamptz",
+    "UUPS",
+    "Velvett"
   ],
   "terminal.integrated.env.osx": {
     "Q_NEW_SESSION": "1"
-  }
+  },
+  "markdown-preview-enhanced.previewTheme": "github-dark.css",
+  "update.releaseTrack": "dev",
+  "update.mode": "silentlyApplyOnQuit",
+  "workbench.editor.enablePreview": false,
+  "editor.accessibilitySupport": "off",
+  "workbench.colorTheme": "GitHub Dark Default",
+  "explorer.confirmDragAndDrop": false,
+  "explorer.confirmPasteNative": false,
 }
