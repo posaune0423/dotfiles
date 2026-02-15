@@ -4,7 +4,7 @@ background = #0d1117
 
 # Font
 font-family = Monaco Nerd Font
-font-size = 14
+font-size = 13
 
 # Window
 window-padding-x = 12

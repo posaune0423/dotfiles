@@ -40,6 +40,16 @@ if status is-interactive
 end
 
 #---------------------------
+# direnv - Interactive Shell Hook
+#---------------------------
+# Automatically load/unload .envrc when moving between directories
+if status is-interactive
+    if type -q direnv
+        direnv hook fish | source
+    end
+end
+
+#---------------------------
 # fzf (Fuzzy Finder)
 #---------------------------
 if status is-interactive

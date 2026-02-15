@@ -43,3 +43,7 @@ Fish の設定は `~/.config/fish/` に集約しています（XDG 準拠）。
 | `fisher` | `jorgebucaran/fisher` |
 | `z` | `jethrokuan/z` |
 | `fzf.fish` | `PatrickF1/fzf.fish` |
+
+## Notes
+
+- `03_tools.fish` で `direnv` を interactive shell のみで初期化します。
