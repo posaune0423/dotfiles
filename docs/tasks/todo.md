@@ -88,3 +88,23 @@
 - Root cause: `taiki-e/install-action@v2` does not support `jq`, causing fallback to `cargo-binstall` and failure on non-binary `jq` crate
 - Fix: install `jq` via `apt-get` and remove `jq` from install-action tool list in both CI jobs
 - Validation: local `make format` and `make lint` passed
+
+---
+
+# README Latest Settings Sync
+
+## Plan
+
+- [x] Align installer behavior section with current `install.sh` symlink targets
+- [x] Sync plugin/tool inventory (`fish_plugins`, `mise`) with current config files
+- [x] Update VS Code/Cursor extension reference table from `.vscode/settings.json`
+- [x] Update CI section to current workflow and make targets
+- [x] Review README diff for consistency and completeness
+
+## Review
+
+- Installer section now reflects current symlink targets: `.commit_template`, `settings.json` and `keybindings.json`, plus `Code - Insiders` path
+- Fish plugin inventory now matches `.config/fish/fish_plugins` (`pure-fish/pure`)
+- `mise` inventory now includes current code-quality tools (`shfmt`, `shellcheck`, `stylua`, `taplo`) and `usage`
+- VS Code/Cursor extension table now matches the formatter extension IDs used in `.vscode/settings.json`
+- CI section now points to `make format` / `make lint` and `.github/workflows/ci.yml`
