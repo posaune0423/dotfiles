@@ -1,46 +1,39 @@
 // Place your key bindings in this file to override the defaults
 [
-  {
-    "key": "cmd+y",
-    "command": "redo",
-    "when": "textInputFocus && !editorReadonly"
-  },
-  {
-    "key": "shift+cmd+z",
-    "command": "-redo",
-    "when": "textInputFocus && !editorReadonly"
-  },
+  // Source Controlビューへフォーカス移動
   {
     "key": "shift+alt+g",
-    "command": "workbench.scm.focus"
+    "command": "workbench.scm.focus",
   },
+  // Cursor拡張: AIでコミットメッセージを生成
   {
     "key": "ctrl+cmd+g",
-    "command": "cursor.generateGitCommitMessage"
+    "command": "cursor.generateGitCommitMessage",
   },
+  // Git: 変更を一括ステージ
   {
     "key": "ctrl+cmd+s",
-    "command": "git.stageAll"
+    "command": "git.stageAll",
   },
+  // Cursor: Unified Sidebarの表示切り替え
   {
     "key": "alt+cmd+s",
     "command": "workbench.action.toggleUnifiedSidebarFromKeyboard",
-    "when": "cursor.agentIdeUnification.enabled == true && !isAuxiliaryWindowFocusedContext"
+    "when": "cursor.agentIdeUnification.enabled == true && !isAuxiliaryWindowFocusedContext",
   },
+  // ワークスペース全体のシンボル検索（Go to Symbol in Workspace）
   {
     "key": "shift+cmd+o",
-    "command": "workbench.action.showAllSymbols"
+    "command": "workbench.action.showAllSymbols",
   },
+  // 既定のCmd+T（Go to Symbol in Workspace）を解除して別用途に再割り当て
   {
     "key": "cmd+t",
-    "command": "-workbench.action.showAllSymbols"
+    "command": "-workbench.action.showAllSymbols",
   },
-  {
-    "key": "cmd+shift+o",
-    "command": "-workbench.action.gotoSymbol"
-  },
+  // 現在フォーカス中のエディターグループにTerminal Editorタブを新規追加
   {
     "key": "cmd+t",
-    "command": "workbench.action.createTerminalEditorSameGroup"
-  }
+    "command": "workbench.action.createTerminalEditorSameGroup",
+  },
 ]
