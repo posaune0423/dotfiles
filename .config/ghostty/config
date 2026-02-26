@@ -22,4 +22,4 @@ keybind = shift+enter=text:\n
 
 # notification
 desktop-notifications = true
- bell-features = title,attention,system
+bell-features = title,attention,system

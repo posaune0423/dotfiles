@@ -71,7 +71,8 @@ biome = "latest"           # formatter & linter
 buf = "latest"             # Protocol Buffers tool
 shfmt = "latest"           # shell script formatter
 shellcheck = "latest"      # shell script linter
-
+stylua = "latest"          # Lua formatter
+taplo = "latest"           # TOML formatter
 # [CLI Tools - Other]
 1password = "latest"       # 1Password CLI
 chromedriver = "latest"    # ChromeDriver

@@ -7,7 +7,7 @@ function _pure_prompt_git \
         return
     end
 
-    if not type -q --no-functions git  # skip git-related features when `git` is not available
+    if not type -q --no-functions git # skip git-related features when `git` is not available
         return $ABORT_FEATURE
     end
 

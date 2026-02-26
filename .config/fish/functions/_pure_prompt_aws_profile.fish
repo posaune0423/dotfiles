@@ -8,11 +8,11 @@ function _pure_prompt_aws_profile --description "Display AWS profile name"
 
         if test -n "$AWS_VAULT"
             set aws_profile "$AWS_VAULT"
-        else if test -n "$AWS_PROFILE" -o "$AWS_PROFILE" != default
+        else if test -n "$AWS_PROFILE" -a "$AWS_PROFILE" != default
             set aws_profile "$AWS_PROFILE"
         end
 
-        if test -n $aws_profile
+        if test -n "$aws_profile"
             echo "$pure_symbol_aws_profile_prefix$aws_profile_color$aws_profile"
         end
     end

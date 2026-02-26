@@ -78,6 +78,10 @@ if ! [[ "$interval" =~ ^[0-9]+$ && "$minutes" =~ ^[0-9]+$ ]]; then
   echo "interval and minutes must be integers." >&2
   exit 1
 fi
+if (( interval < 1 || minutes < 0 )); then
+  echo "interval must be >= 1 and minutes must be >= 0." >&2
+  exit 1
+fi
 
 iterations=$(( (minutes * 60) / interval ))
 if (( iterations < 1 )); then
@@ -187,7 +191,8 @@ for i in $(seq 1 "$iterations"); do
     changed=1
   fi
 
-  issue_line=$(gh api "repos/$repo/issues/$pr/comments?per_page=100" --jq '
+  issue_line=$(gh api --paginate --slurp "repos/$repo/issues/$pr/comments?per_page=100" --jq '
+    [ .[][] ] |
     if length == 0 then "" else
       (max_by(.created_at)) | "\(.id)\t\(.created_at)\t\(.user.login)\t\(.html_url)\t\(.body | gsub("\\n"; " ") | gsub("\\t"; " ") | .[0:200])"
     end
@@ -201,7 +206,8 @@ for i in $(seq 1 "$iterations"); do
     fi
   fi
 
-  review_comment_line=$(gh api "repos/$repo/pulls/$pr/comments?per_page=100" --jq '
+  review_comment_line=$(gh api --paginate --slurp "repos/$repo/pulls/$pr/comments?per_page=100" --jq '
+    [ .[][] ] |
     if length == 0 then "" else
       (max_by(.created_at)) | "\(.id)\t\(.created_at)\t\(.user.login)\t\(.html_url)\t\(.body | gsub("\\n"; " ") | gsub("\\t"; " ") | .[0:200])"
     end
@@ -215,8 +221,8 @@ for i in $(seq 1 "$iterations"); do
     fi
   fi
 
-  review_line=$(gh api "repos/$repo/pulls/$pr/reviews?per_page=100" --jq '
-    [ .[] | select(.submitted_at != null) ] |
+  review_line=$(gh api --paginate --slurp "repos/$repo/pulls/$pr/reviews?per_page=100" --jq '
+    [ .[][] | select(.submitted_at != null) ] |
     if length == 0 then "" else
       (max_by(.submitted_at)) | "\(.id)\t\(.submitted_at)\t\(.user.login)\t\(.html_url)\t\(.state)\t\(.body | gsub("\\n"; " ") | gsub("\\t"; " ") | .[0:200])"
     end
