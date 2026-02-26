@@ -1,3 +1,5 @@
 fish_variables
 .config/fish/fish_variables
 .config/fish/completions.local/
+
+.nvimlog

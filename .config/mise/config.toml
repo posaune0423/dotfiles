@@ -104,3 +104,4 @@ java = "latest"
 # [Bun / Deno]
 bun = "latest"
 deno = "latest"
+usage = "latest"
