@@ -27,7 +27,7 @@ sh ./install.sh --no-update
 - **clone / update**: `~/.dotfiles`
 - **backup**: 既存ファイルを `~/.dotfiles-backup/<timestamp>/...` に退避
 - **symlink**: dotfiles をホーム配下へリンク
-- **VS Code / Cursor**: macOS で該当ディレクトリが存在する場合のみ `settings.json` をリンク
+- **VS Code / Cursor / VSCodium**: macOS で該当ディレクトリが存在する場合のみ `settings.json` / `keybindings.json` をリンク
 
 | source (repo) | destination |
 |---|---|
@@ -35,6 +35,7 @@ sh ./install.sh --no-update
 | `.zshrc` | `~/.zshrc` |
 | `.zprofile` | `~/.zprofile` |
 | `.gitconfig` | `~/.gitconfig` |
+| `.commit_template` | `~/.commit_template` |
 | `.config/zsh/` | `~/.config/zsh/` |
 | `.config/sheldon/` | `~/.config/sheldon/` |
 | `.config/mise/` | `~/.config/mise/` |
@@ -44,7 +45,8 @@ sh ./install.sh --no-update
 | `.config/fish/` | `~/.config/fish/` |
 | `.config/karabiner/` | `~/.config/karabiner/` |
 | `.config/ghostty/` | `~/.config/ghostty/` |
-| `.vscode/settings.json` | `~/Library/Application Support/{Code,Cursor,VSCodium}/User/settings.json`（存在するもののみ） |
+| `.vscode/settings.json` | `~/Library/Application Support/{Code,Code - Insiders,Cursor,VSCodium}/User/settings.json`（存在するもののみ） |
+| `.vscode/keybindings.json` | `~/Library/Application Support/{Code,Code - Insiders,Cursor,VSCodium}/User/keybindings.json`（存在するもののみ） |
 
 ## Inventory (plugins / tools)
 
@@ -65,7 +67,7 @@ sh ./install.sh --no-update
 | WezTerm | `.config/wezterm/` |
 | Ghostty | `.config/ghostty/config` |
 | Karabiner-Elements | `.config/karabiner/karabiner.json` |
-| VS Code / Cursor | `.vscode/settings.json` |
+| VS Code / Cursor / VSCodium | `.vscode/settings.json`, `.vscode/keybindings.json` |
 
 ### Zsh plugins (sheldon)
 
@@ -80,9 +82,7 @@ sh ./install.sh --no-update
 
 | plugin | repo | note |
 |---|---|---|
-| `fisher` | `jorgebucaran/fisher` | plugin manager |
-| `z` | `jethrokuan/z` | directory jumping |
-| `fzf.fish` | `PatrickF1/fzf.fish` | fzf integration |
+| `pure` | `pure-fish/pure` | pure prompt theme |
 
 ### mise tools（全件）
 
@@ -183,6 +183,10 @@ sh ./install.sh --no-update
 |---|---:|---|
 | `biome` | `latest` | formatter & linter |
 | `buf` | `latest` | Protocol Buffers tool |
+| `shfmt` | `latest` | shell script formatter |
+| `shellcheck` | `latest` | shell script linter |
+| `stylua` | `latest` | Lua formatter |
+| `taplo` | `latest` | TOML formatter |
 
 #### CLI Tools - Other
 
@@ -193,6 +197,7 @@ sh ./install.sh --no-update
 | `codex` | `latest` | Codex CLI |
 | `hyperfine` | `latest` | benchmarking tool |
 | `atuin` | `latest` | shell history manager |
+| `usage` | `latest` | CLI usage/help parser |
 
 #### Node.js
 
@@ -309,18 +314,17 @@ sh ./install.sh --no-update
 
 | extension id | used in |
 |---|---|
-| `bmewburn.vscode-intelephense-client` | `[php]` |
-| `esbenp.prettier-vscode` | `[css]`, `[javascript]`, `[javascriptreact]`, `[json]`, `[jsonc]`, `[scss]`, `[typescript]`, `[typescriptreact]`, `[vue]` |
+| `esbenp.prettier-vscode` | `[html]`, `[css]`, `[scss]`, `[javascript]`, `[typescript]`, `[javascriptreact]`, `[typescriptreact]`, `[json]`, `[jsonc]`, `[vue]` |
 | `foxundermoon.shell-format` | `[shellscript]` |
 | `JohnnyMorganz.stylua` | `[lua]` |
 | `ms-python.python` | `[python]` |
 | `redhat.vscode-yaml` | `[yaml]` |
 | `tamasfe.even-better-toml` | `[toml]` |
-| `vscode.html-language-features` | `[html]` |
 
 ### CI
 
 | area | tool | config |
 |---|---|---|
-| Lua formatting | [StyLua](https://github.com/JohnnyMorganz/StyLua) | `stylua.toml` |
-| GitHub Actions | [stylua-action](https://github.com/JohnnyMorganz/stylua-action) | `.github/workflows/stylua.yml` |
+| Format check | `make format` (`scripts/format.sh`) | `Makefile`, `scripts/format/*.sh` |
+| Lint check | `make lint` (`make format` + `shellcheck`) | `Makefile` |
+| GitHub Actions | `CI` workflow (`format` / `lint`) | `.github/workflows/ci.yml` |
