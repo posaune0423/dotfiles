@@ -16,12 +16,12 @@ jobs:
       - name: Install fish
         run: |
           sudo apt-get update
-          sudo apt-get install -y fish
+          sudo apt-get install -y fish jq
 
       - name: Install formatter and lint tools
         uses: taiki-e/install-action@v2
         with:
-          tool: shfmt,shellcheck,jq,stylua,taplo-cli
+          tool: shfmt,shellcheck,stylua,taplo-cli
 
       - name: Run format check
         run: make format
@@ -36,12 +36,12 @@ jobs:
       - name: Install fish
         run: |
           sudo apt-get update
-          sudo apt-get install -y fish
+          sudo apt-get install -y fish jq
 
       - name: Install formatter and lint tools
         uses: taiki-e/install-action@v2
         with:
-          tool: shfmt,shellcheck,jq,stylua,taplo-cli
+          tool: shfmt,shellcheck,stylua,taplo-cli
 
       - name: Run lint
         run: make lint

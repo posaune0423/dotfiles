@@ -71,3 +71,20 @@
 - Added `.config/ghostty/themes/Cursor Dark` with Cursor Dark-aligned palette and UI colors
 - Updated `.config/ghostty/config` to use `theme = Cursor Dark`
 - Removed direct `background` override from config to avoid theme color conflicts
+
+---
+
+# CI install-action jq Failure Fix
+
+## Plan
+
+- [x] Reproduce and pinpoint the CI failure root cause from logs and workflow config
+- [x] Update workflow tool installation to avoid cargo-binstall jq failure
+- [x] Run local verification commands relevant to format/lint workflow
+- [x] Document review results
+
+## Review
+
+- Root cause: `taiki-e/install-action@v2` does not support `jq`, causing fallback to `cargo-binstall` and failure on non-binary `jq` crate
+- Fix: install `jq` via `apt-get` and remove `jq` from install-action tool list in both CI jobs
+- Validation: local `make format` and `make lint` passed
