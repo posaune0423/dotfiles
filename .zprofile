@@ -1,11 +1,9 @@
+# Kiro CLI pre block. Keep at the top of this file.
+[[ -f "${HOME}/Library/Application Support/kiro-cli/shell/zprofile.pre.zsh" ]] && builtin source "${HOME}/Library/Application Support/kiro-cli/shell/zprofile.pre.zsh"
+
 # .zprofile - zsh login shell initialization
 # Runs once per login (e.g. Terminal/iTerm default on macOS).
 # Put PATH construction and one-time setup here.
-
-# --------------------------
-# Kiro CLI pre block. Keep at the top of this file.
-# --------------------------
-[[ -f "$HOME/Library/Application Support/kiro-cli/shell/profile.pre.bash" ]] && source "$HOME/Library/Application Support/kiro-cli/shell/profile.pre.bash"
 
 # --------------------------
 # Build / toolchain environment
@@ -55,7 +53,8 @@ if [[ "$OSTYPE" == darwin* ]]; then
   [[ -n "$GOPATH" ]] && launchctl setenv GOPATH "$GOPATH" 2> /dev/null
 fi
 
-# --------------------------
 # Kiro CLI post block. Keep at the bottom of this file.
-# --------------------------
-[[ -f "$HOME/Library/Application Support/kiro-cli/shell/profile.post.bash" ]] && source "$HOME/Library/Application Support/kiro-cli/shell/profile.post.bash"
+[[ -f "${HOME}/Library/Application Support/kiro-cli/shell/zprofile.post.zsh" ]] && builtin source "${HOME}/Library/Application Support/kiro-cli/shell/zprofile.post.zsh"
+
+# Added by Obsidian
+path_append "/Applications/Obsidian.app/Contents/MacOS"

@@ -1,4 +1,4 @@
-.PHONY: help install format format-check lint lint-local
+.PHONY: help install format format\:fix lint lint\:fix
 
 # Default target
 help:
@@ -6,33 +6,29 @@ help:
 	@echo ""
 	@echo "Targets:"
 	@echo "  install       Run dotfiles installer"
-	@echo "  format        Format shell scripts (sh/zsh/fish)"
-	@echo "  format-check  Check formatting without changes"
-	@echo "  lint          Run shellcheck on shell scripts (fails on errors)"
-	@echo "  lint-local    Run shellcheck on shell scripts (ignores errors)"
+	@echo "  format        Check formatting (sh/zsh/fish/lua/toml/json)"
+	@echo "  format:fix    Apply formatting (sh/zsh/fish/lua/toml/json)"
+	@echo "  lint          Run format checks + shellcheck"
+	@echo "  lint:fix      Apply format fixes then run lint"
 
 # Install dotfiles
 install:
 	./install.sh
 
-# Format shell scripts
-format:
-	./scripts/format.sh
-
 # Check formatting (for CI)
-format-check:
+format:
 	./scripts/format.sh --check
 
-# Lint shell scripts with shellcheck (fails on errors, for CI)
-lint:
+# Apply formatting fixes
+format\:fix:
+	./scripts/format.sh
+
+# Lint shell scripts + formatting checks
+lint: format
 	@echo "Running shellcheck..."
-	@shellcheck install.sh
-	@shellcheck .zshenv .zprofile
+	@shellcheck -S error -s sh install.sh
+	@shellcheck -S error -s bash .zshenv .zprofile .zshrc
 	@echo "Done."
 
-# Lint shell scripts with shellcheck (ignores errors, for local convenience)
-lint-local:
-	@echo "Running shellcheck..."
-	@shellcheck install.sh || true
-	@shellcheck .zshenv .zprofile || true
-	@echo "Done."
+# Apply formatter fixes then run lint checks
+lint\:fix: format\:fix lint

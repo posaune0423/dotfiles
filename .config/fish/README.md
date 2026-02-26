@@ -14,15 +14,11 @@ Fish の設定は `~/.config/fish/` に集約しています（XDG 準拠）。
 .config/fish/
 ├── config.fish
 ├── conf.d/
-│   ├── 00_fig_pre.fish
-│   ├── 00_kiro_pre.fish
 │   ├── 01_env.fish
 │   ├── 02_path.fish
 │   ├── 03_tools.fish
 │   ├── 04_completions_path.fish
 │   ├── 98_aliases.fish
-│   ├── 99_fig_post.fish
-│   ├── 99_kiro_post.fish
 │   └── z.fish
 ├── fish_plugins
 ├── functions/
