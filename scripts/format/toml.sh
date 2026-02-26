@@ -23,6 +23,17 @@ else
   exit 0
 fi
 
+# Some local taplo builds can panic at runtime on macOS.
+# Probe a tiny TOML file once and skip TOML formatting if taplo is unusable.
+PROBE_FILE="$(mktemp "${TMPDIR:-/tmp}/dotfiles-toml-probe.XXXXXX")"
+printf 'x = 1\n' > "$PROBE_FILE"
+if ! taplo "$TAPLO_SUBCOMMAND" --check "$PROBE_FILE" > /dev/null 2>&1; then
+  rm -f "$PROBE_FILE"
+  echo "[toml] skip: taplo runtime is unavailable on this machine"
+  exit 0
+fi
+rm -f "$PROBE_FILE"
+
 REPO_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 cd "$REPO_ROOT"
 

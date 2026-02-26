@@ -6,11 +6,11 @@
 
 ## Steering (Project Context)
 
-Load `.kiro/steering/` as project memory at session start or when context is needed.
+Load `docs/` as project memory at session start or when context is needed.
 
-- **Path**: `.kiro/steering/`
+- **Path**: `docs/`
 - **Default files**: `product.md`, `tech.md`, `structure.md`
-- **Custom files**: Supported; add or manage as needed for the project
+- **Other docs**: Add or manage as needed (e.g. `docs/tasks/`, domain-specific .md)
 
 Use steering to align decisions with product goals, tech stack, and structure.
 

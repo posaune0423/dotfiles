@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  format:
+    name: Format Check (make format)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install fish
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y fish
+
+      - name: Install formatter and lint tools
+        uses: taiki-e/install-action@v2
+        with:
+          tool: shfmt,shellcheck,jq,stylua,taplo-cli
+
+      - name: Run format check
+        run: make format
+
+  lint:
+    name: Lint Check (make lint)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install fish
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y fish
+
+      - name: Install formatter and lint tools
+        uses: taiki-e/install-action@v2
+        with:
+          tool: shfmt,shellcheck,jq,stylua,taplo-cli
+
+      - name: Run lint
+        run: make lint

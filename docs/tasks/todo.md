@@ -33,3 +33,41 @@
 - JSONC files are explicitly skipped (`.vscode/*.json`) to avoid invalid strict-JSON formatting
 - `.github/workflows/stylua.yml` now runs a unified lint job via `make lint`
 - Local verification passed: `make format`, `make lint`
+
+---
+
+# CI Workflow Rename and Cleanup
+
+## Plan
+
+- [x] Replace workflow filename with `ci.yml`
+- [x] Use clear workflow/job names
+- [x] Ensure CI runs `make format` and `make lint`
+- [ ] Re-run local `make format` and `make lint`
+
+## Review
+
+- Pending
+
+### Review Update
+
+- [x] Local verification complete: `make format`, `make lint`
+- Workflow file changed to `.github/workflows/ci.yml`
+- Workflow/job names are now explicit and readable
+
+---
+
+# Ghostty Cursor Dark Custom Theme
+
+## Plan
+
+- [x] Add a Ghostty custom theme file `Cursor Dark` under `.config/ghostty/themes/`
+- [x] Populate theme colors to match existing Cursor Dark palette used in this dotfiles repo
+- [x] Switch Ghostty config to use `theme = Cursor Dark` without conflicting color overrides
+- [x] Verify resulting files and summarize usage
+
+## Review
+
+- Added `.config/ghostty/themes/Cursor Dark` with Cursor Dark-aligned palette and UI colors
+- Updated `.config/ghostty/config` to use `theme = Cursor Dark`
+- Removed direct `background` override from config to avoid theme color conflicts
