@@ -36,10 +36,9 @@ alias g git
 alias pn pnpm
 alias pip pip3
 
-#---------------------------
-# Node.js
-#---------------------------
-alias nodets 'node --experimental-strip-types --experimental-transform-types --experimental-detect-module --no-warnings=ExperimentalWarning'
+function gho
+    gh pr view --web 2>/dev/null; or gh browse
+end
 
 #---------------------------
 # Cursor Terminal: Disable q command
