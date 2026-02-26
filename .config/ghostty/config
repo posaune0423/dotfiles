@@ -1,6 +1,5 @@
 # Theme
-theme = Ayu
-background = #0d1117
+theme = Cursor Dark
 
 # Font
 font-family = Monaco Nerd Font
@@ -19,3 +18,7 @@ background-blur-radius = 13
 
 # Keybindings
 keybind = shift+enter=text:\n
+
+# notification
+desktop-notifications = true
+bell-features = title,attention,system

@@ -21,7 +21,7 @@ require("lazy").setup({
       "LazyVim/LazyVim",
       import = "lazyvim.plugins",
       opts = {
-        colorscheme = "ayu-mirage",
+        colorscheme = "cursor_dark",
         news = {
           lazyvim = true,
           neovim = true,
@@ -56,7 +56,7 @@ require("lazy").setup({
     version = false, -- always use the latest git commit
     -- version = "*", -- try installing the latest stable version for plugins that support semver
   },
-  install = { colorscheme = { "ayu", "tokyonight", "habamax" } },
+  install = { colorscheme = { "cursor_dark", "habamax" } },
   checker = {
     enabled = true,
     notify = false,

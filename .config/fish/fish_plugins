@@ -1,7 +1,1 @@
-# Fish Plugin Manager (fisher)
-# Install: curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source && fisher install jorgebucaran/fisher
-# Run 'fisher update' to install/update all plugins
-
-jorgebucaran/fisher
-jethrokuan/z
-PatrickF1/fzf.fish
+pure-fish/pure
