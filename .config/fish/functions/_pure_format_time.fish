@@ -4,9 +4,9 @@ set FAILURE 1
 function _pure_format_time \
     --description="Format milliseconds to a human readable format" \
     --argument-names \
-        milliseconds \
-        threshold \
-        show_subsecond
+    milliseconds \
+    threshold \
+    show_subsecond
 
     set --query show_subsecond[1]; or set show_subsecond false
     test "$milliseconds" -lt 0; and return $FAILURE
@@ -32,12 +32,11 @@ function _pure_format_time \
     echo -e (string join ' ' $time)
 end
 
-
 function _pure_format_time_subseconds \
     --description="Format duration milliseconds to a human readable format" \
     --argument-names \
-        duration \
-        threshold
+    duration \
+    threshold
 
     set --local subseconds
     if test "$duration" -gt $threshold

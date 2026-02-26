@@ -4,14 +4,14 @@ Migrate changes from a worktree to a new branch cut from main (or a specified ba
 
 ## Arguments
 
-$ARGUMENTS = `[branch-name] [base-branch=main]`
+$ARGUMENTS = `[branch_name] [base_branch=main]`
 
-- **branch-name** (optional): Name of the branch to create (e.g., `feat/add-buy-agent`)
-- **base-branch** (optional): Base branch to cut from (default: `main`)
+- **branch_name** (optional): Name of the branch to create (e.g., `feat/add-buy-agent`)
+- **base_branch** (optional): Base branch to cut from (default: `main`)
 
-### Auto-generated Branch Name (when branch-name is omitted)
+### Auto-generated Branch Name (when branch_name is omitted)
 
-When branch-name is omitted, the branch name is automatically determined from the **change analysis in Step 2**.
+When branch_name is omitted, the branch name is automatically determined from the **change analysis in Step 2**.
 
 #### Auto-naming Rules
 
@@ -52,38 +52,38 @@ git branch --show-current
 # Full picture of changes (staged + unstaged + untracked)
 git status --porcelain=v1
 
-# Committed changes ahead of origin/base-branch
-git log origin/${base-branch}..HEAD --oneline 2>/dev/null || echo "No commits ahead"
+# Committed changes ahead of origin/base_branch
+git log origin/${base_branch}..HEAD --oneline 2>/dev/null || echo "No commits ahead"
 
-# Diff stat against origin/base-branch
-git diff origin/${base-branch} --stat 2>/dev/null
+# Diff stat against origin/base_branch
+git diff origin/${base_branch} --stat 2>/dev/null
 
 # Fetch latest from remote
-git fetch origin ${base-branch}
+git fetch origin ${base_branch}
 ```
 
 ### 2. Analyze Changes
 
-1. Analyze **all changes** by combining `git diff origin/${base-branch}` (committed + unstaged) with untracked files
+1. Analyze **all changes** by combining `git diff origin/${base_branch}` (committed + unstaged) with untracked files
 2. Read the content of each changed file and determine:
    - Functional grouping (which responsibility/layer each change belongs to)
    - Intent of each group (feat / fix / refactor / chore / docs / test / style / perf)
    - Appropriate scope (e.g., db, api, web, infra, auth, etc.)
 3. Plan the commit strategy (following the format described below)
-4. **If branch-name was omitted**: Determine the branch name from the analysis above using the auto-naming rules
+4. **If branch_name was omitted**: Determine the branch name from the analysis above using the auto-naming rules
    - Generate `${type}/${slug}` from the most dominant type and scope across all changes
    - If an active spec exists under `.kiro/specs/`, reflect its feature name in the slug
 
 ### 3. Create Branch and Migrate Changes
 
-**Case A: Uncommitted changes only (HEAD is the same as origin/${base-branch}, or no commits ahead)**
+**Case A: Uncommitted changes only (HEAD is the same as origin/${base_branch}, or no commits ahead)**
 
 ```bash
 # Stash all changes
-git stash push -u -m "worktree-pr: temp stash for ${branch-name}"
+git stash push -u -m "worktree-pr: temp stash for ${branch_name}"
 
-# Create new branch from origin/${base-branch}
-git checkout -b ${branch-name} origin/${base-branch}
+# Create new branch from origin/${base_branch}
+git checkout -b ${branch_name} origin/${base_branch}
 
 # Apply stashed changes
 git stash pop
@@ -93,19 +93,19 @@ git stash pop
 
 ```bash
 # Record the range of committed changes
-FIRST_COMMIT=$(git log origin/${base-branch}..HEAD --reverse --format='%H' | head -1)
+FIRST_COMMIT=$(git log origin/${base_branch}..HEAD --reverse --format='%H' | head -1)
 LAST_COMMIT=$(git rev-parse HEAD)
 
 # Stash uncommitted changes if any
-git stash push -u -m "worktree-pr: temp stash for ${branch-name}" 2>/dev/null
+git stash push -u -m "worktree-pr: temp stash for ${branch_name}" 2>/dev/null
 
-# Create new branch from origin/${base-branch}
-git checkout -b ${branch-name} origin/${base-branch}
+# Create new branch from origin/${base_branch}
+git checkout -b ${branch_name} origin/${base_branch}
 
 # Cherry-pick committed changes
 git cherry-pick ${FIRST_COMMIT}^..${LAST_COMMIT}
 # If cherry-pick conflicts: fall back to soft reset for manual commit
-# git reset --soft origin/${base-branch}
+# git reset --soft origin/${base_branch}
 
 # Apply stash if present
 git stash pop 2>/dev/null
@@ -114,14 +114,14 @@ git stash pop 2>/dev/null
 **Case C: Patch-based migration (fallback when Case B conflicts)**
 
 ```bash
-# Create patch of all diffs against origin/${base-branch}
-git diff origin/${base-branch} > /tmp/worktree-pr.patch
+# Create patch of all diffs against origin/${base_branch}
+git diff origin/${base_branch} > /tmp/worktree-pr.patch
 
 # Archive untracked files
-git ls-files --others --exclude-standard -z | xargs -0 tar czf /tmp/worktree-pr-untracked.tar.gz 2>/dev/null
+git ls-files --others --exclude-standard -z | xargs -0 --no-run-if-empty tar czf /tmp/worktree-pr-untracked.tar.gz 2>/dev/null
 
 # Create new branch
-git checkout -b ${branch-name} origin/${base-branch}
+git checkout -b ${branch_name} origin/${base_branch}
 
 # Apply patch
 git apply /tmp/worktree-pr.patch
@@ -138,7 +138,7 @@ Based on the analysis from Step 2, commit changes in logical groups. **Follow `.
 ### 5. Push
 
 ```bash
-git push -u origin ${branch-name}
+git push -u origin ${branch_name}
 ```
 
 ### 6. Create PR
@@ -181,7 +181,7 @@ Create a pull request using `gh pr create`.
 
 ```bash
 gh pr create \
-  --base ${base-branch} \
+  --base ${base_branch} \
   --title "${pr_title}" \
   --body "$(cat <<'EOF'
 ${pr_body}
@@ -208,6 +208,6 @@ Report the PR URL to the user as the final output.
 - Follow `.gitignore` strictly. Additionally, never stage `.env`, `.cursor/**` (except commands)
 - Never commit files containing credentials or secrets
 - If a conflict occurs, report the situation to the user and ask for instructions
-- Default base-branch to `main` when omitted
-- Auto-generate branch-name from change analysis when omitted (see auto-naming rules)
-- If the branch-name (specified or auto-generated) already exists, report an error and suggest an alternative name
+- Default base_branch to `main` when omitted
+- Auto-generate branch_name from change analysis when omitted (see auto-naming rules)
+- If the branch_name (specified or auto-generated) already exists, report an error and suggest an alternative name

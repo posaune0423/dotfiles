@@ -3,7 +3,7 @@ function _pure_prompt_transient \
     --argument-names exit_code
 
     set --local pure_symbol (_pure_prompt_symbol $exit_code)
-    
+
     echo (\
         _pure_print_prompt \
         $pure_symbol \

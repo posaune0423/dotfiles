@@ -19,9 +19,9 @@ end
 
 function _pure_install --on-event pure_install \
     --description 'Fisher handler when pure prompt is installed'
-    
+
     source $__fish_config_dir/conf.d/pure.fish
-    
+
     printf "Now using: %s %s\n" \
         (_pure) \
         (set_color --bold $pure_color_success)$pure_version(set_color normal)
@@ -32,7 +32,7 @@ end
 # to read old `pure_version` before sourcing conf.d/pure.fish happens.
 function _pure_update --on-event _pure_init_update \
     --description 'Fisher handler pure prompt is updated'
-    
+
     set --local previous_version $pure_version
     source $__fish_config_dir/conf.d/pure.fish
 
