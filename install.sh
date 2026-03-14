@@ -432,8 +432,8 @@ print_section "${ICON_FOLDER} Creating Symlinks"
 run mkdir -p "$HOME/.config"
 
 # Count total items
-# 5 root + 9 XDG configs + up to 8 editor settings (4 apps × 2 files) = 22
-set_total_items 22
+# 5 root + 10 XDG configs + up to 8 editor settings (4 apps x 2 files) = 23
+set_total_items 23
 
 # Root dotfiles
 link_item "$DOTFILES_DIR/.zshenv" "$HOME/.zshenv" "$TS"
@@ -448,6 +448,7 @@ link_item "$DOTFILES_DIR/.config/sheldon" "$HOME/.config/sheldon" "$TS"
 link_item "$DOTFILES_DIR/.config/nvim" "$HOME/.config/nvim" "$TS"
 link_item "$DOTFILES_DIR/.config/wezterm" "$HOME/.config/wezterm" "$TS"
 link_item "$DOTFILES_DIR/.config/mise" "$HOME/.config/mise" "$TS"
+link_item "$DOTFILES_DIR/.config/macos" "$HOME/.config/macos" "$TS"
 link_item "$DOTFILES_DIR/.config/karabiner" "$HOME/.config/karabiner" "$TS"
 link_item "$DOTFILES_DIR/.config/ghostty" "$HOME/.config/ghostty" "$TS"
 link_item "$DOTFILES_DIR/.config/starship.toml" "$HOME/.config/starship.toml" "$TS"

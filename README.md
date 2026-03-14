@@ -39,6 +39,7 @@ sh ./install.sh --no-update
 | `.config/zsh/` | `~/.config/zsh/` |
 | `.config/sheldon/` | `~/.config/sheldon/` |
 | `.config/mise/` | `~/.config/mise/` |
+| `.config/macos/` | `~/.config/macos/` |
 | `.config/nvim/` | `~/.config/nvim/` |
 | `.config/wezterm/` | `~/.config/wezterm/` |
 | `.config/starship.toml` | `~/.config/starship.toml` |
@@ -67,7 +68,21 @@ sh ./install.sh --no-update
 | WezTerm | `.config/wezterm/` |
 | Ghostty | `.config/ghostty/config` |
 | Karabiner-Elements | `.config/karabiner/karabiner.json` |
+| macOS network profiles | `.config/macos/network/`, `scripts/macos-network.sh` |
 | VS Code / Cursor / VSCodium | `.vscode/settings.json`, `.vscode/keybindings.json` |
+
+### macOS network sysctl profiles
+
+TCP tuning values such as `net.inet.tcp.delayed_ack`, `sendspace`, `recvspace`, `autorcvbufmax`, and `win_scale_factor` are managed as `sysctl.conf` compatible profiles under `.config/macos/network/profiles/`.
+
+- Inspect current drift from the active profile: `./scripts/macos-network.sh status`
+- Switch and apply immediately: `./scripts/macos-network.sh use balanced-ethernet`
+- Apply-only (without changing active profile pointer): `./scripts/macos-network.sh apply`
+- Snapshot the current live values back into a profile file: `./scripts/macos-network.sh export-defaults ./.config/macos/network/profiles/apple-default.conf`
+
+Notes:
+- Profiles are not auto-applied by the installer; applying them requires `sudo`.
+- `balanced-ethernet.conf` assumes a standard 1500-byte MTU path on Ethernet/Wi-Fi. If you are mostly on VPN/tunnels, start from `apple-default.conf` and tune more conservatively, especially `mssdflt`.
 
 ### Zsh plugins (sheldon)
 

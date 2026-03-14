@@ -21,5 +21,9 @@ function update_completions --description "Update fish completions (generated + 
         mise completions fish >"$outdir/mise.fish"
     end
 
+    if type -q codex
+        codex completion fish >"$outdir/codex.fish"
+    end
+
     echo "Updated completions in: $outdir"
 end

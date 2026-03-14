@@ -2,7 +2,8 @@
 theme = Cursor Dark
 
 # Font
-font-family = Monaco Nerd Font
+font-family = Monaco Nerd Font CodingAgent
+window-title-font-family = Monaco Nerd Font CodingAgent
 font-size = 13
 
 # Window
@@ -22,3 +23,35 @@ keybind = shift+enter=text:\n
 # notification
 desktop-notifications = true
 bell-features = title,attention,system
+
+# --- Mac-Native Behavior ---
+# Make the title bar transparent for a cleaner look
+macos-titlebar-style = tabs
+# Use standard macOS behavior in fullscreen
+macos-window-shadow = true
+# Hide the mouse cursor while typing
+mouse-hide-while-typing = true
+
+# --- Keybindings (Split Layout) ---
+
+# Important: split downward with Cmd+Enter
+keybind = cmd+enter=new_split:down
+
+# Split to the right with Cmd+Shift+Enter
+keybind = cmd+shift+enter=new_split:right
+
+# Move between splits with Cmd + arrow keys
+keybind = cmd+left=goto_split:left
+keybind = cmd+right=goto_split:right
+keybind = cmd+up=goto_split:top
+keybind = cmd+down=goto_split:bottom
+
+# Resize splits with Cmd + Shift + arrow keys
+keybind = cmd+shift+left=resize_split:left,20
+keybind = cmd+shift+right=resize_split:right,20
+keybind = cmd+shift+up=resize_split:up,20
+keybind = cmd+shift+down=resize_split:down,20
+
+# Close the current pane (split) with Cmd + W
+# Prefer closing the pane because the default may close the whole window
+keybind = cmd+w=close_surface

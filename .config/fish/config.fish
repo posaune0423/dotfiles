@@ -58,3 +58,6 @@ if status is-interactive
 end
 
 fish_add_path -a "/Users/asumayamada/.config/.foundry/bin"
+
+# OpenClaw Completion
+source "/Users/asumayamada/.openclaw/completions/openclaw.fish"
