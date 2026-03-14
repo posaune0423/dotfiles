@@ -2,15 +2,26 @@
 
 - Always prefer simplicity over pathological correctness. YAGNI, KISS, DRY. No backward-compat shims or fallback paths unless they come free without adding cyclomatic complexity.
 
-- please do not eslint-disable, just fix the implementation
+- Please use GitHub Flavored Markdown, including callouts like the examples below, to create rich, well-formatted documentation:
+
+```
+> [!NOTE]
+> hoge
+```
+```
+> [!IMPORTANT]
+> fuga
+```
+
 
 ## Steering (Project Context)
 
 Load `docs/` as project memory at session start or when context is needed.
 
 - **Path**: `docs/`
-- **Default files**: `product.md`, `tech.md`, `structure.md`
-- **Other docs**: Add or manage as needed (e.g. `docs/tasks/`, domain-specific .md)
+- **Default files**: `PRODUCT.md`, `TECH.md`, `STRUCTURE.md`
+- **Task memory**: `.agents/memory/todo.md`, `.agents/memory/lessons.md`
+- **Other docs**: Add or manage as needed (domain-specific .md)
 
 Use steering to align decisions with product goals, tech stack, and structure.
 
@@ -34,7 +45,7 @@ Use steering to align decisions with product goals, tech stack, and structure.
 
 ### 3. Self-Improvement Loop
 
-- After ANY correction from the user: update `docs/tasks/lessons.md` with the pattern
+- After ANY correction from the user: update `.agents/memory/lessons.md` with the pattern
 - Write rules for yourself that prevent the same mistake
 - Ruthlessly iterate on these lessons until mistake rate drops
 - Review lessons at session start for relevant project
@@ -62,12 +73,12 @@ Use steering to align decisions with product goals, tech stack, and structure.
 
 ## Task Management
 
-1. **Plan First**: Write plan to `docs/tasks/todo.md` with checkable items
+1. **Plan First**: Write plan to `.agents/memory/todo.md` with checkable items
 2. **Verify Plan**: Check in before starting implementation
 3. **Track Progress**: Mark items complete as you go
 4. **Explain Changes**: High-level summary at each step
-5. **Document Results**: Add review section to `docs/tasks/todo.md`
-6. **Capture Lessons**: Update `docs/tasks/lessons.md` after corrections
+5. **Document Results**: Add review section to `.agents/memory/todo.md`
+6. **Capture Lessons**: Update `.agents/memory/lessons.md` after corrections
 
 ## Core Principles
 

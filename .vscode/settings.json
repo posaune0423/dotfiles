@@ -2,11 +2,11 @@
   // ============================================
   // Editor Settings
   // ============================================
-  "editor.fontFamily": "Monaco Nerd Font",
+  "editor.fontFamily": "Monaco Nerd Font CodingAgent",
   "editor.fontSize": 11,
   "editor.fontWeight": "400",
-  "editor.codeLensFontFamily": "Monaco Nerd Font",
-  "editor.inlayHints.fontFamily": "Monaco Nerd Font",
+  "editor.codeLensFontFamily": "Monaco Nerd Font CodingAgent",
+  "editor.inlayHints.fontFamily": "Monaco Nerd Font CodingAgent",
   "editor.insertSpaces": false,
   "editor.renderWhitespace": "boundary",
   "editor.suggestSelection": "first",
@@ -23,13 +23,14 @@
   // Terminal Settings
   // ============================================
   "terminal.integrated.defaultProfile.osx": "fish",
-  "terminal.integrated.fontFamily": "Monaco Nerd Font",
+  "terminal.integrated.fontFamily": "Monaco Nerd Font CodingAgent",
   "terminal.integrated.fontSize": 12,
   "terminal.integrated.fontWeight": "200",
   "terminal.integrated.enableImages": true,
   "terminal.integrated.enableVisualBell": false,
   "terminal.integrated.shellIntegration.enabled": false,
   "terminal.integrated.bellDuration": 0,
+  "terminal.integrated.tabs.title": "${sequence}",
 
   // ============================================
   // Files Settings
@@ -39,12 +40,12 @@
   "files.exclude": {
     "**/__pycache__": true,
     "**/*.idea": true,
-    "**/*.pyc": true,
+    "**/*.pyc": true
   },
   "files.associations": {
     "*Dockerfile*": "dockerfile",
     "yml": "yaml",
-    "*.html": "html",
+    "*.html": "html"
   },
   "files.watcherExclude": {
     "**/.git/objects/**": true,
@@ -55,7 +56,7 @@
     "**/Dropbox/**": true,
     "**/.nuxt/**": true,
     "**/build/**": true,
-    "**/Pictures/**": true,
+    "**/Pictures/**": true
   },
 
   // ============================================
@@ -69,23 +70,23 @@
   // ============================================
   "accessibility.signals.terminalBell": {
     "announcement": "off",
-    "sound": "on",
+    "sound": "on"
   },
   "accessibility.signals.terminalCommandSucceeded": {
     "sound": "off",
-    "announcement": "off",
+    "announcement": "off"
   },
   "accessibility.signals.terminalCommandFailed": {
     "sound": "off",
-    "announcement": "off",
+    "announcement": "off"
   },
   "accessibility.signals.lineHasBreakpoint": {
     "announcement": "off",
-    "sound": "off",
+    "sound": "off"
   },
   "accessibility.signals.onDebugBreak": {
     "sound": "off",
-    "announcement": "off",
+    "announcement": "off"
   },
 
   // ============================================
@@ -107,67 +108,67 @@
   // Language-Specific Settings
   // ============================================
   "[html]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[css]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[scss]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[javascript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[typescript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[javascriptreact]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[jsonc]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[typescriptreact]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[vue]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[json]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[markdown]": {
-    "files.trimTrailingWhitespace": false,
+    "files.trimTrailingWhitespace": false
   },
   "[dockerfile]": {
     "editor.quickSuggestions": {
-      "strings": true,
-    },
+      "strings": true
+    }
   },
   "[yaml]": {
-    "editor.defaultFormatter": "redhat.vscode-yaml",
+    "editor.defaultFormatter": "redhat.vscode-yaml"
   },
   "[shellscript]": {
-    "editor.defaultFormatter": "foxundermoon.shell-format",
+    "editor.defaultFormatter": "foxundermoon.shell-format"
   },
   "[makefile]": {
-    "editor.insertSpaces": false,
+    "editor.insertSpaces": false
   },
   "[python]": {
     "editor.defaultFormatter": "ms-python.python",
     "gitlens.codeLens.symbolScopes": ["!Module"],
-    "editor.wordBasedSuggestions": "off",
+    "editor.wordBasedSuggestions": "off"
   },
   "[cairo]": {
     "editor.tabSize": 4,
     "editor.insertSpaces": true,
-    "editor.semanticHighlighting.enabled": true,
+    "editor.semanticHighlighting.enabled": true
   },
   "[toml]": {
-    "editor.defaultFormatter": "tamasfe.even-better-toml",
+    "editor.defaultFormatter": "tamasfe.even-better-toml"
   },
   "[lua]": {
-    "editor.defaultFormatter": "JohnnyMorganz.stylua",
+    "editor.defaultFormatter": "JohnnyMorganz.stylua"
   },
 
   // ============================================
@@ -225,14 +226,14 @@
     "!Select",
     "!Select sequence",
     "!Split",
-    "!Split sequence",
+    "!Split sequence"
   ],
   "yaml.validate": false,
 
   // Material Icon Theme
   "material-icon-theme.activeIconPack": "react",
   "material-icon-theme.files.associations": {
-    "*.cairo": "rust",
+    "*.cairo": "rust"
   },
 
   // Cairo
@@ -265,10 +266,10 @@
     "Substreams",
     "timestamptz",
     "UUPS",
-    "Velvett",
+    "Velvett"
   ],
   "terminal.integrated.env.osx": {
-    "Q_NEW_SESSION": "1",
+    "Q_NEW_SESSION": "1"
   },
   "markdown-preview-enhanced.previewTheme": "github-dark.css",
   "update.releaseTrack": "dev",
@@ -278,5 +279,5 @@
   "workbench.colorTheme": "Cursor Dark",
   "explorer.confirmDragAndDrop": false,
   "explorer.confirmPasteNative": false,
-  "svg.preview.mode": "svg",
+  "svg.preview.mode": "svg"
 }

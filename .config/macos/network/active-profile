@@ -1,0 +1,5 @@
+# Active profile for ./scripts/macos-network.sh.
+# Change the profile name below, then run:
+#   ./scripts/macos-network.sh status
+#   ./scripts/macos-network.sh use <profile-name>
+balanced-ethernet
