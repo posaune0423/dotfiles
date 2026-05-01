@@ -40,12 +40,13 @@
   "files.exclude": {
     "**/__pycache__": true,
     "**/*.idea": true,
-    "**/*.pyc": true
+    "**/*.pyc": true,
+    "**/*.jj": true,
   },
   "files.associations": {
     "*Dockerfile*": "dockerfile",
     "yml": "yaml",
-    "*.html": "html"
+    "*.html": "html",
   },
   "files.watcherExclude": {
     "**/.git/objects/**": true,
@@ -56,7 +57,7 @@
     "**/Dropbox/**": true,
     "**/.nuxt/**": true,
     "**/build/**": true,
-    "**/Pictures/**": true
+    "**/Pictures/**": true,
   },
 
   // ============================================
@@ -70,23 +71,23 @@
   // ============================================
   "accessibility.signals.terminalBell": {
     "announcement": "off",
-    "sound": "on"
+    "sound": "on",
   },
   "accessibility.signals.terminalCommandSucceeded": {
     "sound": "off",
-    "announcement": "off"
+    "announcement": "off",
   },
   "accessibility.signals.terminalCommandFailed": {
     "sound": "off",
-    "announcement": "off"
+    "announcement": "off",
   },
   "accessibility.signals.lineHasBreakpoint": {
     "announcement": "off",
-    "sound": "off"
+    "sound": "off",
   },
   "accessibility.signals.onDebugBreak": {
     "sound": "off",
-    "announcement": "off"
+    "announcement": "off",
   },
 
   // ============================================
@@ -108,67 +109,67 @@
   // Language-Specific Settings
   // ============================================
   "[html]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
   },
   "[css]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
   },
   "[scss]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
   },
   "[javascript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
   },
   "[typescript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
   },
   "[javascriptreact]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
   },
   "[jsonc]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
   },
   "[typescriptreact]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
   },
   "[vue]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
   },
   "[json]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
   },
   "[markdown]": {
-    "files.trimTrailingWhitespace": false
+    "files.trimTrailingWhitespace": false,
   },
   "[dockerfile]": {
     "editor.quickSuggestions": {
-      "strings": true
-    }
+      "strings": true,
+    },
   },
   "[yaml]": {
-    "editor.defaultFormatter": "redhat.vscode-yaml"
+    "editor.defaultFormatter": "redhat.vscode-yaml",
   },
   "[shellscript]": {
-    "editor.defaultFormatter": "foxundermoon.shell-format"
+    "editor.defaultFormatter": "foxundermoon.shell-format",
   },
   "[makefile]": {
-    "editor.insertSpaces": false
+    "editor.insertSpaces": false,
   },
   "[python]": {
     "editor.defaultFormatter": "ms-python.python",
     "gitlens.codeLens.symbolScopes": ["!Module"],
-    "editor.wordBasedSuggestions": "off"
+    "editor.wordBasedSuggestions": "off",
   },
   "[cairo]": {
     "editor.tabSize": 4,
     "editor.insertSpaces": true,
-    "editor.semanticHighlighting.enabled": true
+    "editor.semanticHighlighting.enabled": true,
   },
   "[toml]": {
-    "editor.defaultFormatter": "tamasfe.even-better-toml"
+    "editor.defaultFormatter": "tamasfe.even-better-toml",
   },
   "[lua]": {
-    "editor.defaultFormatter": "JohnnyMorganz.stylua"
+    "editor.defaultFormatter": "JohnnyMorganz.stylua",
   },
 
   // ============================================
@@ -192,11 +193,6 @@
   "python.venvFolders": ["venv"],
   "python.defaultInterpreterPath": "/Users/yamadaasuma/.pyenv/shims/python",
   "python.venvPath": "/Users/a.yamada/.pyenv",
-
-  // PHP CS Fixer
-  "php-cs-fixer.executablePath": "/usr/local/bin/php-cs-fixer",
-  "php-cs-fixer.onsave": true,
-  "php-cs-fixer.rules": "@Symfony,-phpdoc_summary,-phpdoc_to_comment",
 
   // YAML
   "yaml.customTags": [
@@ -226,21 +222,21 @@
     "!Select",
     "!Select sequence",
     "!Split",
-    "!Split sequence"
+    "!Split sequence",
   ],
   "yaml.validate": false,
 
   // Material Icon Theme
   "material-icon-theme.activeIconPack": "react",
   "material-icon-theme.files.associations": {
-    "*.cairo": "rust"
+    "*.cairo": "rust",
   },
 
   // Cairo
-  "cairo1.enableLanguageServer": true,
-  "cairo1.enableScarb": true,
-  "cairo1.scarbPath": "~/.asdf/shims/scarb",
-  "cairo1.languageServerPath": "~/.asdf/installs/dojo/0.7.2/bin/dojo-language-server",
+  // "cairo1.enableLanguageServer": true,
+  // "cairo1.enableScarb": true,
+  // "cairo1.scarbPath": "~/.asdf/shims/scarb",
+  // "cairo1.languageServerPath": "~/.asdf/installs/dojo/0.7.2/bin/dojo-language-server",
 
   // Red Hat Telemetry
   "redhat.telemetry.enabled": true,
@@ -265,19 +261,24 @@
     "Solana",
     "Substreams",
     "timestamptz",
+    "usecase",
     "UUPS",
-    "Velvett"
+    "Velvett",
   ],
   "terminal.integrated.env.osx": {
     "Q_NEW_SESSION": "1"
   },
-  "markdown-preview-enhanced.previewTheme": "github-dark.css",
-  "update.releaseTrack": "dev",
-  "update.mode": "silentlyApplyOnQuit",
   "workbench.editor.enablePreview": false,
   "editor.accessibilitySupport": "off",
   "workbench.colorTheme": "Cursor Dark",
   "explorer.confirmDragAndDrop": false,
   "explorer.confirmPasteNative": false,
-  "svg.preview.mode": "svg"
+  "svg.preview.mode": "svg",
+  "[svg]": {
+    "editor.defaultFormatter": "jock.svg",
+  },
+  "roo-cline.debug": false,
+  "roo-cline.allowedCommands": ["git log", "git diff", "git show"],
+  "roo-cline.deniedCommands": [],
+  "hediet.vscode-drawio.resizeImages": null,
 }

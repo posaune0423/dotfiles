@@ -49,6 +49,8 @@ if [[ "$OSTYPE" == darwin* ]]; then
   launchctl setenv LC_ALL "$LC_ALL" 2> /dev/null
   launchctl setenv EDITOR "$EDITOR" 2> /dev/null
   launchctl setenv VISUAL "$VISUAL" 2> /dev/null
+  launchctl setenv CLOUDSDK_PYTHON "$CLOUDSDK_PYTHON" 2> /dev/null
+  launchctl setenv CLOUDSDK_GSUTIL_PYTHON "$CLOUDSDK_GSUTIL_PYTHON" 2> /dev/null
 
   [[ -n "$GOPATH" ]] && launchctl setenv GOPATH "$GOPATH" 2> /dev/null
 fi

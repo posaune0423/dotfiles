@@ -3,6 +3,10 @@ function update_completions --description "Update fish completions (generated + 
     set -l outdir "$__fish_config_dir/completions.local"
     command mkdir -p "$outdir"
 
+    # Some CLIs in this repo still need maintained completions in
+    # $__fish_config_dir/completions/ because they do not expose fish output.
+    # Today that includes: claude, cursor-agent
+
     # 1) Generate basic completions from man pages (best-effort).
     if type -q fish_update_completions
         fish_update_completions >/dev/null 2>&1
