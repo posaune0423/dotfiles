@@ -17,5 +17,6 @@ if command -v fzf &> /dev/null; then
   source <(fzf --zsh)
 fi
 
-# Note: Version management (Node/Python/Ruby/Go/Java/Bun/Deno) is now handled by mise
-# See ~/.zshrc for mise activation
+# Note: Version management (Node/Python/Ruby/Go/Java/Bun/Deno) is now handled by mise.
+# PATH (brew, mise shims, pnpm, bun, lm-studio, etc.) is built in ~/.config/zsh/path-exports.zsh
+# and sourced from ~/.zshenv.
