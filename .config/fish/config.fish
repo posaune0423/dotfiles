@@ -61,3 +61,11 @@ fish_add_path -a "/Users/asumayamada/.config/.foundry/bin"
 
 # OpenClaw Completion
 source "/Users/asumayamada/.openclaw/completions/openclaw.fish"
+
+# Added by LM Studio CLI (lms)
+set -gx PATH $PATH /Users/asumayamada/.cache/lm-studio/bin
+# End of LM Studio CLI section
+
+
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/Users/asumayamada/google-cloud-sdk/path.fish.inc' ]; . '/Users/asumayamada/google-cloud-sdk/path.fish.inc'; end

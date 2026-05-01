@@ -43,9 +43,15 @@
 
 [user]
   name = posaune0423
-  email = posaune0423@users.noreply.github.com
+	email = posaune0423@users.noreply.github.com
   name = Asuma Yamada
 [init]
   defaultBranch = main
 [coderabbit]
   machineId = cli/5e230c7ab7e04a689604bc38df53e81e
+[credential "https://github.com"]
+	helper = 
+	helper = !/Users/asumayamada/.local/share/mise/installs/github-cli/2.91.0/gh_2.91.0_macOS_arm64/bin/gh auth git-credential
+[credential "https://gist.github.com"]
+	helper = 
+	helper = !/Users/asumayamada/.local/share/mise/installs/github-cli/2.91.0/gh_2.91.0_macOS_arm64/bin/gh auth git-credential

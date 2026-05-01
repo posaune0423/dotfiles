@@ -76,7 +76,7 @@ taplo = "latest"      # TOML formatter
 # [CLI Tools - Other]
 1password = "latest"    # 1Password CLI
 chromedriver = "latest" # ChromeDriver
-codex = "latest"        # Codex CLI
+codex = "0.128.0"
 hyperfine = "latest"    # benchmarking tool
 atuin = "latest"        # shell history manager
 
@@ -106,3 +106,4 @@ java = "latest"
 bun = "latest"
 deno = "latest"
 usage = "latest"
+lefthook = "2.1.3"

@@ -78,6 +78,10 @@ path_append "$PNPM_HOME"
 # Bun global binaries
 path_append "$HOME/.cache/.bun/bin"
 
+# Keep Google Cloud CLI on a mise-managed Python that both gcloud and gsutil support.
+export CLOUDSDK_PYTHON="${CLOUDSDK_PYTHON:-$HOME/.local/share/mise/installs/python/3.13.13/bin/python3.13}"
+export CLOUDSDK_GSUTIL_PYTHON="${CLOUDSDK_GSUTIL_PYTHON:-$CLOUDSDK_PYTHON}"
+
 # HOMEBREW_FORBIDDEN_FORMULAEを設定して、不要なパッケージをインストールしないようにする
 # Version-managed tools are added to prevent accidental Homebrew installation
 export HOMEBREW_FORBIDDEN_FORMULAE="node python python3 pip npm pnpm yarn claude ruby go openjdk bun deno"
