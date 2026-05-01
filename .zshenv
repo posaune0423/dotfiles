@@ -1,12 +1,11 @@
 # This file is sourced by *every* zsh invocation (interactive/non-interactive,
 # login/non-login). Keep it lightweight:
-# - OK: simple `export` statements
-# - Avoid: PATH mass-editing, `eval`, `source` of large scripts, and any output
+# - OK: simple `export` statements, tiny helpers, one `source` of path-exports
+# - Avoid: `eval`, `source` of large scripts, and any output
 
 # --------------------------
-# PATH (safe + de-duplicated)
+# PATH helpers (used by ~/.config/zsh/path-exports.zsh)
 # --------------------------
-# PATH重複を防ぐヘルパー関数
 path_prepend() {
   [[ -d "$1" ]] && case ":$PATH:" in
     *":$1:"*) ;;
@@ -21,19 +20,23 @@ path_append() {
   esac
 }
 
-# Minimal base PATH (Homebrew first)
-path_prepend "/opt/homebrew/bin"
-path_prepend "/opt/homebrew/sbin"
-path_prepend "/usr/local/bin"
-path_prepend "$HOME/bin"
+# --------------------------
+# Tool roots (must be set before path-exports)
+# --------------------------
+export GOPATH="${GOPATH:-$HOME/go}"
+export PNPM_HOME="${PNPM_HOME:-$HOME/Library/pnpm}"
 
 # --------------------------
-# mise (version manager) shims
+# PATH entries (modular)
 # --------------------------
-# Ensure mise shims are on PATH for all shells (interactive/non-interactive).
-# This is intentionally lightweight and avoids running `eval` here.
-path_prepend "${MISE_DATA_DIR:-$HOME/.local/share/mise}/shims"
-path_prepend "${MISE_DATA_DIR:-$HOME/.local/share/mise}/bin"
+[[ -r "$HOME/.config/zsh/path-exports.zsh" ]] && source "$HOME/.config/zsh/path-exports.zsh"
+
+# --------------------------
+# XDG Base Directory
+# --------------------------
+export XDG_CONFIG_HOME="$HOME/.config"
+export XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
+export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
 
 # --------------------------
 # Language & locale
@@ -49,34 +52,10 @@ export VISUAL="${VISUAL:-nvim}"
 export PAGER="${PAGER:-less}"
 
 # --------------------------
-# XDG Base Directory
-# --------------------------
-# Force XDG_CONFIG_HOME to the standard location.
-# This repo is for git-managing dotfiles; runtime configs should live under ~/.config.
-export XDG_CONFIG_HOME="$HOME/.config"
-export XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
-export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
-
-# --------------------------
 # Small UX defaults (safe)
 # --------------------------
 export CLICOLOR="${CLICOLOR:-1}"
 export LSCOLORS="${LSCOLORS:-gxfxcxdxbxegedabagacad}"
-
-# --------------------------
-# Tool roots (consumed by ~/.zshrc modules)
-# --------------------------
-# Note: Version management is now handled by mise (see ~/.zshrc)
-# Only non-version-manager tool roots are kept here
-
-export GOPATH="${GOPATH:-$HOME/go}"
-export PNPM_HOME="${PNPM_HOME:-$HOME/Library/pnpm}"
-
-# Convenience PATH entries that are cheap and widely useful
-path_append "$PNPM_HOME"
-
-# Bun global binaries
-path_append "$HOME/.cache/.bun/bin"
 
 # Keep Google Cloud CLI on a mise-managed Python that both gcloud and gsutil support.
 export CLOUDSDK_PYTHON="${CLOUDSDK_PYTHON:-$HOME/.local/share/mise/installs/python/3.13.13/bin/python3.13}"
