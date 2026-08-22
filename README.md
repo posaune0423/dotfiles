@@ -24,7 +24,9 @@ sh ./install.sh --no-update
 
 ## What the installer does
 
-- **clone / update**: `~/.dotfiles`
+- **clone / update**: リポジトリ内から `sh ./install.sh` を実行した場合はそのクローン自身。
+  `curl | sh` の場合は `~/ghq/github.com/posaune0423/dotfiles`
+  (`DOTFILES_DIR` / `--dotfiles-dir` で上書き可)
 - **backup**: 既存ファイルを `~/.dotfiles-backup/<timestamp>/...` に退避
 - **symlink**: dotfiles をホーム配下へリンク
 - **VS Code / Cursor / VSCodium**: macOS で該当ディレクトリが存在する場合のみ `settings.json` / `keybindings.json` をリンク
