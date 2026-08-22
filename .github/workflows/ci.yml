@@ -45,3 +45,24 @@ jobs:
 
       - name: Run lint
         run: make lint
+
+  verify:
+    name: Behavior and privacy checks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install shell test dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y fish zsh
+
+      - name: Verify tracked Git config privacy
+        run: sh scripts/verify_gitconfig_privacy.sh
+
+      - name: Verify Fish tool routing
+        run: fish scripts/verify_fish_tool_routing.fish
+
+      - name: Verify Zsh mise routing
+        run: sh scripts/verify_zsh_mise_path.sh
