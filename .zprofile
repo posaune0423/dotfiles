@@ -20,6 +20,10 @@ export HOMEBREW_CASK_OPTS="${HOMEBREW_CASK_OPTS:---appdir=/Applications}"
 # Deno is now managed by mise, so .deno/env is not needed
 [[ -f "$HOME/.local/bin/env" ]] && source "$HOME/.local/bin/env"
 
+# macOS /etc/zprofile may reorder PATH after .zshenv. Reapply the shared order
+# so mise-managed tools win over system and Homebrew copies in login shells.
+[[ -r "$HOME/.config/zsh/path-exports.zsh" ]] && source "$HOME/.config/zsh/path-exports.zsh"
+
 # Starknet default RPC (optional)
 export STARKNET_RPC_URL="${STARKNET_RPC_URL:-https://starknet-mainnet.public.blastapi.io}"
 

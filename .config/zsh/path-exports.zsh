@@ -18,7 +18,6 @@ path_prepend "${MISE_DATA_DIR:-$HOME/.local/share/mise}/bin"
 path_prepend "$HOME/.local/bin"
 
 # --- Node / JS ---
-path_append "$PNPM_HOME"
 
 # --- Bun ---
 path_append "$HOME/.cache/.bun/bin"

@@ -35,7 +35,8 @@ set -gx LSCOLORS gxfxcxdxbxegedabagacad
 # Tool Roots
 #---------------------------
 set -gx GOPATH $HOME/go
-set -gx PNPM_HOME $HOME/Library/pnpm
+set -e PNPM_HOME
+set -gx PATH (string match -v "$HOME/Library/pnpm" -- $PATH)
 
 #---------------------------
 # Homebrew Settings
