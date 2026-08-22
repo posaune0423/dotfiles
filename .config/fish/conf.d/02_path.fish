@@ -43,9 +43,6 @@ __add_path_if_exists $mise_data_dir/shims $mise_data_dir/bin
 # Go binaries
 __append_path_if_exists $GOPATH/bin
 
-# pnpm
-__append_path_if_exists $PNPM_HOME
-
 # Bun global binaries
 __append_path_if_exists $HOME/.cache/.bun/bin
 
