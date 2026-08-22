@@ -51,6 +51,15 @@ sh ./install.sh --no-update
 | `.vscode/settings.json` | `~/Library/Application Support/{Code,Code - Insiders,Cursor,VSCodium}/User/settings.json`（存在するもののみ） |
 | `.vscode/keybindings.json` | `~/Library/Application Support/{Code,Code - Insiders,Cursor,VSCodium}/User/keybindings.json`（存在するもののみ） |
 
+### Machine-private Git settings
+
+Tracked `.gitconfig` loads optional machine-private settings from `~/.gitconfig.local`. Git safely
+ignores this file when it does not exist.
+
+> [!IMPORTANT]
+> Keep repository-specific paths, conditional identities, and other private Git settings in
+> `~/.gitconfig.local`. The installer does not create or manage that file.
+
 ## Inventory (plugins / tools)
 
 ### Managers
@@ -118,6 +127,8 @@ Notes:
 | `ripgrep` | `latest` | fast grep alternative |
 | `yazi` | `latest` | terminal file manager |
 | `zoxide` | `latest` | smart cd replacement |
+| `pipx:ranger-fm` | `1.9.4` | terminal file manager |
+| `cargo:viu` | `1.6.1` | terminal image viewer |
 
 #### CLI Tools - Text Processing
 
@@ -137,6 +148,8 @@ Notes:
 | `difftastic` | `latest` | structural diff tool |
 | `lazygit` | `latest` | Git TUI |
 | `ghq` | `latest` | Git repository manager |
+| `git-filter-repo` | `2.47.0` | Git history rewriting |
+| `git-lfs` | `3.7.1` | Git large file storage |
 
 #### CLI Tools - System Monitoring
 
@@ -172,6 +185,7 @@ Notes:
 | `just` | `latest` | command runner |
 | `watchexec` | `latest` | file watcher |
 | `dotenvx` | `latest` | .env file runner |
+| `sheldon` | `0.8.5` | shell plugin manager |
 
 #### CLI Tools - Cloud & Infrastructure
 
@@ -183,6 +197,8 @@ Notes:
 | `railway` | `latest` | Railway CLI |
 | `supabase` | `latest` | Supabase CLI |
 | `docker-cli` | `latest` | Docker CLI |
+| `cloudflared` | `2026.8.2` | Cloudflare Tunnel client |
+| `aqua:ipfs/kubo` | `0.43.0` | IPFS Kubo CLI |
 
 #### CLI Tools - Utilities
 
@@ -193,6 +209,8 @@ Notes:
 | `ffmpeg` | `latest` | media processing |
 | `resvg` | `latest` | SVG rendering |
 | `spark` | `latest` | sparklines |
+| `mas` | `7.0.0` | Mac App Store CLI |
+| `aqua:ip7z/7zip` | `26.02` | 7-Zip CLI |
 
 #### CLI Tools - Code Quality
 
@@ -204,6 +222,7 @@ Notes:
 | `shellcheck` | `latest` | shell script linter |
 | `stylua` | `latest` | Lua formatter |
 | `taplo` | `latest` | TOML formatter |
+| `lefthook` | `2.1.3` | Git hooks manager |
 
 #### CLI Tools - Other
 
@@ -211,7 +230,7 @@ Notes:
 |---|---:|---|
 | `1password` | `latest` | 1Password CLI |
 | `chromedriver` | `latest` | ChromeDriver |
-| `codex` | `latest` | Codex CLI |
+| `npm:@openai/codex` | `latest` | Codex CLI |
 | `hyperfine` | `latest` | benchmarking tool |
 | `atuin` | `latest` | shell history manager |
 | `usage` | `latest` | CLI usage/help parser |
@@ -221,9 +240,20 @@ Notes:
 | tool (mise key) | version | note |
 |---|---:|---|
 | `node` | `latest` |  |
+| `npm:node-gyp` | `13.0.1` | native addon build tool |
+| `npm:pnpm` | `10.32.1` | package manager |
 | `npm:serverless` | `v3` |  |
-| `npm:aws-cdk` | `latest` |  |
+| `npm:aws-cdk` | `2.1131.0` |  |
 | `npm:cdktf-cli` | `latest` |  |
+| `npm:@graphprotocol/graph-cli` | `0.98.1` |  |
+| `npm:@metaplex-foundation/cli` | `0.0.13` |  |
+| `npm:@softwaretechnik/dbml-renderer` | `1.0.31` |  |
+| `npm:dev3000` | `0.0.59` |  |
+| `npm:nodemon` | `3.1.14` |  |
+| `npm:openclaw` | `2026.6.8` |  |
+| `npm:tsx` | `4.22.4` |  |
+| `npm:turbo` | `2.9.18` |  |
+| `npm:vercel` | `48.12.1` |  |
 
 #### Python
 
@@ -247,11 +277,12 @@ Notes:
 |---|---:|---|
 | `go` | `latest` |  |
 
-#### Java
+#### Java / Kotlin
 
 | tool (mise key) | version | note |
 |---|---:|---|
 | `java` | `latest` |  |
+| `kotlin` | `2.4.0` | Kotlin compiler |
 
 #### Bun / Deno
 

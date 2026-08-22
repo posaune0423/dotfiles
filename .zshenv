@@ -7,10 +7,9 @@
 # PATH helpers (used by ~/.config/zsh/path-exports.zsh)
 # --------------------------
 path_prepend() {
-  [[ -d "$1" ]] && case ":$PATH:" in
-    *":$1:"*) ;;
-    *) export PATH="$1:$PATH" ;;
-  esac
+  [[ -d "$1" ]] || return
+  path=("$1" ${path:#$1})
+  export PATH
 }
 
 path_append() {
@@ -24,7 +23,8 @@ path_append() {
 # Tool roots (must be set before path-exports)
 # --------------------------
 export GOPATH="${GOPATH:-$HOME/go}"
-export PNPM_HOME="${PNPM_HOME:-$HOME/Library/pnpm}"
+unset PNPM_HOME
+path=(${path:#$HOME/Library/pnpm})
 
 # --------------------------
 # PATH entries (modular)
