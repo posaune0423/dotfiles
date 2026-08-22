@@ -11,7 +11,7 @@ assert_completion() {
 
   output="$(fish -ic "complete -C '$command_name --'")"
 
-  if ! printf '%s\n' "$output" | grep -F -- "$expected_option" >/dev/null 2>&1; then
+  if ! printf '%s\n' "$output" | grep -F -- "$expected_option" > /dev/null 2>&1; then
     echo "[fail] $command_name: missing completion $expected_option" >&2
     exit 1
   fi
