@@ -127,7 +127,7 @@
     "editor.defaultFormatter": "esbenp.prettier-vscode",
   },
   "[jsonc]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.defaultFormatter": "vscode.json-language-features",
   },
   "[typescriptreact]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode",
@@ -138,8 +138,12 @@
   "[json]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode",
   },
+  "[jsonl]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+  },
   "[markdown]": {
     "files.trimTrailingWhitespace": false,
+    "editor.defaultFormatter": "denoland.vscode-deno",
   },
   "[dockerfile]": {
     "editor.quickSuggestions": {
@@ -170,6 +174,9 @@
   },
   "[lua]": {
     "editor.defaultFormatter": "JohnnyMorganz.stylua",
+  },
+  "[svg]": {
+    "editor.defaultFormatter": "jock.svg",
   },
 
   // ============================================
@@ -252,6 +259,8 @@
     "Chainlink",
     "cooldown",
     "daiko",
+    "Ghostty",
+    "hyperliquid",
     "Initializable",
     "moltworker",
     "neverthrow",
@@ -259,14 +268,16 @@
     "posaune",
     "Reentrancy",
     "Solana",
+    "Starknet",
     "Substreams",
     "timestamptz",
     "usecase",
     "UUPS",
     "Velvett",
+    "viem"
   ],
   "terminal.integrated.env.osx": {
-    "Q_NEW_SESSION": "1"
+    "Q_NEW_SESSION": "1",
   },
   "workbench.editor.enablePreview": false,
   "editor.accessibilitySupport": "off",
@@ -274,11 +285,13 @@
   "explorer.confirmDragAndDrop": false,
   "explorer.confirmPasteNative": false,
   "svg.preview.mode": "svg",
-  "[svg]": {
-    "editor.defaultFormatter": "jock.svg",
-  },
   "roo-cline.debug": false,
   "roo-cline.allowedCommands": ["git log", "git diff", "git show"],
   "roo-cline.deniedCommands": [],
   "hediet.vscode-drawio.resizeImages": null,
+  "window.autoDetectColorScheme": false,
+  "remote.SSH.remotePlatform": {
+    "hetzner": "linux"
+  },
+  "js/ts.experimental.useTsgo": true,
 }
