@@ -3,6 +3,7 @@ theme = Cursor Dark
 
 # Font
 font-family = Monaco Nerd Font CodingAgent
+# font-family = Hiragino Sans
 window-title-font-family = Monaco Nerd Font CodingAgent
 font-size = 13
 
@@ -55,3 +56,6 @@ keybind = cmd+shift+down=resize_split:down,20
 # Close the current pane (split) with Cmd + W
 # Prefer closing the pane because the default may close the whole window
 keybind = cmd+w=close_surface
+
+# [feature]
+font-feature = -dlig
