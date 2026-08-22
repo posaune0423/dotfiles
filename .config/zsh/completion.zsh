@@ -8,7 +8,7 @@
 
 # Helper function to check if compinit is already done
 function _is_compinit_done() {
-  [[ -n "$_comp_dumpfile" ]] || (( $+functions[compdef] ))
+  [[ -n "$_comp_dumpfile" ]] || (($+functions[compdef]))
 }
 
 # Only run if completion system is not yet initialized
@@ -34,14 +34,14 @@ fi
 # Completion Styles (Standard)
 #---------------------------
 # These styles apply to standard zsh completion
-zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'           # Case insensitive
-zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}        # Colorize completions
-zstyle ':completion:*' menu select                           # Menu selection
-zstyle ':completion:*' group-name ''                         # No group names
-zstyle ':completion:*' verbose yes                           # Verbose output
-zstyle ':completion:*:descriptions' format '%B%d%b'          # Description format
-zstyle ':completion:*:messages' format '%d'                  # Message format
-zstyle ':completion:*:warnings' format 'No matches for: %d'  # Warning format
+zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'             # Case insensitive
+zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}           # Colorize completions
+zstyle ':completion:*' menu select                              # Menu selection
+zstyle ':completion:*' group-name ''                            # No group names
+zstyle ':completion:*' verbose yes                              # Verbose output
+zstyle ':completion:*:descriptions' format '%B%d%b'             # Description format
+zstyle ':completion:*:messages' format '%d'                     # Message format
+zstyle ':completion:*:warnings' format 'No matches for: %d'     # Warning format
 zstyle ':completion:*:corrections' format '%B%d (errors: %e)%b' # Correction format
 
 # Kill command completion styles
