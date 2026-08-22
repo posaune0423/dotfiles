@@ -29,6 +29,12 @@ echo "[json] start"
 while IFS= read -r f; do
   [ -f "$f" ] || continue
   case "$f" in
+    # App-owned state: Karabiner-Elements and lazy.nvim rewrite these in their
+    # own layout, so formatting them here only churns the diff.
+    .config/karabiner/karabiner.json | .config/nvim/lazy-lock.json | .config/nvim/lazyvim.json)
+      SKIPPED=$((SKIPPED + 1))
+      continue
+      ;;
     .agents/* | .git/*)
       SKIPPED=$((SKIPPED + 1))
       continue
