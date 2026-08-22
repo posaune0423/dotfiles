@@ -1,87 +1,135 @@
-# Agent Guidelines
+# AGENTS.md
 
-- Always prefer simplicity over pathological correctness. YAGNI, KISS, DRY. No backward-compat shims or fallback paths unless they come free without adding cyclomatic complexity.
+## Repository scope
 
-- Please use GitHub Flavored Markdown, including callouts like the examples below, to create rich, well-formatted documentation:
+This is the public source repository for personal macOS dotfiles. `install.sh` links tracked files
+into the user's home directory, so editing a tracked config may affect the live shell or app
+immediately when that link is already installed.
 
+These instructions apply at the repository root. `dotagents/` is a Git submodule with its own
+`AGENTS.md`; follow the submodule instructions for work inside it.
+
+## Sources of truth
+
+- `install.sh` owns clone/update, backup, and symlink behavior. Keep the install table in
+  `README.md` synchronized with it.
+- `.config/mise/config.toml` owns runtime and CLI versions. Keep the mise inventory in `README.md`
+  synchronized with it.
+- Fish reads `.config/fish/conf.d/*.fish` in lexical order before `config.fish` for interactive and
+  non-interactive shells. Guard interactive-only work with `status is-interactive`.
+- `.zshenv`, `.zprofile`, `.zshrc`, and `.config/zsh/` jointly define Zsh startup. Preserve their
+  login, interactive, and environment-only boundaries.
+- `.config/macos/network/` and `scripts/macos-network.sh` jointly define the network-profile
+  contract.
+- `Makefile`, `scripts/format/`, and `.github/workflows/ci.yml` define repository validation. Use
+  the existing Make targets; do not introduce a second task runner for ordinary changes.
+- Edit `AGENTS.md`, not `CLAUDE.md`. `CLAUDE.md` must remain a symlink to `AGENTS.md`.
+
+There is no `docs/` steering tree in this repository. Local task notes under ignored
+`.agents/memory/` are not repository documentation or a source of truth and must never be
+committed.
+
+## Ownership and generated state
+
+- `.config/karabiner/karabiner.json`, `.config/nvim/lazy-lock.json`, and
+  `.config/nvim/lazyvim.json` are app-managed state. Include them only for an intentional app
+  change, inspect the semantic diff, and do not reformat them.
+- `.config/fish/completions/*.fish` is vendored or generated upstream output. Replace a completion
+  from its owning tool; do not hand-format it.
+- `.config/fish/completions.local/`, Fish variable files, `.nvimlog`, and `.agents/memory/` are
+  machine-local and ignored. Never force-add them.
+- Never add `.config/karabiner/automatic_backups/` snapshots.
+- A generated or app-managed file becoming dirty is not evidence that it belongs in a commit.
+  Tie it to the requested behavior before staging it.
+
+## Privacy and portability
+
+Treat every tracked file, commit, PR body, and review comment as public.
+
+- Do not place credentials, tokens, real SSIDs, non-public account or machine identifiers, private
+  repository or client names, private URLs, machine-specific workspace paths, or conditional Git
+  identities in tracked files, commits, PR bodies, or review comments. Intentionally public Git
+  author identity and explicitly public, non-sensitive tool metadata are allowed.
+- Keep repository-specific Git paths and identities in `~/.gitconfig.local`. Tracked `.gitconfig`
+  may include that optional file but must not contain repository-specific `includeIf` rules.
+- Prefer `$HOME`, XDG variables, and command lookup over new `/Users/...` paths or
+  version-specific binary paths.
+- Before staging, inspect the full diff for private identifiers. Run
+  `sh scripts/verify_gitconfig_privacy.sh` whenever Git configuration changes.
+
+## Safe change workflow
+
+1. Start with `git status --short --branch`, `git diff`, and `git submodule status`. Preserve
+   unrelated local changes; never clean, reset, reformat, or stage them as collateral work.
+2. Make the smallest change for one observable behavior. If a source of truth changes, update its
+   derived README section in the same change.
+3. For shell routing, installer, or privacy regressions, add or update an isolated verification
+   script under `scripts/`. Use a temporary `HOME` or `ZDOTDIR` and assert command resolution,
+   output, or exit status rather than source-text strings.
+4. Treat installer and network actions as stateful. Do not run `install.sh` without `--dry-run`, or
+   run `./scripts/macos-network.sh` with the `use`, `apply`, or `export-defaults` subcommand,
+   without explicit user authorization. Prefer dry-run or read-only commands.
+5. Before committing, recheck `git status`, `git diff --check`, and the staged diff. Exclude
+   app-generated churn and unrelated live-config edits.
+
+## Validation
+
+Run commands from the repository root. `make lint` includes the format check.
+
+```sh
+make lint
+git diff --check
 ```
-> [!NOTE]
-> hoge
+
+For Git privacy or shell command-routing changes, also run:
+
+```sh
+sh scripts/verify_gitconfig_privacy.sh
+fish scripts/verify_fish_tool_routing.fish
+sh scripts/verify_zsh_mise_path.sh
 ```
+
+Use the relevant additional check when changing its surface:
+
+```sh
+sh scripts/verify_fish_completions.sh
+sh ./install.sh --dry-run --yes --no-update
+./scripts/macos-network.sh validate --all
 ```
-> [!IMPORTANT]
-> fuga
-```
 
+The network validation command is macOS-only. A green Linux CI run does not replace a macOS
+login-shell or affected-app smoke test. Report local checks, CI, and live shell/app verification as
+separate evidence.
 
-## Steering (Project Context)
+## Submodule contract
 
-Load `docs/` as project memory at session start or when context is needed.
+- Initialize missing content with `git submodule update --init --recursive`.
+- The parent repository owns only `.gitmodules` and the `dotagents` gitlink. Make content changes in
+  the `dotagents` repository, commit and review them there, then update the parent pointer
+  intentionally.
+- Before committing a pointer bump, run `git -C dotagents status --short --branch`,
+  `git submodule status`, and inspect `git diff --submodule=log`.
+- Never absorb nested uncommitted `dotagents` work into an unrelated parent-repository PR.
 
-- **Path**: `docs/`
-- **Default files**: `PRODUCT.md`, `TECH.md`, `STRUCTURE.md`
-- **Task memory**: `.agents/memory/todo.md`, `.agents/memory/lessons.md`
-- **Other docs**: Add or manage as needed (domain-specific .md)
+## Branches and pull requests
 
-Use steering to align decisions with product goals, tech stack, and structure.
+- Branch from `main`. Use the established `feat/<name>`, `fix/<name>`, or `chore/<name>` prefixes;
+  never use an agent or tool prefix.
+- Do not push directly to `main`. Keep each PR scoped to one concern and keep submodule work
+  separate unless a pointer update is the stated purpose.
+- Write PR bodies in Japanese with context, changes, user-visible effect, validation, and caveats.
+  Preserve existing CodeRabbit-managed sections when updating a PR.
+- Do not merge unless the user explicitly requests it.
 
----
+## Code review rules
 
-## Workflow Orchestration
-
-### 1. Plan Node Default
-
-- Enter plan mode for ANY non-trivial task (3+ steps or architectural decisions)
-- If something goes sideways, STOP and re-plan immediately - don't keep pushing
-- Use plan mode for verification steps, not just building
-- Write detailed specs upfront to reduce ambiguity
-
-### 2. Subagent Strategy
-
-- Use subagents liberally to keep main context window clean
-- Offload research, exploration, and parallel analysis to subagents
-- For complex problems, throw more compute at it via subagents
-- One tack per subagent for focused execution
-
-### 3. Self-Improvement Loop
-
-- After ANY correction from the user: update `.agents/memory/lessons.md` with the pattern
-- Write rules for yourself that prevent the same mistake
-- Ruthlessly iterate on these lessons until mistake rate drops
-- Review lessons at session start for relevant project
-
-### 4. Verification Before Done
-
-- Never mark a task complete without proving it works
-- Diff behavior between main and your changes when relevant
-- Ask yourself: "Would a staff engineer approve this?"
-- Run tests, check logs, demonstrate correctness
-
-### 5. Demand Elegance (Balanced)
-
-- For non-trivial changes: pause and ask "is there a more elegant way?"
-- If a fix feels hacky: "Knowing everything I know now, implement the elegant solution"
-- Skip this for simple, obvious fixes - don't over-engineer
-- Challenge your own work before presenting it
-
-### 6. Autonomous Bug Fixing
-
-- When given a bug report: just fix it. Don't ask for hand-holding
-- Point at logs, errors, failing tests - then resolve them
-- Zero context switching required from the user
-- Go fix failing CI tests without being told how
-
-## Task Management
-
-1. **Plan First**: Write plan to `.agents/memory/todo.md` with checkable items
-2. **Verify Plan**: Check in before starting implementation
-3. **Track Progress**: Mark items complete as you go
-4. **Explain Changes**: High-level summary at each step
-5. **Document Results**: Add review section to `.agents/memory/todo.md`
-6. **Capture Lessons**: Update `.agents/memory/lessons.md` after corrections
-
-## Core Principles
-
-- **Simplicity First**: Make every change as simple as possible. Impact minimal code.
-- **No Laziness**: Find root causes. No temporary fixes. Senior developer standards.
-- **Minimal Impact**: Changes should only touch what's necessary. Avoid introducing bugs.
+- Flag credentials, private identifiers, absolute machine paths, or repository-specific Git
+  identities. Safe path: move them to an untracked local include or environment variable.
+- Flag changes that can replace live home-directory targets without preserving installer backup and
+  dry-run behavior. Safe path: keep replacement recoverable and prove it with dry-run output.
+- Flag Fish/Zsh startup-order changes that shadow mise-managed tools or diverge between login and
+  interactive shells. Safe path: test observable command resolution in an isolated environment.
+- Flag app-generated formatting churn and accidental `dotagents` gitlink changes. Safe path: keep
+  only the semantic, explicitly requested change.
+- Do not accept formatting or CI success as behavioral proof by itself. Require a focused regression
+  check and state any macOS or app-level verification that was not performed.
