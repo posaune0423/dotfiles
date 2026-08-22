@@ -155,6 +155,23 @@ short_path() {
   esac
 }
 
+default_dotfiles_dir() {
+  # Run from inside a clone (`sh ./install.sh`): link that clone, so the repo
+  # you are looking at is the one that is symlinked.
+  case "$0" in
+    sh | -sh | dash | -dash | bash | -bash | -) ;; # piped from curl: no script path
+    *)
+      _self_dir="$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"
+      if [ -e "$_self_dir/.git" ]; then
+        printf "%s\n" "$_self_dir"
+        return 0
+      fi
+      ;;
+  esac
+  # Piped from curl: clone into the ghq layout.
+  printf "%s\n" "$HOME/ghq/github.com/posaune0423/dotfiles"
+}
+
 # =============================================================================
 # Configuration
 # =============================================================================
@@ -162,7 +179,7 @@ DRY_RUN=0
 FORCE=0
 NO_UPDATE=0
 NO_BACKUP=0
-DOTFILES_DIR="${DOTFILES_DIR:-$HOME/.dotfiles}"
+DOTFILES_DIR="${DOTFILES_DIR:-$(default_dotfiles_dir)}"
 REPO_URL="${REPO_URL:-https://github.com/posaune0423/dotfiles.git}"
 BRANCH="${BRANCH:-main}"
 BACKUP_ROOT="${BACKUP_ROOT:-$HOME/.dotfiles-backup}"
@@ -241,7 +258,7 @@ ${BOLD}OPTIONS:${RESET}
     ${GREEN}--force${RESET}          Alias of --yes
     ${GREEN}--no-update${RESET}      Do not git pull if repo already exists
     ${GREEN}--no-backup${RESET}      Do not backup existing files (${YELLOW}NOT recommended${RESET})
-    ${GREEN}--dotfiles-dir${RESET}   Install location (default: ${DIM}\$HOME/.dotfiles${RESET})
+    ${GREEN}--dotfiles-dir${RESET}   Install location (default: ${DIM}this clone, or \$HOME/ghq/github.com/posaune0423/dotfiles${RESET})
     ${GREEN}--repo${RESET}           Git repo URL
     ${GREEN}--branch${RESET}         Git branch (default: ${DIM}main${RESET})
     ${GREEN}-h, --help${RESET}       Show this help
