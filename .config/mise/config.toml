@@ -8,6 +8,7 @@ auto_install = true
 uvx = true
 
 [tools]
+# This personal toolchain intentionally tracks "latest" unless compatibility requires a pin.
 # [CLI Tools - File Operations]
 bat = "latest"             # cat with syntax highlighting
 eza = "latest"             # modern ls replacement
@@ -82,12 +83,14 @@ shfmt = "latest"      # shell script formatter
 shellcheck = "latest" # shell script linter
 stylua = "latest"     # Lua formatter
 taplo = "latest"      # TOML formatter
+lefthook = "2.1.3"    # Git hooks manager
 # [CLI Tools - Other]
 1password = "latest"           # 1Password CLI
 chromedriver = "latest"        # ChromeDriver
 "npm:@openai/codex" = "latest"
 hyperfine = "latest"           # benchmarking tool
 atuin = "latest"               # shell history manager
+usage = "latest"               # CLI usage/help parser
 
 # [Node.js]
 node = "latest"
@@ -119,12 +122,10 @@ ruby = "latest"
 # [Go]
 go = "latest"
 
-# [Java]
+# [Java / Kotlin]
 java = "latest"
+kotlin = { version = "2.4.0", asset_pattern = "kotlin-compiler-*.zip", bin_path = "kotlinc/bin" }
 
 # [Bun / Deno]
 bun = "latest"
 deno = "latest"
-usage = "latest"
-lefthook = "2.1.3"
-kotlin = { version = "2.4.0", asset_pattern = "kotlin-compiler-*.zip", bin_path = "kotlinc/bin" }

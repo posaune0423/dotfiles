@@ -112,6 +112,9 @@ Notes:
 
 ### mise tools（全件）
 
+> [!NOTE]
+> `latest`は個人環境を継続更新するための意図的な指定です。互換性を固定する必要があるtoolのみ、明示versionを指定します。
+
 <details>
 <summary>click to expand</summary>
 

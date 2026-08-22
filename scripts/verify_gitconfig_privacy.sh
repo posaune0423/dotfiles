@@ -16,6 +16,11 @@ if git config --file "$CONFIG" --name-only --get-regexp '^includeIf\.' > /dev/nu
   exit 1
 fi
 
+if git config --file "$CONFIG" --name-only --get-regexp '^coderabbit\.machineid$' > /dev/null 2>&1; then
+  echo "[fail] CodeRabbit machine identity must stay out of tracked .gitconfig" >&2
+  exit 1
+fi
+
 case "$(git config --file "$CONFIG" --get-regexp '.*')" in
   *'/Users/'* | *'/Private/'* | *'/Work/'*)
     echo "[fail] tracked .gitconfig contains a machine-specific workspace path" >&2
