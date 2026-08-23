@@ -61,57 +61,30 @@ ignores this file when it does not exist.
 > Keep repository-specific paths, conditional identities, and other private Git settings in
 > `~/.gitconfig.local`. The installer does not create or manage that file.
 
-### Git worktrees (git-wt)
+### Git worktrees
 
-[git-wt](https://github.com/k1LoW/git-wt) を `git wt` サブコマンドとして使います。
-ワークツリーは `ghq root` 直下ではなくリポジトリ配下の `.worktrees/` に作られるため、
-`ghq`/`peco` のリポジトリ一覧が汚れず、後片付けも `git wt -d <branch>` で完結します。
+エージェント（Claude Code / Codex）が作る worktree に、gitignore された作業用ファイルを
+引き継がせます。worktree の作成・削除そのものはツール側に任せ、このリポジトリが持つのは
+`.worktreeinclude` 1 枚だけです。
 
-| 設定 | 場所 |
-|---|---|
-| `wt.basedir = .worktrees` | `.gitconfig` |
-| `wt.copy`（gitignore された小さなファイルを新 worktree へ複製） | `.gitconfig` |
-| shell 連携（`git wt` で自動 `cd` + 補完） | `.config/fish/conf.d/03_tools.fish`, `.config/zsh/tools.zsh` |
-| `wt` (fzf でワークツリーを選んで移動) | `.config/fish/conf.d/98_aliases.fish`, `.config/zsh/aliases.zsh` |
+| 何を                                              | どこで               |
+| ------------------------------------------------- | -------------------- |
+| 新しい worktree へコピーする gitignore 対象ファイル | `.worktreeinclude`   |
 
-```sh
-git wt                  # 一覧
-git wt feat/foo         # 作成 or 切り替え（+ 自動 cd）
-git wt -d feat/foo      # ワークツリーとブランチを安全に削除（通常はこれ）
-git wt -D feat/foo      # 破壊的: 未コミットの変更や未マージのブランチも捨てる
-wt                      # fzf で選んで移動
-```
-
-> [!WARNING]
-> 後片付けは `git wt -d` を使ってください。`git wt -D` と `rm -rf .worktrees` は
-> 安全確認を飛ばし、未コミットの作業を失ったり worktree メタデータを残したりします。
+`.worktreeinclude` は gitignore 構文で、**マッチし、かつ gitignore されている**パスだけが
+コピーされます。tracked なファイルは複製されません。Claude Code と Codex の両方が同じ
+ファイルを読むため、リポジトリに commit しておけば作成経路を問わず同じ結果になります。
 
 > [!NOTE]
-> shell 連携は `git` のラッパー関数を定義します。`git wt` 以外のサブコマンドは
-> そのまま本体へ委譲されるため、`g`（`alias g git`）を含む通常の Git 操作は変わりません。
-> 挙動は `sh scripts/verify_git_wt.sh` で検証できます。
-
-#### 新しい worktree へ引き継ぐ gitignore 対象ファイル
-
-`wt.copy` で `CLAUDE.local.md` / `.env*` / `.claude/settings.local.json` を新しい worktree へ
-**実体コピー**します。symlink は使いません。symlink されたエントリは `.gitignore` の
-末尾スラッシュ付きパターンにマッチせず untracked 扱いになり `git wt -d` が恒久的に拒否されるうえ、
-状態を共有すると worktree 同士が独立でなくなるためです。
+> `.worktreeinclude` が処理されるのは、エージェントが自分で worktree を作るときだけです。
+> シェルから `git worktree add` した場合はコピーされないので、必要なファイルは手で入れてください。
 
 **依存関係は意図的にコピーしません。** worktree ごとにパッケージマネージャで入れます。
-pnpm プロジェクトでの実測（Next.js アプリ、`node_modules` 1.4GB、依存 1191 パッケージ）:
 
-| 方式 | 所要 | 実ディスク | 結果 |
-|---|---|---|---|
-| `wt.copy` で node_modules をコピー | 20s | 重複 | **壊れた**（コピー元の cross-tree symlink をそのまま複製） |
-| worktree 内で `pnpm install` | 10s | 133MB | 正常。worktree 内で解決が完結 |
-
-コピーは遅いだけでなく、コピー元のリンク farm が壊れていればそれも忠実に複製します。
-リポジトリ単位で hook を設定するのが正解です。
-
-```sh
-git config --local --add wt.hook 'pnpm install --frozen-lockfile'
-```
+| 方式                          | 所要 | 実ディスク | 結果                                                     |
+| ----------------------------- | ---- | ---------- | -------------------------------------------------------- |
+| node_modules をコピー         | 20s  | 重複       | **壊れた**（コピー元の cross-tree symlink をそのまま複製） |
+| worktree 内で `pnpm install`  | 10s  | 133MB      | 正常。worktree 内で解決が完結                            |
 
 APFS の copy-on-write により、2本目以降の worktree の実ディスク増加は小さく保たれます
 （`du` は 1.2GB と表示しますが実際の増分は 133MB でした）。片方の worktree で依存を
@@ -121,13 +94,6 @@ APFS の copy-on-write により、2本目以降の worktree の実ディスク�
 > parallel に動かすときは**ポートが衝突**します。`next dev` は空きポートへ自動で退避しますが、
 > `.env` に `NEXT_PUBLIC_BASE_URL=http://localhost:3000/` のような固定値があると、
 > 退避先のポートと食い違います。worktree ごとにポートを明示するか `.env.local` で上書きしてください。
-
-<!-- separate the two alert blocks so they do not render as one -->
-
-> [!NOTE]
-> worktree をリポジトリ配下に置くため、親を辿るツールは main checkout の設定も見つけます。
-> 実測では Next.js が workspace root を main checkout 側の `pnpm-workspace.yaml` と推定して
-> 警告を出しました（起動と描画自体は成功）。気になる場合はプロジェクト側で root を明示してください。
 
 ## Inventory (plugins / tools)
 
@@ -223,7 +189,6 @@ Notes:
 | `ghq` | `latest` | Git repository manager |
 | `git-filter-repo` | `2.47.0` | Git history rewriting |
 | `git-lfs` | `3.7.1` | Git large file storage |
-| `aqua:k1LoW/git-wt` | `latest` | git worktree helper (git wt) |
 
 #### CLI Tools - System Monitoring
 
