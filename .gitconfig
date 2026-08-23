@@ -47,8 +47,11 @@
 [init]
   defaultBranch = main
 [wt]
-  # git-wt: keep worktrees under the repository root, not under ghq root.
-  # `rm -rf .worktrees` then only touches worktrees, never the repo itself.
+  # git-wt: keep worktrees under the repository root, not under ghq root, so a
+  # stray delete cannot reach the repository's own .git directory.
+  # Remove worktrees with `git wt -d <branch>`; it runs the safety checks and
+  # prunes the worktree metadata. `git wt -D` and `rm -rf .worktrees` are
+  # destructive: they discard uncommitted work and leave stale metadata behind.
   basedir = .worktrees
 [credential "https://github.com"]
 	helper = 
