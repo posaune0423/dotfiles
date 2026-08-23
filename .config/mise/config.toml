@@ -58,6 +58,7 @@ dotenvx = "latest"   # .env file runner
 sheldon = "0.8.5"    # shell plugin manager
 
 # [CLI Tools - Cloud & Infrastructure]
+gcloud = "latest"           # Google Cloud CLI
 aws = "latest"              # AWS CLI
 terraform = "latest"        # Infrastructure as Code
 act = "latest"              # GitHub Actions locally
