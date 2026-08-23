@@ -64,7 +64,7 @@ ignores this file when it does not exist.
 
 [git-wt](https://github.com/k1LoW/git-wt) を `git wt` サブコマンドとして使います。
 ワークツリーは `ghq root` 直下ではなくリポジトリ配下の `.worktrees/` に作られるため、
-`ghq`/`peco` のリポジトリ一覧が汚れず、後片付けも `git wt -D <branch>` で完結します。
+`ghq`/`peco` のリポジトリ一覧が汚れず、後片付けも `git wt -d <branch>` で完結します。
 
 | 設定 | 場所 |
 |---|---|
@@ -75,9 +75,14 @@ ignores this file when it does not exist.
 ```sh
 git wt                  # 一覧
 git wt feat/foo         # 作成 or 切り替え（+ 自動 cd）
-git wt -d feat/foo      # ワークツリーとブランチを安全に削除
+git wt -d feat/foo      # ワークツリーとブランチを安全に削除（通常はこれ）
+git wt -D feat/foo      # 破壊的: 未コミットの変更や未マージのブランチも捨てる
 wt                      # fzf で選んで移動
 ```
+
+> [!WARNING]
+> 後片付けは `git wt -d` を使ってください。`git wt -D` と `rm -rf .worktrees` は
+> 安全確認を飛ばし、未コミットの作業を失ったり worktree メタデータを残したりします。
 
 > [!NOTE]
 > shell 連携は `git` のラッパー関数を定義します。`git wt` 以外のサブコマンドは

@@ -36,15 +36,25 @@ FIXTURE="$TEST_ROOT/repo"
 mkdir -p "$FIXTURE"
 FIXTURE="$(CDPATH= cd -- "$FIXTURE" && pwd -P)"
 
-# Exercise the tracked global config, and only that one.
+# Exercise the tracked global config, and only that one. GIT_CONFIG_GLOBAL does
+# not stop the tracked `[include] path = ~/.gitconfig.local` from loading, so
+# HOME has to move too or a machine-local override could decide the result.
+TEST_HOME="$TEST_ROOT/home"
+mkdir -p "$TEST_HOME"
+HOME="$TEST_HOME"
 GIT_CONFIG_GLOBAL="$TRACKED_GITCONFIG"
 GIT_CONFIG_SYSTEM=/dev/null
-export GIT_CONFIG_GLOBAL GIT_CONFIG_SYSTEM
+export HOME GIT_CONFIG_GLOBAL GIT_CONFIG_SYSTEM
 
 git init -q -b main "$FIXTURE"
 echo seed > "$FIXTURE/seed.txt"
 git -C "$FIXTURE" add seed.txt
-git -C "$FIXTURE" -c commit.gpgsign=false commit -qm "seed"
+# Synthetic identity: the fixture must not depend on, or record, the real user.
+git -C "$FIXTURE" \
+  -c user.name="git-wt verifier" \
+  -c user.email="git-wt-verifier@example.invalid" \
+  -c commit.gpgsign=false \
+  commit -qm "seed"
 
 cat > "$TEST_ROOT/probe.fish" << 'PROBE_FISH'
 set -l repo_root $argv[1]
