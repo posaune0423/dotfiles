@@ -122,6 +122,8 @@ APFS の copy-on-write により、2本目以降の worktree の実ディスク�
 > `.env` に `NEXT_PUBLIC_BASE_URL=http://localhost:3000/` のような固定値があると、
 > 退避先のポートと食い違います。worktree ごとにポートを明示するか `.env.local` で上書きしてください。
 
+<!-- separate the two alert blocks so they do not render as one -->
+
 > [!NOTE]
 > worktree をリポジトリ配下に置くため、親を辿るツールは main checkout の設定も見つけます。
 > 実測では Next.js が workspace root を main checkout 側の `pnpm-workspace.yaml` と推定して

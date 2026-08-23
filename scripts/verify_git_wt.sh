@@ -40,10 +40,11 @@ FIXTURE="$(CDPATH= cd -- "$FIXTURE" && pwd -P)"
 # not stop the tracked `[include] path = ~/.gitconfig.local` from loading, so
 # HOME has to move too or a machine-local override could decide the result.
 TEST_HOME="$TEST_ROOT/home"
-mkdir -p "$TEST_HOME/.config"
-# Emulate the installed layout so core.excludesfile resolves to the tracked
-# global ignore rather than whatever this machine happens to have.
-ln -s "$REPO_ROOT/.config/git" "$TEST_HOME/.config/git"
+mkdir -p "$TEST_HOME/.config/git"
+# Emulate what install.sh links: the ignore FILE, not the directory. Linking the
+# whole directory would pass here while the installer leaves the rest of
+# ~/.config/git untouched.
+ln -s "$REPO_ROOT/.config/git/ignore" "$TEST_HOME/.config/git/ignore"
 HOME="$TEST_HOME"
 GIT_CONFIG_GLOBAL="$TRACKED_GITCONFIG"
 GIT_CONFIG_SYSTEM=/dev/null
@@ -51,7 +52,7 @@ export HOME GIT_CONFIG_GLOBAL GIT_CONFIG_SYSTEM
 
 git init -q -b main "$FIXTURE"
 echo seed > "$FIXTURE/seed.txt"
-printf '%s\n' 'CLAUDE.local.md' '.env' '.env.local' '.claude/settings.local.json' 'node_modules/' \
+printf '%s\n' 'CLAUDE.local.md' '.env' '.env.local' 'node_modules/' \
   > "$FIXTURE/.gitignore"
 git -C "$FIXTURE" add seed.txt .gitignore
 # gitignored files a fresh worktree is expected to inherit
@@ -61,6 +62,13 @@ echo "SECRET=1" > "$FIXTURE/.env"
 echo "LOCAL=1" > "$FIXTURE/.env.local"
 mkdir -p "$FIXTURE/node_modules" && echo dep > "$FIXTURE/node_modules/dep.js"
 echo '{}' > "$FIXTURE/.claude/settings.local.json"
+
+# The fixture .gitignore deliberately omits .claude/settings.local.json, so this
+# only passes when the tracked global ignore is the thing covering it.
+if ! git -C "$FIXTURE" check-ignore -q -- .claude/settings.local.json; then
+  fail "the tracked global ignore does not cover .claude/settings.local.json"
+fi
+echo "[ok] the tracked global ignore covers .claude/settings.local.json"
 # Synthetic identity: the fixture must not depend on, or record, the real user.
 git -C "$FIXTURE" \
   -c user.name="git-wt verifier" \
