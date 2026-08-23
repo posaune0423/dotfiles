@@ -194,6 +194,7 @@ Notes:
 
 | tool (mise key) | version | note |
 |---|---:|---|
+| `gcloud` | `latest` | Google Cloud CLI |
 | `aws` | `latest` | AWS CLI |
 | `terraform` | `latest` | Infrastructure as Code |
 | `act` | `latest` | GitHub Actions locally |
