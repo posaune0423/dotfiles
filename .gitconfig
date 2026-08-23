@@ -53,18 +53,16 @@
   # prunes the worktree metadata. `git wt -D` and `rm -rf .worktrees` are
   # destructive: they discard uncommitted work and leave stale metadata behind.
   basedir = .worktrees
-  # Carry the small gitignored files a fresh worktree needs into it. Real copies
-  # (not symlinks) keep the worktree clean for `git wt -d`; a symlinked
-  # directory reads as untracked and makes safe deletion refuse forever.
+  # Carry the small gitignored files a fresh worktree needs. Copies, never
+  # symlinks: a symlink reads as untracked and makes `git wt -d` refuse forever,
+  # and shared state would couple worktrees that must stay independent.
   copy = CLAUDE.local.md
-  copy = .env
-  copy = .env.local
+  copy = .env*
   copy = .claude/settings.local.json
-  # Share node_modules instead of copying it, so creating a worktree stays fast.
-  # Safe only because the global ignore lists a bare `node_modules`, which also
-  # matches the symlink and therefore keeps `git wt -d` working.
-  copy = node_modules
-  symlink = node_modules
+  # Dependencies are deliberately NOT copied. Let the project's package manager
+  # install them per worktree (see the README): copying a pnpm/npm tree is
+  # slower, duplicates whatever breakage the source tree has, and can drag in
+  # cross-tree symlinks. Set `wt.hook` per repository instead.
 [credential "https://github.com"]
 	helper = 
 	helper = !gh auth git-credential

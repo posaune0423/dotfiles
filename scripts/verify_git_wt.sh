@@ -51,14 +51,15 @@ export HOME GIT_CONFIG_GLOBAL GIT_CONFIG_SYSTEM
 
 git init -q -b main "$FIXTURE"
 echo seed > "$FIXTURE/seed.txt"
-printf '%s\n' 'CLAUDE.local.md' '.env' '.claude/settings.local.json' 'node_modules/' \
+printf '%s\n' 'CLAUDE.local.md' '.env' '.env.local' '.claude/settings.local.json' 'node_modules/' \
   > "$FIXTURE/.gitignore"
 git -C "$FIXTURE" add seed.txt .gitignore
 # gitignored files a fresh worktree is expected to inherit
-mkdir -p "$FIXTURE/.claude" "$FIXTURE/node_modules/pkg"
-echo dep > "$FIXTURE/node_modules/pkg/index.js"
+mkdir -p "$FIXTURE/.claude"
 echo local-policy > "$FIXTURE/CLAUDE.local.md"
 echo "SECRET=1" > "$FIXTURE/.env"
+echo "LOCAL=1" > "$FIXTURE/.env.local"
+mkdir -p "$FIXTURE/node_modules" && echo dep > "$FIXTURE/node_modules/dep.js"
 echo '{}' > "$FIXTURE/.claude/settings.local.json"
 # Synthetic identity: the fixture must not depend on, or record, the real user.
 git -C "$FIXTURE" \
@@ -161,23 +162,15 @@ fi
 # wt.copy must carry the gitignored files into a new worktree, and the worktree
 # must still be clean enough for the safe `git wt -d` path to work.
 WT="$(git -C "$FIXTURE" wt --nocd copy-check | tail -1)"
-for f in CLAUDE.local.md .env .claude/settings.local.json; do
+for f in CLAUDE.local.md .env .env.local .claude/settings.local.json; do
   [ -f "$WT/$f" ] || fail "wt.copy did not carry $f into the new worktree"
   [ ! -L "$WT/$f" ] || fail "$f was symlinked; a symlink reads as untracked and blocks git wt -d"
 done
 echo "[ok] wt.copy carries CLAUDE.local.md, .env and .claude/settings.local.json"
 
-# node_modules must be shared by symlink, and the bare `node_modules` entry in
-# the tracked global ignore must keep that symlink from reading as untracked.
-[ -L "$WT/node_modules" ] || fail "node_modules was not shared as a symlink"
-[ -f "$WT/node_modules/pkg/index.js" ] || fail "the shared node_modules is not readable"
-# Check the symlink inside the worktree, not the directory in the main repo: a
-# trailing-slash pattern matches the directory but not the link.
-if [ -n "$(git -C "$WT" check-ignore node_modules || true)" ]; then
-  echo "[ok] node_modules is shared by symlink and the global ignore covers it"
-else
-  fail "the tracked global ignore does not cover a bare node_modules; git wt -d would break"
-fi
+# Dependencies must stay out: each worktree installs its own.
+[ ! -e "$WT/node_modules" ] || fail "node_modules leaked into the new worktree"
+echo "[ok] node_modules is not carried over; each worktree installs its own"
 
 wt_dirty="$(git -C "$WT" status --porcelain)"
 if [ -n "$wt_dirty" ]; then

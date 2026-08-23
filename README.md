@@ -93,22 +93,39 @@ wt                      # fzf で選んで移動
 
 #### 新しい worktree へ引き継ぐ gitignore 対象ファイル
 
-`wt.copy` で `CLAUDE.local.md` / `.env` / `.env.local` / `.claude/settings.local.json` を
-新しい worktree へ**実体コピー**します。symlink ではなく実体なのが重要で、
-symlink されたエントリは `.gitignore` の末尾スラッシュ付きパターン（`node_modules/` など）に
-マッチせず untracked 扱いになり、**`git wt -d` が恒久的に拒否されます**（実測確認済み）。
+`wt.copy` で `CLAUDE.local.md` / `.env*` / `.claude/settings.local.json` を新しい worktree へ
+**実体コピー**します。symlink は使いません。symlink されたエントリは `.gitignore` の
+末尾スラッシュ付きパターンにマッチせず untracked 扱いになり `git wt -d` が恒久的に拒否されるうえ、
+状態を共有すると worktree 同士が独立でなくなるためです。
 
-`node_modules` は**コピーせず symlink で共有**します（`wt.copy` + `wt.symlink`）。
-worktree 作成が node_modules のサイズに依存しなくなります。
+**依存関係は意図的にコピーしません。** worktree ごとにパッケージマネージャで入れます。
+pnpm プロジェクトでの実測（Next.js アプリ、`node_modules` 1.4GB、依存 1191 パッケージ）:
 
-これが成立するのは `.config/git/ignore` が **末尾スラッシュ無しの `node_modules`** を
-持っているからです。`node_modules/` と書くと symlink にマッチせず untracked 扱いになり、
-`git wt -d` が恒久的に拒否されるようになります（実測確認済み）。
+| 方式 | 所要 | 実ディスク | 結果 |
+|---|---|---|---|
+| `wt.copy` で node_modules をコピー | 20s | 重複 | **壊れた**（コピー元の cross-tree symlink をそのまま複製） |
+| worktree 内で `pnpm install` | 10s | 133MB | 正常。worktree 内で解決が完結 |
+
+コピーは遅いだけでなく、コピー元のリンク farm が壊れていればそれも忠実に複製します。
+リポジトリ単位で hook を設定するのが正解です。
+
+```sh
+git config --local --add wt.hook 'pnpm install --frozen-lockfile'
+```
+
+APFS の copy-on-write により、2本目以降の worktree の実ディスク増加は小さく保たれます
+（`du` は 1.2GB と表示しますが実際の増分は 133MB でした）。片方の worktree で依存を
+書き換えても他方には影響しないことを実測で確認しています。
 
 > [!WARNING]
-> symlink 共有は全 worktree が同じ `node_modules` を見ます。片方で install すると全部に効きます。
-> また `wt.symlink` はトップレベルのディレクトリだけが対象で、monorepo の
-> `packages/*/node_modules` は共有されません。
+> parallel に動かすときは**ポートが衝突**します。`next dev` は空きポートへ自動で退避しますが、
+> `.env` に `NEXT_PUBLIC_BASE_URL=http://localhost:3000/` のような固定値があると、
+> 退避先のポートと食い違います。worktree ごとにポートを明示するか `.env.local` で上書きしてください。
+
+> [!NOTE]
+> worktree をリポジトリ配下に置くため、親を辿るツールは main checkout の設定も見つけます。
+> 実測では Next.js が workspace root を main checkout 側の `pnpm-workspace.yaml` と推定して
+> 警告を出しました（起動と描画自体は成功）。気になる場合はプロジェクト側で root を明示してください。
 
 ## Inventory (plugins / tools)
 
