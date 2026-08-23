@@ -53,6 +53,13 @@
   # prunes the worktree metadata. `git wt -D` and `rm -rf .worktrees` are
   # destructive: they discard uncommitted work and leave stale metadata behind.
   basedir = .worktrees
+  # Carry the small gitignored files a fresh worktree needs into it. Real copies
+  # (not symlinks) keep the worktree clean for `git wt -d`; a symlinked
+  # directory reads as untracked and makes safe deletion refuse forever.
+  copy = CLAUDE.local.md
+  copy = .env
+  copy = .env.local
+  copy = .claude/settings.local.json
 [credential "https://github.com"]
 	helper = 
 	helper = !gh auth git-credential

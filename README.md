@@ -69,6 +69,7 @@ ignores this file when it does not exist.
 | 設定 | 場所 |
 |---|---|
 | `wt.basedir = .worktrees` | `.gitconfig` |
+| `wt.copy`（gitignore された小さなファイルを新 worktree へ複製） | `.gitconfig` |
 | shell 連携（`git wt` で自動 `cd` + 補完） | `.config/fish/conf.d/03_tools.fish`, `.config/zsh/tools.zsh` |
 | `wt` (fzf でワークツリーを選んで移動) | `.config/fish/conf.d/98_aliases.fish`, `.config/zsh/aliases.zsh` |
 
@@ -88,6 +89,28 @@ wt                      # fzf で選んで移動
 > shell 連携は `git` のラッパー関数を定義します。`git wt` 以外のサブコマンドは
 > そのまま本体へ委譲されるため、`g`（`alias g git`）を含む通常の Git 操作は変わりません。
 > 挙動は `sh scripts/verify_git_wt.sh` で検証できます。
+
+#### 新しい worktree へ引き継ぐ gitignore 対象ファイル
+
+`wt.copy` で `CLAUDE.local.md` / `.env` / `.env.local` / `.claude/settings.local.json` を
+新しい worktree へ**実体コピー**します。symlink ではなく実体なのが重要で、
+symlink されたエントリは `.gitignore` の末尾スラッシュ付きパターン（`node_modules/` など）に
+マッチせず untracked 扱いになり、**`git wt -d` が恒久的に拒否されます**（実測確認済み）。
+
+`node_modules` を worktree ごとに再インストールせず共有したい場合は、リポジトリ単位で opt-in します。
+
+```sh
+# 1) bare な名前（末尾スラッシュ無し）を除外に足す。これが無いと git wt -d が壊れる
+echo node_modules >> "$(git rev-parse --git-common-dir)/info/exclude"
+# 2) そのリポジトリだけ symlink 共有を有効化
+git config --local --add wt.copy node_modules
+git config --local --add wt.symlink node_modules
+```
+
+> [!WARNING]
+> symlink 共有は全 worktree が同じ `node_modules` を見ます。片方で install すると全部に効きます。
+> また `wt.symlink` はトップレベルのディレクトリだけが対象で、monorepo の
+> `packages/*/node_modules` は共有されません。
 
 ## Inventory (plugins / tools)
 

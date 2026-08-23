@@ -48,7 +48,14 @@ export HOME GIT_CONFIG_GLOBAL GIT_CONFIG_SYSTEM
 
 git init -q -b main "$FIXTURE"
 echo seed > "$FIXTURE/seed.txt"
-git -C "$FIXTURE" add seed.txt
+printf '%s\n' 'CLAUDE.local.md' '.env' '.claude/settings.local.json' 'node_modules/' \
+  > "$FIXTURE/.gitignore"
+git -C "$FIXTURE" add seed.txt .gitignore
+# gitignored files a fresh worktree is expected to inherit
+mkdir -p "$FIXTURE/.claude"
+echo local-policy > "$FIXTURE/CLAUDE.local.md"
+echo "SECRET=1" > "$FIXTURE/.env"
+echo '{}' > "$FIXTURE/.claude/settings.local.json"
 # Synthetic identity: the fixture must not depend on, or record, the real user.
 git -C "$FIXTURE" \
   -c user.name="git-wt verifier" \
@@ -146,6 +153,24 @@ if command -v zsh > /dev/null 2>&1; then
 else
   echo "[skip] zsh not found" >&2
 fi
+
+# wt.copy must carry the gitignored files into a new worktree, and the worktree
+# must still be clean enough for the safe `git wt -d` path to work.
+WT="$(git -C "$FIXTURE" wt --nocd copy-check | tail -1)"
+for f in CLAUDE.local.md .env .claude/settings.local.json; do
+  [ -f "$WT/$f" ] || fail "wt.copy did not carry $f into the new worktree"
+  [ ! -L "$WT/$f" ] || fail "$f was symlinked; a symlink reads as untracked and blocks git wt -d"
+done
+echo "[ok] wt.copy carries CLAUDE.local.md, .env and .claude/settings.local.json"
+
+wt_dirty="$(git -C "$WT" status --porcelain)"
+if [ -n "$wt_dirty" ]; then
+  fail "copied files leave the new worktree dirty, which blocks git wt -d: $wt_dirty"
+fi
+if ! git -C "$FIXTURE" wt -d copy-check > /dev/null 2>&1; then
+  fail "safe deletion (git wt -d) refused a worktree created with wt.copy"
+fi
+echo "[ok] a worktree created with wt.copy stays clean and git wt -d removes it"
 
 # The worktree base directory must not show up as untracked noise in the parent repo.
 dirty="$(git -C "$FIXTURE" status --porcelain)"
