@@ -24,15 +24,14 @@ sd = "latest"     # sed replacement
 choose = "latest" # cut replacement
 
 # [CLI Tools - Git Tools]
-github-cli = "latest"          # GitHub CLI
-hub = "latest"                 # GitHub wrapper
-delta = "latest"               # git diff viewer
-difftastic = "latest"          # structural diff tool
-lazygit = "latest"             # Git TUI
+github-cli = "latest"      # GitHub CLI
+hub = "latest"             # GitHub wrapper
+delta = "latest"           # git diff viewer
+difftastic = "latest"      # structural diff tool
+lazygit = "latest"         # Git TUI
 ghq = "latest"
-git-filter-repo = "2.47.0"     # Git history rewriting
-git-lfs = "3.7.1"              # Git large file storage
-"aqua:k1LoW/git-wt" = "latest" # git worktree helper (git wt)
+git-filter-repo = "2.47.0" # Git history rewriting
+git-lfs = "3.7.1"          # Git large file storage
 
 # [CLI Tools - System Monitoring]
 gping = "latest"                # ping with graph

@@ -57,16 +57,3 @@ if status is-interactive
         fzf --fish | source
     end
 end
-
-#---------------------------
-# git-wt (git worktree helper)
-#---------------------------
-# Enables `git wt <branch>` to create/switch worktrees and cd into them,
-# plus completion for worktree and branch names.
-# The hook installs a `git` wrapper function that only intercepts `git wt`
-# and delegates every other subcommand to the real binary.
-if status is-interactive
-    if type -q git-wt
-        git wt --init fish | source
-    end
-end
