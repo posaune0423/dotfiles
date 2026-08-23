@@ -1,0 +1,7 @@
+# Global gitignore (core.excludesfile). Keep this list to entries that are
+# machine- or tool-local in every repository, never project-specific ones.
+# The effective pattern set is intentionally identical to the previous
+# ~/.gitignore, so pointing core.excludesfile here changes nothing.
+
+# Claude Code machine-local state
+**/.claude/settings.local.json

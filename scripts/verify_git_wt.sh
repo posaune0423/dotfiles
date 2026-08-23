@@ -40,7 +40,11 @@ FIXTURE="$(CDPATH= cd -- "$FIXTURE" && pwd -P)"
 # not stop the tracked `[include] path = ~/.gitconfig.local` from loading, so
 # HOME has to move too or a machine-local override could decide the result.
 TEST_HOME="$TEST_ROOT/home"
-mkdir -p "$TEST_HOME"
+mkdir -p "$TEST_HOME/.config/git"
+# Emulate what install.sh links: the ignore FILE, not the directory. Linking the
+# whole directory would pass here while the installer leaves the rest of
+# ~/.config/git untouched.
+ln -s "$REPO_ROOT/.config/git/ignore" "$TEST_HOME/.config/git/ignore"
 HOME="$TEST_HOME"
 GIT_CONFIG_GLOBAL="$TRACKED_GITCONFIG"
 GIT_CONFIG_SYSTEM=/dev/null
@@ -48,7 +52,23 @@ export HOME GIT_CONFIG_GLOBAL GIT_CONFIG_SYSTEM
 
 git init -q -b main "$FIXTURE"
 echo seed > "$FIXTURE/seed.txt"
-git -C "$FIXTURE" add seed.txt
+printf '%s\n' 'CLAUDE.local.md' '.env' '.env.local' 'node_modules/' \
+  > "$FIXTURE/.gitignore"
+git -C "$FIXTURE" add seed.txt .gitignore
+# gitignored files a fresh worktree is expected to inherit
+mkdir -p "$FIXTURE/.claude"
+echo local-policy > "$FIXTURE/CLAUDE.local.md"
+echo "SECRET=1" > "$FIXTURE/.env"
+echo "LOCAL=1" > "$FIXTURE/.env.local"
+mkdir -p "$FIXTURE/node_modules" && echo dep > "$FIXTURE/node_modules/dep.js"
+echo '{}' > "$FIXTURE/.claude/settings.local.json"
+
+# The fixture .gitignore deliberately omits .claude/settings.local.json, so this
+# only passes when the tracked global ignore is the thing covering it.
+if ! git -C "$FIXTURE" check-ignore -q -- .claude/settings.local.json; then
+  fail "the tracked global ignore does not cover .claude/settings.local.json"
+fi
+echo "[ok] the tracked global ignore covers .claude/settings.local.json"
 # Synthetic identity: the fixture must not depend on, or record, the real user.
 git -C "$FIXTURE" \
   -c user.name="git-wt verifier" \
@@ -146,6 +166,28 @@ if command -v zsh > /dev/null 2>&1; then
 else
   echo "[skip] zsh not found" >&2
 fi
+
+# wt.copy must carry the gitignored files into a new worktree, and the worktree
+# must still be clean enough for the safe `git wt -d` path to work.
+WT="$(git -C "$FIXTURE" wt --nocd copy-check | tail -1)"
+for f in CLAUDE.local.md .env .env.local .claude/settings.local.json; do
+  [ -f "$WT/$f" ] || fail "wt.copy did not carry $f into the new worktree"
+  [ ! -L "$WT/$f" ] || fail "$f was symlinked; a symlink reads as untracked and blocks git wt -d"
+done
+echo "[ok] wt.copy carries CLAUDE.local.md, .env and .claude/settings.local.json"
+
+# Dependencies must stay out: each worktree installs its own.
+[ ! -e "$WT/node_modules" ] || fail "node_modules leaked into the new worktree"
+echo "[ok] node_modules is not carried over; each worktree installs its own"
+
+wt_dirty="$(git -C "$WT" status --porcelain)"
+if [ -n "$wt_dirty" ]; then
+  fail "copied files leave the new worktree dirty, which blocks git wt -d: $wt_dirty"
+fi
+if ! git -C "$FIXTURE" wt -d copy-check > /dev/null 2>&1; then
+  fail "safe deletion (git wt -d) refused a worktree created with wt.copy"
+fi
+echo "[ok] a worktree created with wt.copy stays clean and git wt -d removes it"
 
 # The worktree base directory must not show up as untracked noise in the parent repo.
 dirty="$(git -C "$FIXTURE" status --porcelain)"

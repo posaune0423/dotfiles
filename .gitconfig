@@ -1,7 +1,7 @@
 [core]
   editor = nvim
   autoCRLF = false
-  excludesfile = ~/.gitignore
+  excludesfile = ~/.config/git/ignore
 
 [color]
   status = auto
@@ -53,6 +53,16 @@
   # prunes the worktree metadata. `git wt -D` and `rm -rf .worktrees` are
   # destructive: they discard uncommitted work and leave stale metadata behind.
   basedir = .worktrees
+  # Carry the small gitignored files a fresh worktree needs. Copies, never
+  # symlinks: a symlink reads as untracked and makes `git wt -d` refuse forever,
+  # and shared state would couple worktrees that must stay independent.
+  copy = CLAUDE.local.md
+  copy = .env*
+  copy = .claude/settings.local.json
+  # Dependencies are deliberately NOT copied. Let the project's package manager
+  # install them per worktree (see the README): copying a pnpm/npm tree is
+  # slower, duplicates whatever breakage the source tree has, and can drag in
+  # cross-tree symlinks. Set `wt.hook` per repository instead.
 [credential "https://github.com"]
 	helper = 
 	helper = !gh auth git-credential
