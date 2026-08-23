@@ -1,0 +1,15 @@
+# Files copied into each new worktree created by Claude Code or Codex.
+#
+# .gitignore syntax. Only paths that match AND are gitignored get copied, so
+# tracked files are never duplicated, and a pattern that is not ignored here is
+# silently skipped. These are copies, not symlinks: each worktree must work
+# without touching another one.
+#
+# Machine-local generated state is deliberately absent. Fish variables and
+# .config/fish/completions.local/ are read from $HOME through the installed
+# symlinks rather than from a worktree, and .agents/memory/ holds per-task notes
+# that should not be duplicated across parallel worktrees.
+
+# Per-project tool permissions, so a fresh worktree does not re-prompt for
+# everything the main checkout has already granted.
+.claude/settings.local.json
