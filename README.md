@@ -45,6 +45,7 @@ sh ./install.sh --no-update
 | `.config/nvim/` | `~/.config/nvim/` |
 | `.config/wezterm/` | `~/.config/wezterm/` |
 | `.config/starship.toml` | `~/.config/starship.toml` |
+| `.config/git/ignore` | `~/.config/git/ignore` |
 | `.config/fish/` | `~/.config/fish/` |
 | `.config/karabiner/` | `~/.config/karabiner/` |
 | `.config/ghostty/` | `~/.config/ghostty/` |
@@ -97,15 +98,12 @@ wt                      # fzf で選んで移動
 symlink されたエントリは `.gitignore` の末尾スラッシュ付きパターン（`node_modules/` など）に
 マッチせず untracked 扱いになり、**`git wt -d` が恒久的に拒否されます**（実測確認済み）。
 
-`node_modules` を worktree ごとに再インストールせず共有したい場合は、リポジトリ単位で opt-in します。
+`node_modules` は**コピーせず symlink で共有**します（`wt.copy` + `wt.symlink`）。
+worktree 作成が node_modules のサイズに依存しなくなります。
 
-```sh
-# 1) bare な名前（末尾スラッシュ無し）を除外に足す。これが無いと git wt -d が壊れる
-echo node_modules >> "$(git rev-parse --git-common-dir)/info/exclude"
-# 2) そのリポジトリだけ symlink 共有を有効化
-git config --local --add wt.copy node_modules
-git config --local --add wt.symlink node_modules
-```
+これが成立するのは `.config/git/ignore` が **末尾スラッシュ無しの `node_modules`** を
+持っているからです。`node_modules/` と書くと symlink にマッチせず untracked 扱いになり、
+`git wt -d` が恒久的に拒否されるようになります（実測確認済み）。
 
 > [!WARNING]
 > symlink 共有は全 worktree が同じ `node_modules` を見ます。片方で install すると全部に効きます。
@@ -130,6 +128,7 @@ git config --local --add wt.symlink node_modules
 |---|---|
 | WezTerm | `.config/wezterm/` |
 | Ghostty | `.config/ghostty/config` |
+| Git（global ignore） | `.config/git/ignore` |
 | Karabiner-Elements | `.config/karabiner/karabiner.json` |
 | macOS network profiles | `.config/macos/network/`, `scripts/macos-network.sh` |
 | VS Code / Cursor / VSCodium | `.vscode/settings.json`, `.vscode/keybindings.json` |

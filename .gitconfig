@@ -1,7 +1,7 @@
 [core]
   editor = nvim
   autoCRLF = false
-  excludesfile = ~/.gitignore
+  excludesfile = ~/.config/git/ignore
 
 [color]
   status = auto
@@ -60,6 +60,11 @@
   copy = .env
   copy = .env.local
   copy = .claude/settings.local.json
+  # Share node_modules instead of copying it, so creating a worktree stays fast.
+  # Safe only because the global ignore lists a bare `node_modules`, which also
+  # matches the symlink and therefore keeps `git wt -d` working.
+  copy = node_modules
+  symlink = node_modules
 [credential "https://github.com"]
 	helper = 
 	helper = !gh auth git-credential

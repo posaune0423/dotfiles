@@ -1,0 +1,11 @@
+# Global gitignore (core.excludesfile). Keep this list to entries that are
+# machine- or tool-local in every repository, never project-specific ones.
+
+# Claude Code machine-local state
+**/.claude/settings.local.json
+
+# Dependency directory. Deliberately written without a trailing slash so the
+# pattern also matches a symlink, which is what `git wt` creates when it shares
+# node_modules with a new worktree. With a trailing slash the symlink reads as
+# untracked and `git wt -d` refuses to remove the worktree.
+node_modules

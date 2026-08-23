@@ -40,7 +40,10 @@ FIXTURE="$(CDPATH= cd -- "$FIXTURE" && pwd -P)"
 # not stop the tracked `[include] path = ~/.gitconfig.local` from loading, so
 # HOME has to move too or a machine-local override could decide the result.
 TEST_HOME="$TEST_ROOT/home"
-mkdir -p "$TEST_HOME"
+mkdir -p "$TEST_HOME/.config"
+# Emulate the installed layout so core.excludesfile resolves to the tracked
+# global ignore rather than whatever this machine happens to have.
+ln -s "$REPO_ROOT/.config/git" "$TEST_HOME/.config/git"
 HOME="$TEST_HOME"
 GIT_CONFIG_GLOBAL="$TRACKED_GITCONFIG"
 GIT_CONFIG_SYSTEM=/dev/null
@@ -52,7 +55,8 @@ printf '%s\n' 'CLAUDE.local.md' '.env' '.claude/settings.local.json' 'node_modul
   > "$FIXTURE/.gitignore"
 git -C "$FIXTURE" add seed.txt .gitignore
 # gitignored files a fresh worktree is expected to inherit
-mkdir -p "$FIXTURE/.claude"
+mkdir -p "$FIXTURE/.claude" "$FIXTURE/node_modules/pkg"
+echo dep > "$FIXTURE/node_modules/pkg/index.js"
 echo local-policy > "$FIXTURE/CLAUDE.local.md"
 echo "SECRET=1" > "$FIXTURE/.env"
 echo '{}' > "$FIXTURE/.claude/settings.local.json"
@@ -162,6 +166,18 @@ for f in CLAUDE.local.md .env .claude/settings.local.json; do
   [ ! -L "$WT/$f" ] || fail "$f was symlinked; a symlink reads as untracked and blocks git wt -d"
 done
 echo "[ok] wt.copy carries CLAUDE.local.md, .env and .claude/settings.local.json"
+
+# node_modules must be shared by symlink, and the bare `node_modules` entry in
+# the tracked global ignore must keep that symlink from reading as untracked.
+[ -L "$WT/node_modules" ] || fail "node_modules was not shared as a symlink"
+[ -f "$WT/node_modules/pkg/index.js" ] || fail "the shared node_modules is not readable"
+# Check the symlink inside the worktree, not the directory in the main repo: a
+# trailing-slash pattern matches the directory but not the link.
+if [ -n "$(git -C "$WT" check-ignore node_modules || true)" ]; then
+  echo "[ok] node_modules is shared by symlink and the global ignore covers it"
+else
+  fail "the tracked global ignore does not cover a bare node_modules; git wt -d would break"
+fi
 
 wt_dirty="$(git -C "$WT" status --porcelain)"
 if [ -n "$wt_dirty" ]; then
