@@ -65,8 +65,3 @@ source "$HOME/.openclaw/completions/openclaw.fish"
 # Added by LM Studio CLI (lms)
 set -gx PATH $PATH $HOME/.cache/lm-studio/bin
 # End of LM Studio CLI section
-
-# The next line updates PATH for the Google Cloud SDK.
-if [ -f '$HOME/google-cloud-sdk/path.fish.inc' ]
-    . '$HOME/google-cloud-sdk/path.fish.inc'
-end
