@@ -93,7 +93,6 @@ Use the relevant additional check when changing its surface:
 
 ```sh
 sh scripts/verify_fish_completions.sh
-sh scripts/verify_git_wt.sh
 sh ./install.sh --dry-run --yes --no-update
 ./scripts/macos-network.sh validate --all
 ```
