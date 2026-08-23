@@ -33,14 +33,12 @@ mouse-hide-while-typing = true
 
 # --- Keybindings (Split Layout) ---
 
-# split は Ghostty default の Cmd+D (右) / Cmd+Shift+D (下) を使う。
-# Enter 系に split/fullscreen/zoom を割り当てると Codex や Claude Code の submit を
-# Ghostty が奪ってしまうため、そのまま端末へ送る。
+# Cmd+Enter は Ghostty default が toggle_fullscreen なので、明示的に上書きしないと
+# Codex や Claude Code の submit が端末へ届かない。CR / LF をそのまま送る。
+# fullscreen は default の Ctrl+Cmd+F が残るのでそちらを使う。
+# split も default の Cmd+D (右) / Cmd+Shift+D (下) をそのまま使う。
 keybind = cmd+enter=text:\r
 keybind = cmd+shift+enter=text:\n
-
-# Cmd+Enter を送信に使うので fullscreen は macOS 標準の Ctrl+Cmd+F に寄せる
-keybind = cmd+ctrl+f=toggle_fullscreen
 
 # Move between splits with Cmd + arrow keys
 keybind = cmd+left=goto_split:left
