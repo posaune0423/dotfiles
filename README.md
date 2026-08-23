@@ -60,6 +60,35 @@ ignores this file when it does not exist.
 > Keep repository-specific paths, conditional identities, and other private Git settings in
 > `~/.gitconfig.local`. The installer does not create or manage that file.
 
+### Git worktrees (git-wt)
+
+[git-wt](https://github.com/k1LoW/git-wt) を `git wt` サブコマンドとして使います。
+ワークツリーは `ghq root` 直下ではなくリポジトリ配下の `.worktrees/` に作られるため、
+`ghq`/`peco` のリポジトリ一覧が汚れず、後片付けも `git wt -d <branch>` で完結します。
+
+| 設定 | 場所 |
+|---|---|
+| `wt.basedir = .worktrees` | `.gitconfig` |
+| shell 連携（`git wt` で自動 `cd` + 補完） | `.config/fish/conf.d/03_tools.fish`, `.config/zsh/tools.zsh` |
+| `wt` (fzf でワークツリーを選んで移動) | `.config/fish/conf.d/98_aliases.fish`, `.config/zsh/aliases.zsh` |
+
+```sh
+git wt                  # 一覧
+git wt feat/foo         # 作成 or 切り替え（+ 自動 cd）
+git wt -d feat/foo      # ワークツリーとブランチを安全に削除（通常はこれ）
+git wt -D feat/foo      # 破壊的: 未コミットの変更や未マージのブランチも捨てる
+wt                      # fzf で選んで移動
+```
+
+> [!WARNING]
+> 後片付けは `git wt -d` を使ってください。`git wt -D` と `rm -rf .worktrees` は
+> 安全確認を飛ばし、未コミットの作業を失ったり worktree メタデータを残したりします。
+
+> [!NOTE]
+> shell 連携は `git` のラッパー関数を定義します。`git wt` 以外のサブコマンドは
+> そのまま本体へ委譲されるため、`g`（`alias g git`）を含む通常の Git 操作は変わりません。
+> 挙動は `sh scripts/verify_git_wt.sh` で検証できます。
+
 ## Inventory (plugins / tools)
 
 ### Managers
@@ -153,6 +182,7 @@ Notes:
 | `ghq` | `latest` | Git repository manager |
 | `git-filter-repo` | `2.47.0` | Git history rewriting |
 | `git-lfs` | `3.7.1` | Git large file storage |
+| `aqua:k1LoW/git-wt` | `latest` | git worktree helper (git wt) |
 
 #### CLI Tools - System Monitoring
 
