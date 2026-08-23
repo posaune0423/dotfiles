@@ -20,3 +20,11 @@ fi
 # Note: Version management (Node/Python/Ruby/Go/Java/Bun/Deno) is now handled by mise.
 # PATH (brew, mise shims, pnpm, bun, lm-studio, etc.) is built in ~/.config/zsh/path-exports.zsh
 # and sourced from ~/.zshenv.
+
+# git-wt (git worktree helper)
+# Enables `git wt <branch>` to create/switch worktrees and cd into them, plus
+# completion. The hook installs a `git` wrapper function that only intercepts
+# `git wt` and delegates every other subcommand to the real binary.
+if command -v git-wt &> /dev/null; then
+  eval "$(git wt --init zsh)"
+fi
