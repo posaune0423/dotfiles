@@ -449,8 +449,8 @@ print_section "${ICON_FOLDER} Creating Symlinks"
 run mkdir -p "$HOME/.config"
 
 # Count total items
-# 5 root + 10 XDG configs + up to 8 editor settings (4 apps x 2 files) = 23
-set_total_items 23
+# 5 root + 11 XDG configs + up to 8 editor settings (4 apps x 2 files) = 24
+set_total_items 24
 
 # Root dotfiles
 link_item "$DOTFILES_DIR/.zshenv" "$HOME/.zshenv" "$TS"
@@ -469,6 +469,10 @@ link_item "$DOTFILES_DIR/.config/macos" "$HOME/.config/macos" "$TS"
 link_item "$DOTFILES_DIR/.config/karabiner" "$HOME/.config/karabiner" "$TS"
 link_item "$DOTFILES_DIR/.config/ghostty" "$HOME/.config/ghostty" "$TS"
 link_item "$DOTFILES_DIR/.config/starship.toml" "$HOME/.config/starship.toml" "$TS"
+# Link only the global ignore file: ~/.config/git may also hold machine-local
+# hooks and identity includes that must stay outside this repository.
+run mkdir -p "$HOME/.config/git"
+link_item "$DOTFILES_DIR/.config/git/ignore" "$HOME/.config/git/ignore" "$TS"
 link_item "$DOTFILES_DIR/.config/fish" "$HOME/.config/fish" "$TS"
 
 # Editor settings (macOS)
