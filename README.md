@@ -435,6 +435,6 @@ Raycast Cloud Sync が同期します。平文で git 管理できるのは次�
 
 | area | tool | config |
 |---|---|---|
-| Format check | `make format` (`scripts/format.sh`) | `Makefile`, `scripts/format/*.sh` |
-| Lint check | `make lint` (`make format` + `shellcheck`) | `Makefile` |
+| Format check | `just format` (`scripts/format.sh`) | `justfile`, `scripts/format/*.sh` |
+| Lint check | `just lint` (`just format` + `shellcheck`) | `justfile` |
 | GitHub Actions | `CI` workflow (`format` / `lint`) | `.github/workflows/ci.yml` |

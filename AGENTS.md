@@ -24,8 +24,8 @@ These instructions apply at the repository root. `dotagents/` is a Git submodule
 - `.config/raycast/defaults.conf` and `scripts/raycast-defaults.sh` jointly define the Raycast
   preference contract. Only `defaults`-domain keys and `.config/raycast/script-commands/` are
   tracked; Raycast's encrypted database and `~/.config/raycast/config.json` (access token) are not.
-- `Makefile`, `scripts/format/`, and `.github/workflows/ci.yml` define repository validation. Use
-  the existing Make targets; do not introduce a second task runner for ordinary changes.
+- `justfile`, `scripts/format/`, and `.github/workflows/ci.yml` define repository validation. Use
+  the existing `just` recipes; do not introduce a second task runner for ordinary changes.
 - Edit `AGENTS.md`, not `CLAUDE.md`. `CLAUDE.md` must remain a symlink to `AGENTS.md`.
 
 There is no `docs/` steering tree in this repository. Local task notes under ignored
@@ -78,10 +78,11 @@ Treat every tracked file, commit, PR body, and review comment as public.
 
 ## Validation
 
-Run commands from the repository root. `make lint` includes the format check.
+Run commands from the repository root. `just lint` includes the format check. `just` is
+mise-managed (`.config/mise/config.toml`).
 
 ```sh
-make lint
+just lint
 git diff --check
 ```
 
