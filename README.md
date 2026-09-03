@@ -49,6 +49,7 @@ sh ./install.sh --no-update
 | `.config/fish/` | `~/.config/fish/` |
 | `.config/karabiner/` | `~/.config/karabiner/` |
 | `.config/ghostty/` | `~/.config/ghostty/` |
+| `.config/raycast/script-commands/` | `~/.config/raycast/script-commands/`（ディレクトリ単位。`~/.config/raycast` 自体はリンクしない） |
 | `.vscode/settings.json` | `~/Library/Application Support/{Code,Code - Insiders,Cursor,VSCodium}/User/settings.json`（存在するもののみ） |
 | `.vscode/keybindings.json` | `~/Library/Application Support/{Code,Code - Insiders,Cursor,VSCodium}/User/keybindings.json`（存在するもののみ） |
 
@@ -116,6 +117,7 @@ APFS の copy-on-write により、2本目以降の worktree の実ディスク�
 | Git（global ignore） | `.config/git/ignore` |
 | Karabiner-Elements | `.config/karabiner/karabiner.json` |
 | macOS network profiles | `.config/macos/network/`, `scripts/macos-network.sh` |
+| Raycast | `.config/raycast/defaults.conf`, `.config/raycast/script-commands/`, `scripts/raycast-defaults.sh` |
 | VS Code / Cursor / VSCodium | `.vscode/settings.json`, `.vscode/keybindings.json` |
 
 ### macOS network sysctl profiles
@@ -130,6 +132,26 @@ TCP tuning values such as `net.inet.tcp.delayed_ack`, `sendspace`, `recvspace`, 
 Notes:
 - Profiles are not auto-applied by the installer; applying them requires `sudo`.
 - `balanced-ethernet.conf` assumes a standard 1500-byte MTU path on Ethernet/Wi-Fi. If you are mostly on VPN/tunnels, start from `apple-default.conf` and tune more conservatively, especially `mssdflt`.
+
+### Raycast
+
+Raycast の設定本体（alias / hotkey / snippets / quicklinks / 拡張の preference）は
+`~/Library/Application Support/com.raycast.macos/raycast-enc.sqlite` に暗号化して保存され、
+Raycast Cloud Sync が同期します。平文で git 管理できるのは次の 2 面だけです。
+
+| 何を | どこで | 反映方法 |
+|---|---|---|
+| `defaults` ドメイン `com.raycast.macos` の環境設定（グローバル hotkey、ウィンドウモード、起動時 IME、ナビゲーション方式など） | `.config/raycast/defaults.conf` | `./scripts/raycast-defaults.sh apply` のあと Raycast を再起動 |
+| Script Commands | `.config/raycast/script-commands/` | Raycast Settings → Extensions → Script Commands → Add Directories で `~/.config/raycast/script-commands` を一度登録 |
+
+- 差分確認: `./scripts/raycast-defaults.sh status`
+- 書き込み内容の確認のみ: `./scripts/raycast-defaults.sh --dry-run apply`
+- 手元の値をファイルへ吸い上げ: `./scripts/raycast-defaults.sh export-defaults ./.config/raycast/defaults.conf`
+
+> [!WARNING]
+> `~/.config/raycast/config.json` には Raycast のアクセストークンが入っています。
+> `~/.config/raycast` を丸ごとリンク・追跡しないでください（`.gitignore` でも除外しています）。
+> Raycast の「Export」が生成する `.rayconfig` もトークンを含む暗号化 blob なので、このリポジトリには置きません。
 
 ### Zsh plugins (sheldon)
 

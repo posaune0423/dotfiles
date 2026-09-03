@@ -449,8 +449,8 @@ print_section "${ICON_FOLDER} Creating Symlinks"
 run mkdir -p "$HOME/.config"
 
 # Count total items
-# 5 root + 11 XDG configs + up to 8 editor settings (4 apps x 2 files) = 24
-set_total_items 24
+# 5 root + 12 XDG configs + up to 8 editor settings (4 apps x 2 files) = 25
+set_total_items 25
 
 # Root dotfiles
 link_item "$DOTFILES_DIR/.zshenv" "$HOME/.zshenv" "$TS"
@@ -474,6 +474,10 @@ link_item "$DOTFILES_DIR/.config/starship.toml" "$HOME/.config/starship.toml" "$
 run mkdir -p "$HOME/.config/git"
 link_item "$DOTFILES_DIR/.config/git/ignore" "$HOME/.config/git/ignore" "$TS"
 link_item "$DOTFILES_DIR/.config/fish" "$HOME/.config/fish" "$TS"
+# Link only the script-commands directory: Raycast owns ~/.config/raycast and
+# keeps its access token in config.json there, which must never enter this repo.
+run mkdir -p "$HOME/.config/raycast"
+link_item "$DOTFILES_DIR/.config/raycast/script-commands" "$HOME/.config/raycast/script-commands" "$TS"
 
 # Editor settings (macOS)
 if [ "$(uname -s 2> /dev/null || echo unknown)" = "Darwin" ]; then
