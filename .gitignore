@@ -11,3 +11,5 @@ fish_variables
 .config/raycast/config.json
 .config/raycast/extensions/
 .config/raycast/ai/
+# Raycast "Export" output: encrypted blob that still carries the access token.
+*.rayconfig
