@@ -39,6 +39,15 @@ printf '%s\n' 'a string x' 'a string y' > "$PROFILE"
 if RAYCAST_DEFAULTS_PROFILE="$PROFILE" "$SCRIPT" validate > /dev/null 2>&1; then
   fail "validate accepted a duplicate key"
 fi
+for bad_int in '-' '1-2' '--3' '3-'; do
+  printf '%s\n' "raycastRetries int $bad_int" > "$PROFILE"
+  if RAYCAST_DEFAULTS_PROFILE="$PROFILE" "$SCRIPT" validate > /dev/null 2>&1; then
+    fail "validate accepted a non-integer int: $bad_int"
+  fi
+done
+printf '%s\n' 'raycastRetries int -3' > "$PROFILE"
+RAYCAST_DEFAULTS_PROFILE="$PROFILE" "$SCRIPT" validate > /dev/null 2>&1 ||
+  fail "validate rejected a negative integer"
 
 # 3. Dry-run must not create the plist; status must report drift on an empty domain.
 cat > "$PROFILE" << 'CONF'
