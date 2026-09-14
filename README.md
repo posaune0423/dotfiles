@@ -143,10 +143,25 @@ Raycast Cloud Sync が同期します。平文で git 管理できるのは次�
 |---|---|---|
 | `defaults` ドメイン `com.raycast.macos` の環境設定（グローバル hotkey、ウィンドウモード、起動時 IME、ナビゲーション方式など） | `.config/raycast/defaults.conf` | `./scripts/raycast-defaults.sh apply` のあと Raycast を再起動 |
 | Script Commands | `.config/raycast/script-commands/` | Raycast Settings → Extensions → Script Commands → Add Directories で `~/.config/raycast/script-commands` を一度登録 |
+| Window Management のホットキー（旧 Spectacle 配列） | `.config/karabiner/karabiner.json` の `Window management via Raycast` ルール | Karabiner がリンク済みなら自動反映。Raycast 側でのホットキー登録は不要 |
 
 - 差分確認: `./scripts/raycast-defaults.sh status`
 - 書き込み内容の確認のみ: `./scripts/raycast-defaults.sh --dry-run apply`
 - 手元の値をファイルへ吸い上げ: `./scripts/raycast-defaults.sh export-defaults ./.config/raycast/defaults.conf`
+
+コマンド単位のホットキーは Raycast の暗号化 DB にしか保存されないため、Window Management は
+Karabiner-Elements 側でキーを受けて `open -g raycast://extensions/raycast/window-management/<command>`
+の deeplink を呼ぶ形で管理しています（Spectacle からの移行。Spectacle の Redo に相当するコマンドは Raycast にないため未割り当て）。
+
+| キー | Raycast コマンド |
+|---|---|
+| `⌥⌘ ←` / `→` / `↑` / `↓` | Left / Right / Top / Bottom Half |
+| `⌥⌘ F` / `⌥⌘ C` / `⌥⌘ Z` | Maximize / Center / Restore |
+| `⌃⌘ ←` / `→` | Top Left / Top Right Quarter |
+| `⌃⇧⌘ ←` / `→` | Bottom Left / Bottom Right Quarter |
+| `⌃⌥ ←` / `→` | First Third / Last Third |
+| `⌃⌥⌘ ←` / `→` | Previous / Next Display |
+| `⌃⌥⇧ ←` / `→` | Make Smaller / Make Larger |
 
 > [!WARNING]
 > `~/.config/raycast/config.json` には Raycast のアクセストークンが入っています。
