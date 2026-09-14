@@ -21,8 +21,11 @@ These instructions apply at the repository root. `dotagents/` is a Git submodule
   login, interactive, and environment-only boundaries.
 - `.config/macos/network/` and `scripts/macos-network.sh` jointly define the network-profile
   contract.
-- `Makefile`, `scripts/format/`, and `.github/workflows/ci.yml` define repository validation. Use
-  the existing Make targets; do not introduce a second task runner for ordinary changes.
+- `.config/raycast/defaults.conf` and `scripts/raycast-defaults.sh` jointly define the Raycast
+  preference contract. Only `defaults`-domain keys and `.config/raycast/script-commands/` are
+  tracked; Raycast's encrypted database and `~/.config/raycast/config.json` (access token) are not.
+- `justfile`, `scripts/format/`, and `.github/workflows/ci.yml` define repository validation. Use
+  the existing `just` recipes; do not introduce a second task runner for ordinary changes.
 - Edit `AGENTS.md`, not `CLAUDE.md`. `CLAUDE.md` must remain a symlink to `AGENTS.md`.
 
 There is no `docs/` steering tree in this repository. Local task notes under ignored
@@ -66,18 +69,20 @@ Treat every tracked file, commit, PR body, and review comment as public.
 3. For shell routing, installer, or privacy regressions, add or update an isolated verification
    script under `scripts/`. Use a temporary `HOME` or `ZDOTDIR` and assert command resolution,
    output, or exit status rather than source-text strings.
-4. Treat installer and network actions as stateful. Do not run `install.sh` without `--dry-run`, or
-   run `./scripts/macos-network.sh` with the `use`, `apply`, or `export-defaults` subcommand,
-   without explicit user authorization. Prefer dry-run or read-only commands.
+4. Treat installer, network, and Raycast preference actions as stateful. Do not run `install.sh`
+   without `--dry-run`, run `./scripts/macos-network.sh` with the `use`, `apply`, or
+   `export-defaults` subcommand, or run `./scripts/raycast-defaults.sh apply` without explicit user
+   authorization. Prefer dry-run or read-only commands.
 5. Before committing, recheck `git status`, `git diff --check`, and the staged diff. Exclude
    app-generated churn and unrelated live-config edits.
 
 ## Validation
 
-Run commands from the repository root. `make lint` includes the format check.
+Run commands from the repository root. `just lint` includes the format check. `just` is
+mise-managed (`.config/mise/config.toml`).
 
 ```sh
-make lint
+just lint
 git diff --check
 ```
 
@@ -95,9 +100,10 @@ Use the relevant additional check when changing its surface:
 sh scripts/verify_fish_completions.sh
 sh ./install.sh --dry-run --yes --no-update
 ./scripts/macos-network.sh validate --all
+sh scripts/verify_raycast_defaults.sh
 ```
 
-The network validation command is macOS-only. A green Linux CI run does not replace a macOS
+The network validation and Raycast verification commands are macOS-only. A green Linux CI run does not replace a macOS
 login-shell or affected-app smoke test. Report local checks, CI, and live shell/app verification as
 separate evidence.
 
