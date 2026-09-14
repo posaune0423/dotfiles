@@ -5,9 +5,13 @@ on:
   pull_request:
   workflow_dispatch:
 
+# The jobs only read the checkout; keep GITHUB_TOKEN read-only.
+permissions:
+  contents: read
+
 jobs:
   format:
-    name: Format Check (make format)
+    name: Format Check (just format)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -23,13 +27,13 @@ jobs:
       - name: Install formatter and lint tools
         uses: taiki-e/install-action@v2
         with:
-          tool: shfmt,shellcheck,stylua,taplo-cli
+          tool: just,shfmt,shellcheck,stylua,taplo-cli
 
       - name: Run format check
-        run: make format
+        run: just format
 
   lint:
-    name: Lint Check (make lint)
+    name: Lint Check (just lint)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -45,10 +49,10 @@ jobs:
       - name: Install formatter and lint tools
         uses: taiki-e/install-action@v2
         with:
-          tool: shfmt,shellcheck,stylua,taplo-cli
+          tool: just,shfmt,shellcheck,stylua,taplo-cli
 
       - name: Run lint
-        run: make lint
+        run: just lint
 
   verify:
     name: Behavior and privacy checks

@@ -5,3 +5,11 @@ fish_variables
 .nvimlog
 
 .agents/memory
+
+# Raycast-owned state under ~/.config/raycast. Only script-commands/ and
+# defaults.conf are tracked; config.json holds access tokens.
+.config/raycast/config.json
+.config/raycast/extensions/
+.config/raycast/ai/
+# Raycast "Export" output: encrypted blob that still carries the access token.
+*.rayconfig
