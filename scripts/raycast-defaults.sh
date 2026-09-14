@@ -93,8 +93,9 @@ parse_profile_line() {
       PARSED_VALUE="$(normalize_bool "$PARSED_VALUE")" || die "Bool values must be true/false: $PARSED_KEY"
       ;;
     int)
-      case "$PARSED_VALUE" in
-        '' | *[!0-9-]*) die "Int values must be integers: $PARSED_KEY=$PARSED_VALUE" ;;
+      # Optional single leading minus, then one or more digits.
+      case "${PARSED_VALUE#-}" in
+        '' | *[!0-9]*) die "Int values must be integers: $PARSED_KEY=$PARSED_VALUE" ;;
       esac
       ;;
     *) die "Unsupported type for $PARSED_KEY: $PARSED_TYPE (use string|bool|int)" ;;
