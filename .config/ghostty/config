@@ -2,9 +2,13 @@
 theme = Cursor Dark
 
 # Font
+# Latin/icons: Monaco Nerd. JP (and other missing glyphs): PlemolJP Console NF.
+font-family = 
 font-family = Monaco Nerd Font CodingAgent
+font-family = PlemolJP Console NF
 window-title-font-family = Monaco Nerd Font CodingAgent
 font-size = 13
+font-thicken = true
 
 # Window
 window-padding-x = 12

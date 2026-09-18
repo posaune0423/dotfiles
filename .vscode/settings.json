@@ -2,11 +2,11 @@
   // ============================================
   // Editor Settings
   // ============================================
-  "editor.fontFamily": "Monaco Nerd Font CodingAgent",
+  "editor.fontFamily": "Monaco Nerd Font CodingAgent, PlemolJP Console NF",
   "editor.fontSize": 11,
   "editor.fontWeight": "400",
-  "editor.codeLensFontFamily": "Monaco Nerd Font CodingAgent",
-  "editor.inlayHints.fontFamily": "Monaco Nerd Font CodingAgent",
+  "editor.codeLensFontFamily": "Monaco Nerd Font CodingAgent, PlemolJP Console NF",
+  "editor.inlayHints.fontFamily": "Monaco Nerd Font CodingAgent, PlemolJP Console NF",
   "editor.insertSpaces": false,
   "editor.renderWhitespace": "boundary",
   "editor.suggestSelection": "first",
@@ -23,7 +23,7 @@
   // Terminal Settings
   // ============================================
   "terminal.integrated.defaultProfile.osx": "fish",
-  "terminal.integrated.fontFamily": "Monaco Nerd Font CodingAgent",
+  "terminal.integrated.fontFamily": "Monaco Nerd Font CodingAgent, PlemolJP Console NF",
   "terminal.integrated.fontSize": 12,
   "terminal.integrated.fontWeight": "200",
   "terminal.integrated.enableImages": true,
