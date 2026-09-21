@@ -53,6 +53,7 @@ MACOS_DEFAULTS_PROFILE="$PROFILE" "$SCRIPT" validate > /dev/null 2>&1 ||
 
 # 4. Dry-run must not create the plist; status must report drift on an empty domain.
 cat > "$PROFILE" << CONF
+# Why these keys are tracked.
 $PLIST        KeyRepeat                 int   1
 $PLIST        ApplePressAndHoldEnabled  bool  false
 $OTHER_PLIST  InitialKeyRepeat          int   10
@@ -84,5 +85,15 @@ grep -q "^$PLIST  *KeyRepeat  *int  *2$" "$TEST_ROOT/exported.conf" ||
   fail "export-defaults did not capture the live value"
 grep -q "^$PLIST  *ApplePressAndHoldEnabled  *bool  *false$" "$TEST_ROOT/exported.conf" ||
   fail "export-defaults did not render bool as true/false"
+
+# 7. An export must carry the profile's documentation over and must not stack up
+#    snapshot headers when the exported file is exported again.
+grep -q '^# Why these keys are tracked\.$' "$TEST_ROOT/exported.conf" ||
+  fail "export-defaults dropped the profile's leading comments"
+MACOS_DEFAULTS_PROFILE="$TEST_ROOT/exported.conf" "$SCRIPT" export-defaults "$TEST_ROOT/exported2.conf" > /dev/null
+[ "$(grep -c '^# Snapshot captured on ' "$TEST_ROOT/exported2.conf")" = "1" ] ||
+  fail "a re-export stacked up snapshot header lines"
+grep -q '^# Why these keys are tracked\.$' "$TEST_ROOT/exported2.conf" ||
+  fail "a re-export dropped the profile's leading comments"
 
 echo "[ok] macos-defaults.sh validate/status/apply/export behave in isolation"

@@ -217,12 +217,25 @@ apply_profile() {
   fi
 }
 
+# Reproduce the profile's leading comment block so an export keeps the notes that
+# explain each key, dropping any snapshot line a previous export wrote so repeated
+# exports do not stack them up.
+emit_profile_header() {
+  printf '# Snapshot captured on %s.\n' "$(date '+%Y-%m-%d %H:%M:%S %z')"
+  while IFS= read -r _raw_line || [ -n "$_raw_line" ]; do
+    case "$_raw_line" in
+      '# Snapshot captured on '*) continue ;;
+      '#'* | '') printf '%s\n' "$_raw_line" ;;
+      *) break ;;
+    esac
+  done < "$PROFILE_FILE"
+}
+
 emit_live_profile() {
   require_darwin
   require_command defaults
   validate_profile_syntax
-  printf '# Snapshot captured on %s.\n' "$(date '+%Y-%m-%d %H:%M:%S %z')"
-  printf '# Format: <domain> <key> <type> <value>   (type: string | bool | int)\n'
+  emit_profile_header
   while IFS= read -r _raw_line || [ -n "$_raw_line" ]; do
     parse_profile_line "$_raw_line"
     [ -n "$PARSED_KEY" ] || continue
