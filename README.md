@@ -117,6 +117,7 @@ APFS の copy-on-write により、2本目以降の worktree の実ディスク�
 | Git（global ignore） | `.config/git/ignore` |
 | Karabiner-Elements | `.config/karabiner/karabiner.json` |
 | macOS network profiles | `.config/macos/network/`, `scripts/macos-network.sh` |
+| macOS system defaults | `.config/macos/defaults.conf`, `scripts/macos-defaults.sh` |
 | Raycast | `.config/raycast/defaults.conf`, `.config/raycast/script-commands/`, `scripts/raycast-defaults.sh` |
 | VS Code / Cursor / VSCodium | `.vscode/settings.json`, `.vscode/keybindings.json` |
 
@@ -132,6 +133,28 @@ TCP tuning values such as `net.inet.tcp.delayed_ack`, `sendspace`, `recvspace`, 
 Notes:
 - Profiles are not auto-applied by the installer; applying them requires `sudo`.
 - `balanced-ethernet.conf` assumes a standard 1500-byte MTU path on Ethernet/Wi-Fi. If you are mostly on VPN/tunnels, start from `apple-default.conf` and tune more conservatively, especially `mssdflt`.
+
+### macOS システム設定（defaults）
+
+`defaults` ドメインに書き込む macOS 側の設定は `.config/macos/defaults.conf` が正で、
+`./scripts/macos-defaults.sh` が読み書きします。書式は `<domain> <key> <type> <value>`。
+
+| 内容 | 値 | 備考 |
+|---|---|---|
+| `KeyRepeat` | `1`（15ms） | System Settings のスライダー下限は `2`。GUI より速い値を保持するためのファイル |
+| `InitialKeyRepeat` | `10`（150ms） | 同じくスライダー下限は `15` |
+| `ApplePressAndHoldEnabled` | `false` | 長押しでアクセント候補ではなくリピートさせる |
+
+- 差分確認: `./scripts/macos-defaults.sh status`（drift があれば exit 1）
+- 書き込み内容の確認のみ: `./scripts/macos-defaults.sh --dry-run apply`
+- 適用: `./scripts/macos-defaults.sh apply` のあとログアウト → ログイン（再起動でも可）
+- 手元の値をファイルへ吸い上げ: `./scripts/macos-defaults.sh export-defaults ./.config/macos/defaults.conf`
+- 挙動の検証（一時 plist に対して実行。実ドメインは触らない）: `sh scripts/verify_macos_defaults.sh`
+
+> [!NOTE]
+> キーリピートの 2 キーは macOS のメジャーアップデート時と、System Settings → キーボード を
+> 開いてスライダーが書き戻されたときに GUI の範囲へ丸められます。戻ったら `apply` を再実行してください。
+> 書き込み中は System Settings を閉じておくこと（開いていると `cfprefsd` に上書きされます）。
 
 ### Raycast
 
