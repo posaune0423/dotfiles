@@ -57,11 +57,9 @@ if status is-interactive
     # set -g fish_color_valid_path --underline # Valid file paths
 end
 
-fish_add_path -a "$HOME/.config/.foundry/bin"
+fish_add_path -a $HOME/.config/.foundry/bin
 
 # OpenClaw Completion
-source "$HOME/.openclaw/completions/openclaw.fish"
-
-# Added by LM Studio CLI (lms)
-set -gx PATH $PATH $HOME/.cache/lm-studio/bin
-# End of LM Studio CLI section
+if test -f $HOME/.openclaw/completions/openclaw.fish
+    source $HOME/.openclaw/completions/openclaw.fish
+end
