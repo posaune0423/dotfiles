@@ -51,8 +51,13 @@ Treat every tracked file, commit, PR body, and review comment as public.
 
 - Do not place credentials, tokens, real SSIDs, non-public account or machine identifiers, private
   repository or client names, private URLs, machine-specific workspace paths, or conditional Git
-  identities in tracked files, commits, PR bodies, or review comments. Intentionally public Git
-  author identity and explicitly public, non-sensitive tool metadata are allowed.
+  identities in tracked files, commits, PR bodies, or review comments. Explicitly public,
+  non-sensitive tool metadata is allowed.
+- Author and commit only as `posaune0423 <posaune0423@users.noreply.github.com>`. A personal,
+  corporate, or provider mailbox, and any address Git derives from a hostname, must never reach an
+  author or committer field. The tracked `.gitconfig` owns this identity, so do not override
+  `user.email` per repository. `GitHub <noreply@github.com>` on a web merge commit is GitHub's own
+  committer and is exempt.
 - Keep repository-specific Git paths and identities in `~/.gitconfig.local`. Tracked `.gitconfig`
   may include that optional file but must not contain repository-specific `includeIf` rules.
 - Prefer `$HOME`, XDG variables, and command lookup over new `/Users/...` paths or
