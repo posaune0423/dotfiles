@@ -79,3 +79,6 @@ jobs:
 
       - name: Verify Zsh Google Cloud CLI Python
         run: sh scripts/verify_zsh_cloudsdk_python.sh
+
+      - name: Verify Brewfile ownership
+        run: sh scripts/verify_brewfile.sh

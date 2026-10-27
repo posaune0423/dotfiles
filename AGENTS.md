@@ -15,6 +15,11 @@ These instructions apply at the repository root. `dotagents/` is a Git submodule
   `README.md` synchronized with it.
 - `.config/mise/config.toml` owns runtime and CLI versions. Keep the mise inventory in `README.md`
   synchronized with it.
+- `.config/homebrew/Brewfile` owns GUI apps (Homebrew casks and `mas` App Store apps), plus only
+  the formulae mise cannot provide or that mise-installed binaries link against.
+  `scripts/verify_brewfile.sh` rejects a formula that duplicates a mise tool. `scripts/update.sh`
+  (`just update`) updates every manager; never call `brew bundle cleanup` from it, since that
+  uninstalls and resets Homebrew's trust store.
 - Fish reads `.config/fish/conf.d/*.fish` in lexical order before `config.fish` for interactive and
   non-interactive shells. Guard interactive-only work with `status is-interactive`.
 - `.zshenv`, `.zprofile`, `.zshrc`, and `.config/zsh/` jointly define Zsh startup. Preserve their
@@ -102,6 +107,12 @@ sh scripts/verify_gitconfig_privacy.sh
 fish scripts/verify_fish_tool_routing.fish
 sh scripts/verify_zsh_mise_path.sh
 sh scripts/verify_zsh_cloudsdk_python.sh
+```
+
+For Brewfile or mise inventory changes, also run:
+
+```sh
+sh scripts/verify_brewfile.sh
 ```
 
 Use the relevant additional check when changing its surface:
