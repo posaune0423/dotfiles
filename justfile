@@ -11,6 +11,10 @@ default:
 install:
     ./install.sh
 
+# Update Homebrew (formulae + casks), Mac App Store apps, and mise tools
+update:
+    ./scripts/update.sh
+
 # Check formatting (sh/zsh/fish/lua/toml/json)
 format:
     ./scripts/format.sh --check

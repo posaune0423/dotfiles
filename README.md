@@ -50,6 +50,7 @@ sh ./install.sh --no-update
 | `.config/karabiner/` | `~/.config/karabiner/` |
 | `.config/ghostty/` | `~/.config/ghostty/` |
 | `.config/raycast/script-commands/` | `~/.config/raycast/script-commands/`（ディレクトリ単位。`~/.config/raycast` 自体はリンクしない） |
+| `.config/homebrew/Brewfile` | `~/.config/homebrew/Brewfile`（ファイル単位。brew の `trust.json` がある `~/.config/homebrew` 自体はリンクしない） |
 | `.vscode/settings.json` | `~/Library/Application Support/{Code,Code - Insiders,Cursor,VSCodium}/User/settings.json`（存在するもののみ） |
 | `.vscode/keybindings.json` | `~/Library/Application Support/{Code,Code - Insiders,Cursor,VSCodium}/User/keybindings.json`（存在するもののみ） |
 
@@ -103,10 +104,46 @@ APFS の copy-on-write により、2本目以降の worktree の実ディスク�
 | area | tool | config |
 |---|---|---|
 | runtimes / CLI | **mise** | `.config/mise/config.toml` |
+| GUI apps / mise に無い CLI・ライブラリ | **Homebrew**（cask / formula）+ **mas**（Mac App Store） | `.config/homebrew/Brewfile` |
 | zsh plugins | **sheldon** | `.config/sheldon/plugins.toml` |
 | fish plugins | **fisher** | `.config/fish/fish_plugins` |
 | Neovim plugins | **lazy.nvim (LazyVim)** | `.config/nvim/lazy-lock.json` |
 | prompt | **starship** | `.config/starship.toml` |
+
+### アプリと CLI の更新
+
+管理元は 1 つに決めて、同じものを別の経路で入れません。
+
+| 種類 | 管理元 | 宣言 |
+|---|---|---|
+| GUI アプリ | Homebrew cask（App Store のものは mas） | `.config/homebrew/Brewfile` |
+| CLI・言語ランタイム | mise | `.config/mise/config.toml` |
+| mise に無い CLI、mise のバイナリがリンクするライブラリ | Homebrew formula | `.config/homebrew/Brewfile` |
+
+`sh scripts/verify_brewfile.sh` は、次のどれかに当たると失敗します（CI でも実行）。
+
+- formula が mise のツールと同じ（`ffmpeg@4` は `ffmpeg`、`gh` は `github-cli` として判定）
+- formula が `HOMEBREW_FORBIDDEN_FORMULAE`（`.zshenv`）に載っている（`openjdk@17` は `openjdk` として判定）
+- 同じエントリを 2 回書いている
+- 行頭の `type "name"` 以外の書き方（シングルクォート・字下げ）をしている。検査が読み飛ばさないようにするため
+- 読むファイル（Brewfile・mise の設定・`.zshenv`）が無い
+
+```bash
+just update
+```
+
+`scripts/update.sh` が `brew update` → `brew upgrade --greedy --no-quit` → `mas upgrade` → `mise upgrade` → `brew cleanup` を続けて実行します。最後に、次の 3 つを表示だけします（何も変更しません）。
+
+- Brewfile にあるのに brew・mas の管理下に無いもの
+- brew・mas で入っているのに Brewfile に無いもの（App Store のアプリは ID で比べる）
+- macOS のアップデート
+
+- `--greedy` は、自分で更新するアプリ（ブラウザ・チャットなど）も Homebrew で入れ替えます。アプリ自身の更新は何週間も遅れることがあるためです。
+- `--no-quit` で、起動中のアプリは閉じずに入れ替えます。保存していない作業を失わないためです。
+- 更新したアプリは、一度完全に終了して開き直すまで古い版のまま動きます。
+- `brew bundle cleanup` は使いません。Homebrew 7 では確認のあとに実際に削除し、`~/.config/homebrew/trust.json` も Brewfile の内容で上書きします。
+
+手で入れたアプリを brew の管理に移すには、版が同じなら `brew install --cask --adopt <cask>` を使います。版が古いなら `brew install --cask --force <cask>` で上書きします。pkg 形式の cask（Karabiner-Elements・Logi Options+・NordVPN）は sudo が要ります。
 
 ### Apps / configs
 
@@ -363,7 +400,7 @@ Karabiner-Elements 側でキーを受けて `open -g raycast://extensions/raycas
 | `uv` | `latest` |  |
 | `pipx:cfn-lint` | `latest` |  |
 | `pipx:git-remote-codecommit` | `latest` |  |
-| `pipx:snowflake-cli` | `latest` |  |
+| `pipx:snowflake-cli` | `latest` | Python 3.14 でビルド（pydantic-core が 3.15 未対応） |
 
 #### Ruby
 
@@ -475,4 +512,5 @@ Karabiner-Elements 側でキーを受けて `open -g raycast://extensions/raycas
 |---|---|---|
 | Format check | `just format` (`scripts/format.sh`) | `justfile`, `scripts/format/*.sh` |
 | Lint check | `just lint` (`just format` + `shellcheck`) | `justfile` |
-| GitHub Actions | `CI` workflow (`format` / `lint`) | `.github/workflows/ci.yml` |
+| GitHub Actions | `CI` workflow (`format` / `lint` / `verify`) | `.github/workflows/ci.yml` |
+| Brewfile ownership | `sh scripts/verify_brewfile.sh` | `.config/homebrew/Brewfile`, `.config/mise/config.toml` |
