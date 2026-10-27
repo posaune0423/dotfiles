@@ -1,12 +1,13 @@
 #!/bin/sh
 # Enforce the Brewfile ownership contract: CLI tools belong to mise, so a
-# `brew` formula must not share a name with a mise tool, and no entry may be
-# declared twice.
+# `brew` formula must not share a name with a mise tool or appear in
+# HOMEBREW_FORBIDDEN_FORMULAE (.zshenv), and no entry may be declared twice.
 set -eu
 
 REPO_ROOT="$(CDPATH='' cd -- "$(dirname -- "$0")/.." && pwd)"
 BREWFILE="${BREWFILE:-$REPO_ROOT/.config/homebrew/Brewfile}"
 MISE_CONFIG="${MISE_CONFIG:-$REPO_ROOT/.config/mise/config.toml}"
+ZSHENV="${ZSHENV:-$REPO_ROOT/.zshenv}"
 WORK_DIR="$(mktemp -d "${TMPDIR:-/tmp}/dotfiles-brewfile.XXXXXX")"
 trap 'rm -rf "$WORK_DIR"' EXIT HUP INT TERM
 
@@ -34,8 +35,19 @@ if [ -s "$WORK_DIR/overlap" ]; then
   FAIL=1
 fi
 
+# Forbidden names are unversioned, so `openjdk@17` must match `openjdk`.
+sed -nE 's/^export HOMEBREW_FORBIDDEN_FORMULAE="([^"]*)".*/\1/p' "$ZSHENV" |
+  tr ' ' '\n' | sed '/^$/d' | sort -u > "$WORK_DIR/forbidden"
+sed 's/@.*//' "$WORK_DIR/brew" | sort -u > "$WORK_DIR/brew-unversioned"
+comm -12 "$WORK_DIR/brew-unversioned" "$WORK_DIR/forbidden" > "$WORK_DIR/forbidden-hits"
+if [ -s "$WORK_DIR/forbidden-hits" ]; then
+  echo "[fail] listed in HOMEBREW_FORBIDDEN_FORMULAE (install through mise instead):" >&2
+  sed 's/^/  /' "$WORK_DIR/forbidden-hits" >&2
+  FAIL=1
+fi
+
 if [ "$FAIL" -ne 0 ]; then
   exit 1
 fi
 
-echo "[ok] Brewfile has no duplicates and no formula shared with mise"
+echo "[ok] Brewfile has no duplicates and no formula owned by mise"

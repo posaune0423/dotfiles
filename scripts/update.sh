@@ -41,7 +41,8 @@ printf '\n==> Installed through Homebrew/mas but missing from Brewfile\n'
 WORK_DIR="$(mktemp -d "${TMPDIR:-/tmp}/dotfiles-update.XXXXXX")"
 trap 'rm -rf "$WORK_DIR"' EXIT HUP INT TERM
 entries < "$BREWFILE" > "$WORK_DIR/declared"
-# Formulae pulled in as dependencies are not drift, so compare leaves only.
+# Compare leaves only: Homebrew also flags many dependencies as installed on
+# request, so `brew list --installed-on-request` would bury real drift.
 {
   brew tap | sed 's/.*/tap "&"/'
   brew leaves --installed-on-request | sed 's/.*/brew "&"/'

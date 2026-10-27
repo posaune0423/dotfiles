@@ -33,7 +33,6 @@ brew "tig"
 brew "tor"
 brew "tree"
 brew "ethereum"
-brew "openjdk@17"
 brew "antoniorodr/memo/memo"
 brew "microsoft/apm/apm", trusted: true
 brew "steipete/tap/remindctl"
