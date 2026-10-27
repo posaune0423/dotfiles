@@ -393,7 +393,7 @@ Karabiner-Elements 側でキーを受けて `open -g raycast://extensions/raycas
 | `uv` | `latest` |  |
 | `pipx:cfn-lint` | `latest` |  |
 | `pipx:git-remote-codecommit` | `latest` |  |
-| `pipx:snowflake-cli` | `latest` |  |
+| `pipx:snowflake-cli` | `latest` | Python 3.14 でビルド（pydantic-core が 3.15 未対応） |
 
 #### Ruby
 
