@@ -76,3 +76,6 @@ jobs:
 
       - name: Verify Zsh mise routing
         run: sh scripts/verify_zsh_mise_path.sh
+
+      - name: Verify Brewfile ownership
+        run: sh scripts/verify_brewfile.sh

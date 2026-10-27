@@ -1,0 +1,127 @@
+# Homebrew / Mac App Store inventory. Linked to ~/.config/homebrew/Brewfile,
+# so `brew bundle --global` reads it from anywhere.
+#
+# Ownership:
+#   - GUI apps: `cask` here, or `mas` for Mac App Store apps.
+#   - CLI tools and language runtimes: mise (.config/mise/config.toml), not here.
+#     scripts/verify_brewfile.sh fails when a `brew` entry duplicates a mise tool.
+#   - `brew` formulae: only what mise cannot provide, or libraries that
+#     mise-installed binaries link against at runtime.
+
+# [Taps]
+tap "antoniorodr/memo"
+tap "microsoft/apm"
+tap "steipete/tap"
+tap "streamingfast/tap"
+
+# [Formulae - CLI not available through mise]
+brew "bash"
+brew "colima"
+brew "curl"
+brew "git"
+brew "imagemagick"
+brew "libpq"
+brew "mysql-client"
+brew "poppler"
+brew "postgresql@14"
+brew "postgresql@17"
+brew "protobuf"
+brew "pscale"
+brew "screenresolution"
+brew "tesseract"
+brew "tig"
+brew "tor"
+brew "tree"
+brew "ethereum"
+brew "openjdk@17"
+brew "antoniorodr/memo/memo"
+brew "microsoft/apm/apm", trusted: true
+brew "steipete/tap/remindctl"
+brew "streamingfast/tap/substreams"
+brew "streamingfast/tap/substreams-sink-sql"
+
+# [Formulae - runtime libraries for mise-installed binaries]
+# Removing these breaks the mise binaries that link to /opt/homebrew/opt/<lib>.
+brew "libx11"      # mise ffmpeg
+brew "libxcb"      # mise ffmpeg
+brew "sdl2-compat" # mise ffmpeg (ffplay)
+brew "openssl@3"   # mise sheldon, pipx snowflake-cli
+# Headers for native gem / npm module builds.
+brew "libyaml"
+brew "pkgconf"
+
+# [Casks - browsers]
+cask "arc"
+cask "firefox"
+cask "google-chrome"
+cask "thebrowsercompany-dia"
+
+# [Casks - communication]
+cask "discord"
+cask "messenger"
+cask "signal"
+cask "slack"
+cask "telegram"
+cask "zoom"
+
+# [Casks - productivity]
+cask "1password"
+cask "activitywatch"
+cask "appcleaner"
+cask "aside"
+cask "chatgpt"
+cask "claude"
+cask "drawio"
+cask "figma"
+cask "granola"
+cask "loom"
+cask "notion"
+cask "obsidian"
+cask "raycast"
+cask "spark-app"
+cask "superwhisper"
+
+# [Casks - development]
+cask "antigravity-cli"
+cask "beekeeper-studio"
+cask "cursor"
+cask "docker-desktop"
+cask "ghostty"
+cask "lm-studio"
+cask "comfy"
+cask "ngrok"
+cask "session-manager-plugin"
+cask "termius"
+cask "visual-studio-code"
+cask "android-commandlinetools"
+cask "android-platform-tools"
+
+# [Casks - media]
+cask "audacity"
+cask "blender"
+cask "obs"
+
+# [Casks - system / input]
+cask "azookey"
+cask "google-japanese-ime"
+cask "karabiner-elements"
+cask "logi-options+"
+cask "monitorcontrol"
+cask "nordvpn"
+cask "raspberry-pi-imager"
+
+# [Casks - fonts]
+cask "font-symbols-only-nerd-font"
+cask "font-udev-gothic-nf"
+
+# [Mac App Store]
+mas "Bitwarden", id: 1352778147
+mas "GarageBand", id: 682658836
+mas "iMovie", id: 408981434
+mas "Keynote", id: 409183694
+mas "LINE", id: 539883307
+mas "Numbers", id: 409203825
+mas "Numbers Creator Studio", id: 361304891
+mas "Pages", id: 409201541
+mas "Remote Mouse", id: 403195710
+mas "Xcode", id: 497799835

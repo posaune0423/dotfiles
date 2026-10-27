@@ -1,0 +1,60 @@
+#!/bin/sh
+# Update every package manager this repository owns in one pass:
+# Homebrew (formulae + casks), Mac App Store, and mise.
+# A failing step does not stop later ones; the exit status reports any failure.
+set -u
+
+REPO_ROOT="$(CDPATH='' cd -- "$(dirname -- "$0")/.." && pwd)"
+BREWFILE="$REPO_ROOT/.config/homebrew/Brewfile"
+FAILED=""
+
+step() {
+  _name="$1"
+  shift
+  printf '\n==> %s\n' "$_name"
+  if ! "$@"; then
+    FAILED="$FAILED
+  $_name"
+  fi
+}
+
+step "brew update" brew update
+# --greedy also upgrades casks that update themselves (browsers, chat apps).
+# Their own updaters only apply on relaunch, so an app left open for weeks
+# stays on a vulnerable build unless Homebrew replaces it.
+step "brew upgrade" brew upgrade --greedy
+step "mas upgrade" mas upgrade
+# Keeps each range in mise config ("latest" moves, exact pins stay).
+step "mise upgrade" mise upgrade
+step "brew cleanup" brew cleanup
+
+# `type "name"` lines, without trailing options or comments.
+entries() {
+  sed -nE 's/^(tap|brew|cask|mas) ("[^"]+").*/\1 \2/p' | sort -u
+}
+
+# Drift reports are read-only. Never call `brew bundle cleanup` here: it
+# uninstalls after a prompt and resets Homebrew's trust store to the Brewfile.
+printf '\n==> Brewfile entries not installed through Homebrew/mas\n'
+brew bundle check --file "$BREWFILE" --verbose --no-upgrade || true
+printf '\n==> Installed through Homebrew/mas but missing from Brewfile\n'
+WORK_DIR="$(mktemp -d "${TMPDIR:-/tmp}/dotfiles-update.XXXXXX")"
+trap 'rm -rf "$WORK_DIR"' EXIT HUP INT TERM
+entries < "$BREWFILE" > "$WORK_DIR/declared"
+# Formulae pulled in as dependencies are not drift, so compare leaves only.
+{
+  brew tap | sed 's/.*/tap "&"/'
+  brew leaves --installed-on-request | sed 's/.*/brew "&"/'
+  brew list --cask --full-name | sed 's/.*/cask "&"/'
+} | entries > "$WORK_DIR/installed"
+comm -13 "$WORK_DIR/declared" "$WORK_DIR/installed"
+
+printf '\n==> macOS updates (not installed by this script)\n'
+softwareupdate --list 2>&1 || true
+
+printf '\nRelaunch updated apps: an app keeps running its old build until it quits.\n'
+
+if [ -n "$FAILED" ]; then
+  printf '\n[fail] these steps failed:%s\n' "$FAILED" >&2
+  exit 1
+fi

@@ -449,8 +449,8 @@ print_section "${ICON_FOLDER} Creating Symlinks"
 run mkdir -p "$HOME/.config"
 
 # Count total items
-# 5 root + 12 XDG configs + up to 8 editor settings (4 apps x 2 files) = 25
-set_total_items 25
+# 5 root + 13 XDG configs + up to 8 editor settings (4 apps x 2 files) = 26
+set_total_items 26
 
 # Root dotfiles
 link_item "$DOTFILES_DIR/.zshenv" "$HOME/.zshenv" "$TS"
@@ -478,6 +478,10 @@ link_item "$DOTFILES_DIR/.config/fish" "$HOME/.config/fish" "$TS"
 # keeps its access token in config.json there, which must never enter this repo.
 run mkdir -p "$HOME/.config/raycast"
 link_item "$DOTFILES_DIR/.config/raycast/script-commands" "$HOME/.config/raycast/script-commands" "$TS"
+# Link only the Brewfile: Homebrew keeps its machine-local trust store
+# (trust.json) in ~/.config/homebrew.
+run mkdir -p "$HOME/.config/homebrew"
+link_item "$DOTFILES_DIR/.config/homebrew/Brewfile" "$HOME/.config/homebrew/Brewfile" "$TS"
 
 # Editor settings (macOS)
 if [ "$(uname -s 2> /dev/null || echo unknown)" = "Darwin" ]; then
