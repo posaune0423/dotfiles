@@ -120,7 +120,10 @@ APFS の copy-on-write により、2本目以降の worktree の実ディスク�
 | CLI・言語ランタイム | mise | `.config/mise/config.toml` |
 | mise に無い CLI、mise のバイナリがリンクするライブラリ | Homebrew formula | `.config/homebrew/Brewfile` |
 
-`sh scripts/verify_brewfile.sh` は、Brewfile の formula が mise のツールと同じ名前だと失敗します（CI でも実行）。
+`sh scripts/verify_brewfile.sh` は、Brewfile の formula が次のどちらかに当たると失敗します（CI でも実行）。
+
+- mise のツールと同じ名前
+- `HOMEBREW_FORBIDDEN_FORMULAE`（`.zshenv`）に載っている名前（`openjdk@17` は `openjdk` として判定）
 
 ```bash
 just update
