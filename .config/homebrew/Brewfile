@@ -57,7 +57,6 @@ cask "thebrowsercompany-dia"
 
 # [Casks - communication]
 cask "discord"
-cask "messenger"
 cask "signal"
 cask "slack"
 cask "telegram"

@@ -120,22 +120,26 @@ APFS の copy-on-write により、2本目以降の worktree の実ディスク�
 | CLI・言語ランタイム | mise | `.config/mise/config.toml` |
 | mise に無い CLI、mise のバイナリがリンクするライブラリ | Homebrew formula | `.config/homebrew/Brewfile` |
 
-`sh scripts/verify_brewfile.sh` は、Brewfile の formula が次のどちらかに当たると失敗します（CI でも実行）。
+`sh scripts/verify_brewfile.sh` は、次のどれかに当たると失敗します（CI でも実行）。
 
-- mise のツールと同じ名前
-- `HOMEBREW_FORBIDDEN_FORMULAE`（`.zshenv`）に載っている名前（`openjdk@17` は `openjdk` として判定）
+- formula が mise のツールと同じ（`ffmpeg@4` は `ffmpeg`、`gh` は `github-cli` として判定）
+- formula が `HOMEBREW_FORBIDDEN_FORMULAE`（`.zshenv`）に載っている（`openjdk@17` は `openjdk` として判定）
+- 同じエントリを 2 回書いている
+- 行頭の `type "name"` 以外の書き方（シングルクォート・字下げ）をしている。検査が読み飛ばさないようにするため
+- 読むファイル（Brewfile・mise の設定・`.zshenv`）が無い
 
 ```bash
 just update
 ```
 
-`scripts/update.sh` が `brew update` → `brew upgrade --greedy` → `mas upgrade` → `mise upgrade` → `brew cleanup` を続けて実行します。最後に、次の 3 つを表示だけします（何も変更しません）。
+`scripts/update.sh` が `brew update` → `brew upgrade --greedy --no-quit` → `mas upgrade` → `mise upgrade` → `brew cleanup` を続けて実行します。最後に、次の 3 つを表示だけします（何も変更しません）。
 
 - Brewfile にあるのに brew・mas の管理下に無いもの
-- brew で入っているのに Brewfile に無いもの
+- brew・mas で入っているのに Brewfile に無いもの（App Store のアプリは ID で比べる）
 - macOS のアップデート
 
-- `--greedy` は、自分で更新するアプリ（ブラウザ・チャットなど）も Homebrew で入れ替えます。開きっぱなしのアプリが古い版のまま残るのを防ぐためです。
+- `--greedy` は、自分で更新するアプリ（ブラウザ・チャットなど）も Homebrew で入れ替えます。アプリ自身の更新は何週間も遅れることがあるためです。
+- `--no-quit` で、起動中のアプリは閉じずに入れ替えます。保存していない作業を失わないためです。
 - 更新したアプリは、一度完全に終了して開き直すまで古い版のまま動きます。
 - `brew bundle cleanup` は使いません。Homebrew 7 では確認のあとに実際に削除し、`~/.config/homebrew/trust.json` も Brewfile の内容で上書きします。
 

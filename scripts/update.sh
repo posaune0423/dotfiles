@@ -19,10 +19,10 @@ step() {
 }
 
 step "brew update" brew update
-# --greedy also upgrades casks that update themselves (browsers, chat apps).
-# Their own updaters only apply on relaunch, so an app left open for weeks
-# stays on a vulnerable build unless Homebrew replaces it.
-step "brew upgrade" brew upgrade --greedy
+# --greedy also upgrades casks that update themselves (browsers, chat apps),
+# whose own updaters can lag for weeks. --no-quit keeps running apps open so
+# an update never drops unsaved work; the new build loads on relaunch.
+step "brew upgrade" brew upgrade --greedy --no-quit
 step "mas upgrade" mas upgrade
 # Keeps each range in mise config ("latest" moves, exact pins stay).
 step "mise upgrade" mise upgrade
@@ -49,6 +49,11 @@ entries < "$BREWFILE" > "$WORK_DIR/declared"
   brew list --cask --full-name | sed 's/.*/cask "&"/'
 } | entries > "$WORK_DIR/installed"
 comm -13 "$WORK_DIR/declared" "$WORK_DIR/installed"
+# App Store names are display labels, so compare apps by ID.
+DECLARED_MAS="$(sed -nE 's/^mas "[^"]+", id: ([0-9]+).*/\1/p' "$BREWFILE" | tr '\n' ' ')"
+mas list | awk -v ids="$DECLARED_MAS" '
+  BEGIN { n = split(ids, list, " "); for (i = 1; i <= n; i++) declared[list[i]] }
+  !($1 in declared) { $1 = $1; print "mas " $0 }'
 
 printf '\n==> macOS updates (not installed by this script)\n'
 softwareupdate --list 2>&1 || true
