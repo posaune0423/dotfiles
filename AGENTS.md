@@ -106,6 +106,7 @@ For Git privacy or shell command-routing changes, also run:
 sh scripts/verify_gitconfig_privacy.sh
 fish scripts/verify_fish_tool_routing.fish
 sh scripts/verify_zsh_mise_path.sh
+sh scripts/verify_zsh_cloudsdk_python.sh
 ```
 
 For Brewfile or mise inventory changes, also run:

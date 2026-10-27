@@ -77,5 +77,8 @@ jobs:
       - name: Verify Zsh mise routing
         run: sh scripts/verify_zsh_mise_path.sh
 
+      - name: Verify Zsh Google Cloud CLI Python
+        run: sh scripts/verify_zsh_cloudsdk_python.sh
+
       - name: Verify Brewfile ownership
         run: sh scripts/verify_brewfile.sh

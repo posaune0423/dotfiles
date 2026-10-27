@@ -396,7 +396,7 @@ Karabiner-Elements 側でキーを受けて `open -g raycast://extensions/raycas
 
 | tool (mise key) | version | note |
 |---|---:|---|
-| `python` | `latest` |  |
+| `python` | `latest`, `3.14` | 3.14 は gsutil 用（3.15 に未対応） |
 | `uv` | `latest` |  |
 | `pipx:cfn-lint` | `latest` |  |
 | `pipx:git-remote-codecommit` | `latest` |  |
