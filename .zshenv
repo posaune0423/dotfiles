@@ -57,9 +57,15 @@ export PAGER="${PAGER:-less}"
 export CLICOLOR="${CLICOLOR:-1}"
 export LSCOLORS="${LSCOLORS:-gxfxcxdxbxegedabagacad}"
 
-# Keep Google Cloud CLI on a mise-managed Python that both gcloud and gsutil support.
-export CLOUDSDK_PYTHON="${CLOUDSDK_PYTHON:-$HOME/.local/share/mise/installs/python/3.13.13/bin/python3.13}"
-export CLOUDSDK_GSUTIL_PYTHON="${CLOUDSDK_GSUTIL_PYTHON:-$CLOUDSDK_PYTHON}"
+# Keep Google Cloud CLI on mise-managed Pythons: gcloud on the latest one, gsutil
+# on the 3.14 line because it rejects newer Pythons. mise keeps `latest` and
+# `3.14` as aliases across patch upgrades. Replace an inherited path that no
+# longer exists, since .zprofile publishes these to launchctl and a stale value
+# would otherwise outlive the Python it points to.
+[[ -x "${CLOUDSDK_PYTHON:-}" ]] ||
+  export CLOUDSDK_PYTHON="$HOME/.local/share/mise/installs/python/latest/bin/python3"
+[[ -x "${CLOUDSDK_GSUTIL_PYTHON:-}" ]] ||
+  export CLOUDSDK_GSUTIL_PYTHON="$HOME/.local/share/mise/installs/python/3.14/bin/python3"
 
 # HOMEBREW_FORBIDDEN_FORMULAEを設定して、不要なパッケージをインストールしないようにする
 # Version-managed tools are added to prevent accidental Homebrew installation
