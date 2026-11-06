@@ -11,6 +11,7 @@
 # [Taps]
 tap "antoniorodr/memo"
 tap "microsoft/apm"
+tap "stablyai/orca"
 tap "steipete/tap"
 tap "streamingfast/tap"
 
@@ -88,6 +89,7 @@ cask "ghostty"
 cask "lm-studio"
 cask "comfy"
 cask "ngrok"
+cask "stablyai/orca/orca", trusted: true
 cask "session-manager-plugin"
 cask "termius"
 cask "visual-studio-code"
