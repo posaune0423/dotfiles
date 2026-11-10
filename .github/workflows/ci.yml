@@ -82,3 +82,6 @@ jobs:
 
       - name: Verify Brewfile ownership
         run: sh scripts/verify_brewfile.sh
+
+      - name: Verify Homebrew version lock
+        run: sh scripts/verify_brew_lock.sh

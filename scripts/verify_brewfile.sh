@@ -8,11 +8,12 @@ REPO_ROOT="$(CDPATH='' cd -- "$(dirname -- "$0")/.." && pwd)"
 BREWFILE="${BREWFILE:-$REPO_ROOT/.config/homebrew/Brewfile}"
 MISE_CONFIG="${MISE_CONFIG:-$REPO_ROOT/.config/mise/config.toml}"
 ZSHENV="${ZSHENV:-$REPO_ROOT/.zshenv}"
+LOCKFILE="${BREW_LOCKFILE:-$REPO_ROOT/.config/homebrew/Brewfile.lock}"
 WORK_DIR="$(mktemp -d "${TMPDIR:-/tmp}/dotfiles-brewfile.XXXXXX")"
 trap 'rm -rf "$WORK_DIR"' EXIT HUP INT TERM
 
 # A missing input would otherwise parse as empty and pass silently.
-for f in "$BREWFILE" "$MISE_CONFIG" "$ZSHENV"; do
+for f in "$BREWFILE" "$MISE_CONFIG" "$ZSHENV" "$LOCKFILE"; do
   if [ ! -r "$f" ]; then
     echo "[fail] cannot read $f" >&2
     exit 1
@@ -78,8 +79,25 @@ if [ -s "$WORK_DIR/forbidden-hits" ]; then
   FAIL=1
 fi
 
+# scripts/brew-lock.sh reads `formula version` lines and pins by formula name,
+# so a locked formula must also be declared in the Brewfile.
+sed -e 's/#.*//' -e '/^[[:space:]]*$/d' "$LOCKFILE" > "$WORK_DIR/lock"
+grep -vE '^[^[:space:]]+ [^[:space:]]+$' "$WORK_DIR/lock" > "$WORK_DIR/lock-unsupported" || true
+if [ -s "$WORK_DIR/lock-unsupported" ]; then
+  echo "[fail] write Brewfile.lock entries as: formula version" >&2
+  sed 's/^/  /' "$WORK_DIR/lock-unsupported" >&2
+  FAIL=1
+fi
+awk '{ print $1 }' "$WORK_DIR/lock" | sort -u > "$WORK_DIR/lock-names"
+comm -23 "$WORK_DIR/lock-names" "$WORK_DIR/brew" > "$WORK_DIR/lock-undeclared"
+if [ -s "$WORK_DIR/lock-undeclared" ]; then
+  echo "[fail] locked in Brewfile.lock but not declared as a formula in Brewfile:" >&2
+  sed 's/^/  /' "$WORK_DIR/lock-undeclared" >&2
+  FAIL=1
+fi
+
 if [ "$FAIL" -ne 0 ]; then
   exit 1
 fi
 
-echo "[ok] Brewfile has no duplicates and no formula owned by mise"
+echo "[ok] Brewfile has no duplicates, no formula owned by mise, and declares every locked formula"

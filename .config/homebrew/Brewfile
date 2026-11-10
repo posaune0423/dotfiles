@@ -29,6 +29,7 @@ brew "postgresql@17"
 brew "protobuf"
 brew "pscale"
 brew "screenresolution"
+brew "tailscale" # open source tailscaled; version held by Brewfile.lock
 brew "tesseract"
 brew "tig"
 brew "tor"
