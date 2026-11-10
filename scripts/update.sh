@@ -19,6 +19,9 @@ step() {
 }
 
 step "brew update" brew update
+# Pin before upgrading so `brew upgrade` leaves Brewfile.lock formulae alone.
+# A formula whose installed version differs from the lock fails this step.
+step "brew lock pin" "$REPO_ROOT/scripts/brew-lock.sh" pin
 # --greedy also upgrades casks that update themselves (browsers, chat apps),
 # whose own updaters can lag for weeks. --no-quit keeps running apps open so
 # an update never drops unsaved work; the new build loads on relaunch.

@@ -20,6 +20,9 @@ These instructions apply at the repository root. `dotagents/` is a Git submodule
   `scripts/verify_brewfile.sh` rejects a formula that duplicates a mise tool. `scripts/update.sh`
   (`just update`) updates every manager; never call `brew bundle cleanup` from it, since that
   uninstalls and resets Homebrew's trust store.
+- `.config/homebrew/Brewfile.lock` and `scripts/brew-lock.sh` (`just brew-lock`) jointly hold
+  Homebrew formulae at a recorded version through `brew pin`. Change a locked version only with
+  `just brew-lock bump <formula>`, which upgrades the live install.
 - Fish reads `.config/fish/conf.d/*.fish` in lexical order before `config.fish` for interactive and
   non-interactive shells. Guard interactive-only work with `status is-interactive`.
 - `.zshenv`, `.zprofile`, `.zshrc`, and `.config/zsh/` jointly define Zsh startup. Preserve their
@@ -109,10 +112,11 @@ sh scripts/verify_zsh_mise_path.sh
 sh scripts/verify_zsh_cloudsdk_python.sh
 ```
 
-For Brewfile or mise inventory changes, also run:
+For Brewfile, Brewfile.lock, or mise inventory changes, also run:
 
 ```sh
 sh scripts/verify_brewfile.sh
+sh scripts/verify_brew_lock.sh
 ```
 
 Use the relevant additional check when changing its surface:

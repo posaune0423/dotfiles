@@ -126,13 +126,14 @@ APFS の copy-on-write により、2本目以降の worktree の実ディスク�
 - formula が `HOMEBREW_FORBIDDEN_FORMULAE`（`.zshenv`）に載っている（`openjdk@17` は `openjdk` として判定）
 - 同じエントリを 2 回書いている
 - 行頭の `type "name"` 以外の書き方（シングルクォート・字下げ）をしている。検査が読み飛ばさないようにするため
-- 読むファイル（Brewfile・mise の設定・`.zshenv`）が無い
+- `Brewfile.lock` の行が `formula 版` の形でない、または lock した formula が Brewfile に無い
+- 読むファイル（Brewfile・`Brewfile.lock`・mise の設定・`.zshenv`）が無い
 
 ```bash
 just update
 ```
 
-`scripts/update.sh` が `brew update` → `brew upgrade --greedy --no-quit` → `mas upgrade` → `mise upgrade` → `brew cleanup` を続けて実行します。最後に、次の 3 つを表示だけします（何も変更しません）。
+`scripts/update.sh` が `brew update` → `brew-lock.sh pin` → `brew upgrade --greedy --no-quit` → `mas upgrade` → `mise upgrade` → `brew cleanup` を続けて実行します。最後に、次の 3 つを表示だけします（何も変更しません）。
 
 - Brewfile にあるのに brew・mas の管理下に無いもの
 - brew・mas で入っているのに Brewfile に無いもの（App Store のアプリは ID で比べる）
@@ -142,6 +143,20 @@ just update
 - `--no-quit` で、起動中のアプリは閉じずに入れ替えます。保存していない作業を失わないためです。
 - 更新したアプリは、一度完全に終了して開き直すまで古い版のまま動きます。
 - `brew bundle cleanup` は使いません。Homebrew 7 では確認のあとに実際に削除し、`~/.config/homebrew/trust.json` も Brewfile の内容で上書きします。
+
+#### Homebrew formula の版を固定する
+
+Homebrew には lockfile が無いので、固定したい formula は `.config/homebrew/Brewfile.lock` に `formula 版` の形で書き、`brew pin` で止めます。`scripts/brew-lock.sh`（`just brew-lock`）がこの 2 つを揃えます。
+
+| コマンド | 動作 |
+|---|---|
+| `just brew-lock`（`check`） | lock の formula が、書いてある版で入っていて pin されているかを確かめる。違えば失敗する |
+| `just brew-lock pin` | 入っている版が lock と同じ formula を `brew pin` する |
+| `just brew-lock bump <formula>` | pin を外して最新版に上げ、その版を lock に書いて pin し直す |
+
+- `just update` は `brew upgrade` の前に `brew-lock.sh pin` を実行するので、lock にある formula は上がりません。入っている版が lock と違うときは、その手順が失敗として報告されます。
+- Homebrew は最新の bottle しか配らないので、新しいマシンでは lock より新しい版が入ることがあります。そのときは `just brew-lock bump <formula>` で lock を合わせます。
+- 今 lock しているのは `tailscale`（GUI 無しの [`tailscaled`](https://github.com/tailscale/tailscale/wiki/Tailscaled-on-macOS)）です。デーモンは root で動かすので、起動は `sudo brew services start tailscale`、版を上げたあとは `sudo brew services restart tailscale` を手で実行します。
 
 手で入れたアプリを brew の管理に移すには、版が同じなら `brew install --cask --adopt <cask>` を使います。版が古いなら `brew install --cask --force <cask>` で上書きします。pkg 形式の cask（Karabiner-Elements・Logi Options+・NordVPN）は sudo が要ります。
 
@@ -513,4 +528,5 @@ Karabiner-Elements 側でキーを受けて `open -g raycast://extensions/raycas
 | Format check | `just format` (`scripts/format.sh`) | `justfile`, `scripts/format/*.sh` |
 | Lint check | `just lint` (`just format` + `shellcheck`) | `justfile` |
 | GitHub Actions | `CI` workflow (`format` / `lint` / `verify`) | `.github/workflows/ci.yml` |
-| Brewfile ownership | `sh scripts/verify_brewfile.sh` | `.config/homebrew/Brewfile`, `.config/mise/config.toml` |
+| Brewfile ownership | `sh scripts/verify_brewfile.sh` | `.config/homebrew/Brewfile`, `.config/homebrew/Brewfile.lock`, `.config/mise/config.toml` |
+| Homebrew version lock | `sh scripts/verify_brew_lock.sh` | `scripts/brew-lock.sh` |
