@@ -485,21 +485,46 @@ link_item "$DOTFILES_DIR/.config/raycast/script-commands" "$HOME/.config/raycast
 run mkdir -p "$HOME/.config/homebrew"
 link_item "$DOTFILES_DIR/.config/homebrew/Brewfile" "$HOME/.config/homebrew/Brewfile" "$TS"
 
-# Superwhisper keeps modes and settings as JSON in its app folder. Link the two
-# folders rather than the files, so the app's atomic rewrites stay inside the
-# repository. settings/ is built from the tracked public settings plus the
-# untracked private ones; recordings/ and models/ stay with the app.
-# A running app writes its in-memory settings over the new links, so it is
-# quit for this block and started again at the end.
+# Superwhisper keeps modes and settings as JSON in its app folder.
+# - modes/ is copied, not linked: the app lists it with URL-based APIs that do
+#   not follow a symlinked folder, so a linked modes/ looks empty to it.
+#   scripts/superwhisper-modes.sh pull brings edits made in the app back.
+# - settings/ is linked to the folder built from the tracked public settings
+#   plus the untracked private ones; the app reads its one file by path.
+# recordings/ and models/ stay with the app. A running app writes its
+# in-memory state over both, so it is quit for this block and started again.
 SUPERWHISPER_DIR="$HOME/Documents/superwhisper"
+# Copy the tracked modes into a real modes/ folder, keeping a backup of what
+# the app had. Unchanged modes are left alone.
+install_superwhisper_modes() {
+  progress "modes"
+  _modes="$SUPERWHISPER_DIR/modes"
+  if ! command -v jq > /dev/null 2>&1; then
+    warn "jq not found: Superwhisper modes were not copied"
+    return 0
+  fi
+  if [ -d "$_modes" ] && [ ! -L "$_modes" ] &&
+    sh "$DOTFILES_DIR/scripts/superwhisper-modes.sh" status > /dev/null 2>&1; then
+    ok_msg "$(short_path "$_modes")"
+    return 0
+  fi
+  if [ "$NO_BACKUP" -eq 0 ] && { [ -e "$_modes" ] || [ -L "$_modes" ]; }; then
+    _bk="$(backup_path "$_modes" "$TS")"
+    [ -d "$(dirname "$_bk")" ] || run mkdir -p "$(dirname "$_bk")"
+    backup_msg "$(short_path "$_modes") ${ICON_ARROW} $(short_path "$_bk")"
+    run cp -RP "$_modes" "$_bk"
+  fi
+  run sh "$DOTFILES_DIR/scripts/superwhisper-modes.sh" push --force ||
+    warn "Superwhisper modes were not copied (see scripts/superwhisper-modes.sh status)"
+}
 SUPERWHISPER_APP="${SUPERWHISPER_APP_CTL:-$DOTFILES_DIR/scripts/superwhisper-app.sh}"
 SUPERWHISPER_RESTART=0
 SUPERWHISPER_READY=1
 if [ -d "$SUPERWHISPER_DIR" ] && [ -f "$SUPERWHISPER_APP" ] && sh "$SUPERWHISPER_APP" running; then
   if [ "$DRY_RUN" -eq 1 ]; then
-    dry_run_msg "quit Superwhisper, link its folders, then start it again"
+    dry_run_msg "quit Superwhisper, install its modes and settings, then start it again"
   elif sh "$SUPERWHISPER_APP" quit; then
-    info "Quit Superwhisper while its folders are linked"
+    info "Quit Superwhisper while its modes and settings are installed"
     SUPERWHISPER_RESTART=1
   else
     warn "Superwhisper did not quit: skipping its modes and settings"
@@ -510,7 +535,7 @@ if [ -d "$SUPERWHISPER_DIR" ] && [ "$SUPERWHISPER_READY" -eq 0 ]; then
   progress "modes"
   progress "settings"
 elif [ -d "$SUPERWHISPER_DIR" ]; then
-  link_item "$DOTFILES_DIR/.config/superwhisper/modes" "$SUPERWHISPER_DIR/modes" "$TS"
+  install_superwhisper_modes
   if command -v jq > /dev/null 2>&1; then
     run sh "$DOTFILES_DIR/scripts/superwhisper-settings.sh" build ||
       warn "Superwhisper settings were not rebuilt (see scripts/superwhisper-settings.sh status)"

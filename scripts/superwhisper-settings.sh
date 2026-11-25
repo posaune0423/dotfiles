@@ -98,7 +98,9 @@ normalize() {
   ' "$1"
 }
 
-# Entries present in the built file ($1) but in neither source ($2 is the merge). The public file is
+# Entries present in the built file ($1) but in neither source ($2 is the merge):
+# vocabulary, replacements, mode registrations, and any other setting whose
+# value differs (such as favorite models changed in the app). The public file is
 # checked as well as the merge, because a private replacement hides the public
 # one it overrides.
 app_side_entries() {
@@ -111,7 +113,14 @@ app_side_entries() {
         | "vocabulary: \(.)"),
       (($c.replacements // [])[]
         | select({original, with} as $r | any($rules[]; . == $r) | not)
-        | "replacement: \(.original) -> \(.with)")
+        | "replacement: \(.original) -> \(.with)"),
+      (($c.modeKeys // [])[]
+        | select(. as $k | any(($new[0].modeKeys // [])[]; . == $k) | not)
+        | "modeKeys: \(.)"),
+      ($c | keys_unsorted[]
+        | select(IN("vocabulary", "replacements", "modeKeys") | not)
+        | select($c[.] != $new[0][.])
+        | "setting: \(.)")
   '
 }
 
@@ -176,7 +185,7 @@ case "$cmd" in
       if [ -n "$extra" ]; then
         echo "superwhisper-settings: the built file has entries missing from both sources:" >&2
         printf '%s\n' "$extra" | sed 's/^/  /' >&2
-        echo "Move them into settings.json or settings.local.json, or rerun with --force to drop them." >&2
+        echo "Move them into settings.json or settings.local.json (pull modes first for modeKeys), or rerun with --force to drop them." >&2
         exit 1
       fi
     fi
