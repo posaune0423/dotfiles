@@ -8,6 +8,10 @@
 # into .config/superwhisper/settings/settings.json (untracked). The installer
 # links the app's settings folder to that directory, so the app reads the
 # merged result and writes its own edits back into it.
+#
+# Every tracked mode in .config/superwhisper/modes/ is registered in modeKeys,
+# and build stops a running app first, because the app writes its in-memory
+# settings back over a file changed underneath it.
 set -eu
 
 REPO_ROOT="$(CDPATH='' cd -- "$(dirname -- "$0")/.." && pwd)"
@@ -16,6 +20,8 @@ PUBLIC="$CONFIG_DIR/settings.json"
 LOCAL="$CONFIG_DIR/settings.local.json"
 OUT_DIR="$CONFIG_DIR/settings"
 OUT="$OUT_DIR/settings.json"
+MODES_DIR="$CONFIG_DIR/modes"
+APP_CTL="${SUPERWHISPER_APP_CTL:-$REPO_ROOT/scripts/superwhisper-app.sh}"
 
 usage() {
   cat << 'EOF'
@@ -25,7 +31,8 @@ Usage: superwhisper-settings.sh <command>
   status          Compare the built settings with the sources (exit 1 on drift)
   build [--force] Write the merged settings. Refuses when the built file holds
                   vocabulary or replacements missing from both sources (added
-                  in the app), unless --force is given.
+                  in the app), unless --force is given. A running Superwhisper
+                  is quit first and started again afterwards.
 EOF
 }
 
@@ -36,16 +43,33 @@ die() {
 
 command -v jq > /dev/null 2>&1 || die "jq not found"
 
+app() {
+  sh "$APP_CTL" "$@"
+}
+
+# Keys of the tracked modes. system-* modes are built into the app and are not
+# listed in modeKeys.
+mode_keys() {
+  set -- "$MODES_DIR"/*.json
+  if [ -f "$1" ]; then
+    jq -s '[.[] | .key | strings | select(startswith("system-") | not)]' "$@"
+  else
+    echo '[]'
+  fi
+}
+
 # Private entries are appended to the public ones. A private replacement with
 # the same "original" replaces the public one; other private keys override.
+# Tracked modes missing from modeKeys are appended, or the app never loads them.
 merge() {
   [ -f "$PUBLIC" ] || die "missing $PUBLIC"
+  modes="$(mode_keys)"
   if [ -f "$LOCAL" ]; then
     set -- "$PUBLIC" "$LOCAL"
   else
     set -- "$PUBLIC"
   fi
-  jq -s '
+  jq -s --argjson modes "$modes" '
     .[0] as $p | (.[1] // {}) as $l
     | ($p + $l)
     | .vocabulary = (
@@ -57,6 +81,12 @@ merge() {
           | select(.original as $o | all(($l.replacements // [])[]; .original != $o))]
         + ($l.replacements // [])
       )
+    | if .modeKeys == null and ($modes | length) == 0 then .
+      else .modeKeys = (
+        reduce ((.modeKeys // []) + $modes)[] as $k
+          ([]; if any(.[]; . == $k) then . else . + [$k] end)
+      )
+      end
   ' "$@"
 }
 
@@ -86,7 +116,21 @@ app_side_entries() {
 }
 
 TMP_DIR="$(mktemp -d "${TMPDIR:-/tmp}/superwhisper-settings.XXXXXX")"
-trap 'rm -rf "$TMP_DIR"' EXIT HUP INT TERM
+TMP_OUT=""
+APP_STOPPED=0
+# Runs on every exit, including a refused build, so a stopped app always
+# comes back.
+cleanup() {
+  rm -rf "$TMP_DIR"
+  if [ -n "$TMP_OUT" ]; then
+    rm -f "$TMP_OUT"
+  fi
+  if [ "$APP_STOPPED" -eq 1 ]; then
+    app launch || echo "superwhisper-settings: could not start Superwhisper again" >&2
+  fi
+}
+trap cleanup EXIT
+trap 'exit 1' HUP INT TERM
 MERGED="$TMP_DIR/merged.json"
 
 cmd="${1:-}"
@@ -116,6 +160,13 @@ case "$cmd" in
         *) die "unknown option: $arg" ;;
       esac
     done
+    # Quit before reading the built file: the app saves its settings as it
+    # quits, and anything it wrote while running would replace this build.
+    if app running; then
+      echo "superwhisper-settings: quitting Superwhisper during the build"
+      app quit || die "could not quit Superwhisper; quit it and rerun"
+      APP_STOPPED=1
+    fi
     merge > "$MERGED"
     # Check a snapshot, then make sure the app did not write in between.
     SNAPSHOT="$TMP_DIR/built.json"
@@ -133,13 +184,13 @@ case "$cmd" in
     # Rename within the folder so the app never reads a half-written file. The
     # temporary name is unique, so overlapping builds cannot share it.
     TMP_OUT="$(mktemp "$OUT_DIR/.settings.json.XXXXXX")"
-    trap 'rm -rf "$TMP_DIR" "$TMP_OUT"' EXIT HUP INT TERM
     cp "$MERGED" "$TMP_OUT"
     chmod 644 "$TMP_OUT"
     if [ -f "$SNAPSHOT" ] && ! cmp -s "$SNAPSHOT" "$OUT"; then
       die "the built settings changed during the build (edited in the app?): rerun"
     fi
     mv "$TMP_OUT" "$OUT"
+    TMP_OUT=""
     echo "superwhisper-settings: wrote $OUT"
     ;;
   -h | --help | help)

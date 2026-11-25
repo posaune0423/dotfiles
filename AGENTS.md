@@ -39,6 +39,8 @@ These instructions apply at the repository root. `dotagents/` is a Git submodule
   `.config/superwhisper/settings.local.json` (private) are merged by
   `scripts/superwhisper-settings.sh` into the untracked `.config/superwhisper/settings/`, which
   Superwhisper reads through a symlink. Private vocabulary belongs only in the local file.
+  A running Superwhisper overwrites that file with its in-memory state, so anything that writes it
+  must quit and relaunch the app through `scripts/superwhisper-app.sh`; never write it directly.
 - `justfile`, `scripts/format/`, and `.github/workflows/ci.yml` define repository validation. Use
   the existing `just` recipes; do not introduce a second task runner for ordinary changes.
 - Edit `AGENTS.md`, not `CLAUDE.md`. `CLAUDE.md` must remain a symlink to `AGENTS.md`.

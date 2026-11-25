@@ -489,8 +489,27 @@ link_item "$DOTFILES_DIR/.config/homebrew/Brewfile" "$HOME/.config/homebrew/Brew
 # folders rather than the files, so the app's atomic rewrites stay inside the
 # repository. settings/ is built from the tracked public settings plus the
 # untracked private ones; recordings/ and models/ stay with the app.
+# A running app writes its in-memory settings over the new links, so it is
+# quit for this block and started again at the end.
 SUPERWHISPER_DIR="$HOME/Documents/superwhisper"
-if [ -d "$SUPERWHISPER_DIR" ]; then
+SUPERWHISPER_APP="${SUPERWHISPER_APP_CTL:-$DOTFILES_DIR/scripts/superwhisper-app.sh}"
+SUPERWHISPER_RESTART=0
+SUPERWHISPER_READY=1
+if [ -d "$SUPERWHISPER_DIR" ] && [ -f "$SUPERWHISPER_APP" ] && sh "$SUPERWHISPER_APP" running; then
+  if [ "$DRY_RUN" -eq 1 ]; then
+    dry_run_msg "quit Superwhisper, link its folders, then start it again"
+  elif sh "$SUPERWHISPER_APP" quit; then
+    info "Quit Superwhisper while its folders are linked"
+    SUPERWHISPER_RESTART=1
+  else
+    warn "Superwhisper did not quit: skipping its modes and settings"
+    SUPERWHISPER_READY=0
+  fi
+fi
+if [ -d "$SUPERWHISPER_DIR" ] && [ "$SUPERWHISPER_READY" -eq 0 ]; then
+  progress "modes"
+  progress "settings"
+elif [ -d "$SUPERWHISPER_DIR" ]; then
   link_item "$DOTFILES_DIR/.config/superwhisper/modes" "$SUPERWHISPER_DIR/modes" "$TS"
   if command -v jq > /dev/null 2>&1; then
     run sh "$DOTFILES_DIR/scripts/superwhisper-settings.sh" build ||
@@ -509,6 +528,9 @@ if [ -d "$SUPERWHISPER_DIR" ]; then
   fi
 else
   skip "Superwhisper not detected (${DIM}skipping modes, settings${RESET})"
+fi
+if [ "$SUPERWHISPER_RESTART" -eq 1 ]; then
+  sh "$SUPERWHISPER_APP" launch || warn "Could not start Superwhisper again"
 fi
 
 # Editor settings (macOS)

@@ -265,12 +265,18 @@ Superwhisper はモードと設定を `~/Documents/superwhisper/` 配下の JSON
 
 `settings.local.json` は `settings.json` と同じ形で、`vocabulary` は公開側の後ろに追加され、
 `replacements` は `original` が同じなら private 側が優先されます。
+`modes/` にあるモードのうち `modeKeys` に入っていないものは、マージ時に末尾へ追加されます
+（`modeKeys` にないモードはアプリに読み込まれないため。組み込みの `system-*` は除く）。
+
+起動中の Superwhisper は設定をメモリに持ち、ファイルを書き換えても古い状態で上書きし直します。
+そのため `build` と `install.sh` は、起動中のアプリを一度終了してから書き込み、終わったら起動し直します
+（アプリの操作は `scripts/superwhisper-app.sh`）。
 
 > [!WARNING]
 > アプリの画面から追加した vocabulary / replacements は、マージ結果の `settings/settings.json` にだけ入ります。
 > `status` で差分を確認し、`settings.json` か `settings.local.json` へ移してください。
 > 未反映の項目が残っている間、`build` は書き出しを拒否します（破棄するなら `build --force`）。
-> 編集後はアプリを再起動すると確実に反映されます。
+> ソースを手で編集したら、アプリを起動したままでよいので `build` を実行してください。
 
 モードをアプリの画面で編集すると、アプリ独自の整形で `modes/*.json` が書き戻されます。
 そのため `modes/` は JSON フォーマッタの対象外です。
