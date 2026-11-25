@@ -350,8 +350,9 @@ link_item() {
 
   progress "$_name"
 
-  # Skip if source doesn't exist (optional config)
-  if [ ! -e "$_src" ]; then
+  # Skip if source doesn't exist (optional config). A "generated" source is
+  # written by a step that a dry run skips, so preview its link regardless.
+  if [ ! -e "$_src" ] && ! { [ "$DRY_RUN" -eq 1 ] && [ "${4:-}" = "generated" ]; }; then
     skip "Source not found: $_short_src ${DIM}(skipping)${RESET}"
     return 0
   fi
@@ -449,8 +450,9 @@ print_section "${ICON_FOLDER} Creating Symlinks"
 run mkdir -p "$HOME/.config"
 
 # Count total items
-# 5 root + 13 XDG configs + up to 8 editor settings (4 apps x 2 files) = 26
-set_total_items 26
+# 5 root + 13 XDG configs + 2 Superwhisper folders
+# + up to 8 editor settings (4 apps x 2 files) = 28
+set_total_items 28
 
 # Root dotfiles
 link_item "$DOTFILES_DIR/.zshenv" "$HOME/.zshenv" "$TS"
@@ -482,6 +484,32 @@ link_item "$DOTFILES_DIR/.config/raycast/script-commands" "$HOME/.config/raycast
 # (trust.json) in ~/.config/homebrew.
 run mkdir -p "$HOME/.config/homebrew"
 link_item "$DOTFILES_DIR/.config/homebrew/Brewfile" "$HOME/.config/homebrew/Brewfile" "$TS"
+
+# Superwhisper keeps modes and settings as JSON in its app folder. Link the two
+# folders rather than the files, so the app's atomic rewrites stay inside the
+# repository. settings/ is built from the tracked public settings plus the
+# untracked private ones; recordings/ and models/ stay with the app.
+SUPERWHISPER_DIR="$HOME/Documents/superwhisper"
+if [ -d "$SUPERWHISPER_DIR" ]; then
+  link_item "$DOTFILES_DIR/.config/superwhisper/modes" "$SUPERWHISPER_DIR/modes" "$TS"
+  if command -v jq > /dev/null 2>&1; then
+    run sh "$DOTFILES_DIR/scripts/superwhisper-settings.sh" build ||
+      warn "Superwhisper settings were not rebuilt (see scripts/superwhisper-settings.sh status)"
+  else
+    warn "jq not found: Superwhisper settings were not built"
+  fi
+  # Never hand the app a settings folder without a readable settings.json: a
+  # failed first build would otherwise replace its working settings.
+  SUPERWHISPER_BUILT="$DOTFILES_DIR/.config/superwhisper/settings/settings.json"
+  if [ "$DRY_RUN" -eq 1 ] || { command -v jq > /dev/null 2>&1 && jq -e 'type == "object"' "$SUPERWHISPER_BUILT" > /dev/null 2>&1; }; then
+    link_item "$DOTFILES_DIR/.config/superwhisper/settings" "$SUPERWHISPER_DIR/settings" "$TS" generated
+  else
+    progress "settings"
+    warn "No usable built Superwhisper settings: leaving $(short_path "$SUPERWHISPER_DIR/settings") untouched"
+  fi
+else
+  skip "Superwhisper not detected (${DIM}skipping modes, settings${RESET})"
+fi
 
 # Editor settings (macOS)
 if [ "$(uname -s 2> /dev/null || echo unknown)" = "Darwin" ]; then
