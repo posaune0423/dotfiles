@@ -21,6 +21,9 @@ LOCAL="$CONFIG_DIR/settings.local.json"
 OUT_DIR="$CONFIG_DIR/settings"
 OUT="$OUT_DIR/settings.json"
 MODES_DIR="$CONFIG_DIR/modes"
+# The settings as of the last build (untracked), to tell edits made in the app
+# from changes made in the sources.
+LAST_BUILD="$CONFIG_DIR/.state/settings.last-build.json"
 APP_CTL="${SUPERWHISPER_APP_CTL:-$REPO_ROOT/scripts/superwhisper-app.sh}"
 
 usage() {
@@ -98,13 +101,14 @@ normalize() {
   ' "$1"
 }
 
-# Entries present in the built file ($1) but in neither source ($2 is the merge):
+# Entries present in the built file ($1) but in neither reference: $2 is the
+# merge or the last build, $3 the public file (or the last build again):
 # vocabulary, replacements, mode registrations, and any other setting whose
 # value differs (such as favorite models changed in the app). The public file is
 # checked as well as the merge, because a private replacement hides the public
 # one it overrides.
 app_side_entries() {
-  jq -rn --slurpfile cur "$1" --slurpfile new "$2" --slurpfile pub "$PUBLIC" '
+  jq -rn --slurpfile cur "$1" --slurpfile new "$2" --slurpfile pub "${3:-$PUBLIC}" '
     $cur[0] as $c
     | (($new[0].vocabulary // []) + ($pub[0].vocabulary // [])) as $words
     | [(($new[0].replacements // []) + ($pub[0].replacements // []))[] | {original, with}] as $rules
@@ -181,7 +185,13 @@ case "$cmd" in
     SNAPSHOT="$TMP_DIR/built.json"
     if [ -f "$OUT" ] && [ "$FORCE" -eq 0 ]; then
       cp "$OUT" "$SNAPSHOT"
-      extra="$(app_side_entries "$SNAPSHOT" "$MERGED")"
+      # Compare with the last build when there is one, so that a change made
+      # only in the sources (a removed word, new favorites) is not refused.
+      if [ -f "$LAST_BUILD" ]; then
+        extra="$(app_side_entries "$SNAPSHOT" "$LAST_BUILD" "$LAST_BUILD")"
+      else
+        extra="$(app_side_entries "$SNAPSHOT" "$MERGED")"
+      fi
       if [ -n "$extra" ]; then
         echo "superwhisper-settings: the built file has entries missing from both sources:" >&2
         printf '%s\n' "$extra" | sed 's/^/  /' >&2
@@ -199,6 +209,8 @@ case "$cmd" in
       die "the built settings changed during the build (edited in the app?): rerun"
     fi
     mv "$TMP_OUT" "$OUT"
+    mkdir -p "$(dirname "$LAST_BUILD")"
+    cp "$MERGED" "$LAST_BUILD"
     TMP_OUT=""
     echo "superwhisper-settings: wrote $OUT"
     ;;

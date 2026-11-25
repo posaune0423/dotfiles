@@ -52,7 +52,7 @@ sh ./install.sh --no-update
 | `.config/raycast/script-commands/` | `~/.config/raycast/script-commands/`（ディレクトリ単位。`~/.config/raycast` 自体はリンクしない） |
 | `.config/homebrew/Brewfile` | `~/.config/homebrew/Brewfile`（ファイル単位。brew の `trust.json` がある `~/.config/homebrew` 自体はリンクしない） |
 | `.config/superwhisper/modes/` | `~/Documents/superwhisper/modes/`（**コピー**。リンクしない。`~/Documents/superwhisper` が存在する場合のみ） |
-| `.config/superwhisper/settings/` | `~/Documents/superwhisper/settings/`（同上。`scripts/superwhisper-settings.sh build` の生成物） |
+| `.config/superwhisper/settings/` | `~/Documents/superwhisper/settings/`（**symlink**。`~/Documents/superwhisper` が存在する場合のみ。`scripts/superwhisper-settings.sh build` の生成物） |
 | `.vscode/settings.json` | `~/Library/Application Support/{Code,Code - Insiders,Cursor,VSCodium}/User/settings.json`（存在するもののみ） |
 | `.vscode/keybindings.json` | `~/Library/Application Support/{Code,Code - Insiders,Cursor,VSCodium}/User/keybindings.json`（存在するもののみ） |
 
@@ -266,7 +266,11 @@ Superwhisper はモードと設定を `~/Documents/superwhisper/` 配下の JSON
 
 - アプリで編集したモードをリポジトリへ取り込む: `./scripts/superwhisper-modes.sh pull`
 - リポジトリのモードをアプリへ反映: `./scripts/superwhisper-modes.sh push`
-- 差分確認: `./scripts/superwhisper-modes.sh status`
+- 差分確認: `./scripts/superwhisper-modes.sh status`（アプリ側とリポジトリ側のどちらで変わったかも表示）
+
+最後に `push` / `pull` した時点のモードを `.config/superwhisper/.state/`（git 管理外）に記録しています。
+そのため、リポジトリで直したモードは `push` でそのまま反映でき、`pull` もリポジトリ側の変更を上書きしません。
+同じモードを両方で変えていたときは `pull` が止まるので、どちらを残すか決めてください。
 
 設定:
 
@@ -286,6 +290,7 @@ Superwhisper はモードと設定を `~/Documents/superwhisper/` 配下の JSON
 > [!WARNING]
 > アプリの画面で編集したモードは、アプリ側の `modes/` にだけ入ります。`pull` で取り込んでください。
 > 取り込んでいない編集が残っている間、`push` は書き込みを拒否します（破棄するなら `push --force`）。
+> `install.sh` も、その場合は確認してから退避して置き換えます（`--yes` なしで TTY が無ければ置き換えません）。
 >
 > アプリの画面から追加した vocabulary / replacements やお気に入りモデルなどの設定は、
 > マージ結果の `settings/settings.json` にだけ入ります。

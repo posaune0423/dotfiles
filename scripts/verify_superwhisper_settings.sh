@@ -122,6 +122,21 @@ expect "the refusal names the changed setting" \
 settings build --force > /dev/null
 expect "build --force drops the changed setting" \
   "$(jq -c '.favoriteModelIDs // "none"' "$OUT")" '"none"'
+
+# The last build is remembered, so a change made only in the sources is not
+# mistaken for an app-side change.
+cp "$CONFIG/settings.json" "$TEST_ROOT/settings.public.json"
+jq '.favoriteModelIDs = ["from-source"]' "$CONFIG/settings.json" > "$CONFIG/settings.json.tmp"
+mv "$CONFIG/settings.json.tmp" "$CONFIG/settings.json"
+expect "build applies a setting changed only in the sources" "$(status_of settings build)" "0"
+expect "the built file has the source setting" \
+  "$(jq -c '.favoriteModelIDs' "$OUT")" '["from-source"]'
+jq '.vocabulary -= ["Alpha"]' "$CONFIG/settings.json" > "$CONFIG/settings.json.tmp"
+mv "$CONFIG/settings.json.tmp" "$CONFIG/settings.json"
+expect "build applies a word removed from the sources" "$(status_of settings build)" "0"
+expect "the removed word is gone" "$(jq -c '.vocabulary | index("Alpha")' "$OUT")" "null"
+cp "$TEST_ROOT/settings.public.json" "$CONFIG/settings.json"
+settings build --force > /dev/null
 expect "the built file stays readable by the app" \
   "$(find "$OUT" -perm -044 | wc -l | tr -d ' ')" "1"
 expect "no temporary file is left next to the built settings" \
@@ -230,6 +245,54 @@ modes push > /dev/null
 expect "push restarts a running app around the copy" "$(app_calls)" "quit launch"
 reset_app stopped
 
+# The last synced modes are remembered, so edits made in the repository are
+# not mistaken for edits made in the app.
+jq '.voiceModelID = "repo-model"' "$MREPO/modes/default.json" > "$MREPO/modes/default.json.tmp"
+mv "$MREPO/modes/default.json.tmp" "$MREPO/modes/default.json"
+expect "push applies a repository edit without --force" "$(status_of modes push)" "0"
+expect "the app gets the repository edit" \
+  "$(jq -r '.voiceModelID' "$MAPP/modes/default.json")" "repo-model"
+echo '{"key":"extra"}' > "$MREPO/modes/extra.json"
+modes push > /dev/null
+rm "$MREPO/modes/extra.json"
+expect "push removes a mode deleted in the repository without --force" "$(status_of modes push)" "0"
+expect "the deleted mode is gone from the app" "$(names "$MAPP/modes")" "coding.json default.json"
+
+jq '.voiceModelID = "repo-2"' "$MREPO/modes/default.json" > "$MREPO/modes/default.json.tmp"
+mv "$MREPO/modes/default.json.tmp" "$MREPO/modes/default.json"
+modes pull > /dev/null
+expect "pull keeps a repository edit the app has not seen" \
+  "$(jq -r '.voiceModelID' "$MREPO/modes/default.json")" "repo-2"
+
+jq '.voiceModelID = "app-2"' "$MAPP/modes/default.json" > "$MAPP/modes/default.json.tmp"
+mv "$MAPP/modes/default.json.tmp" "$MAPP/modes/default.json"
+expect "pull refuses when both sides changed a mode" "$(status_of modes pull)" "1"
+expect "the refused pull keeps the repository edit" \
+  "$(jq -r '.voiceModelID' "$MREPO/modes/default.json")" "repo-2"
+expect "status names the side of each change" \
+  "$(modes status 2>&1 | grep -c -E '(app|repo): changed: default.json')" "2"
+modes push --force > /dev/null
+
+# push --check only reports; it does not stop the app or write anything.
+jq '.voiceModelID = "app-3"' "$MAPP/modes/coding.json" > "$MAPP/modes/coding.json.tmp"
+mv "$MAPP/modes/coding.json.tmp" "$MAPP/modes/coding.json"
+reset_app running
+expect "push --check reports app-side edits" "$(status_of modes push --check)" "1"
+expect "push --check does not stop the app" "$(app_calls)" ""
+expect "push --check writes nothing" "$(jq -r '.voiceModelID' "$MAPP/modes/coding.json")" "app-3"
+modes pull > /dev/null
+expect "push --check passes once the edit is pulled" "$(status_of modes push --check)" "0"
+reset_app stopped
+
+# Only one push or pull runs at a time.
+mkdir -p "$MREPO/.state/modes.lock"
+expect "push waits for no one: it fails while the lock is held" "$(status_of modes push)" "1"
+expect "pull fails while the lock is held" "$(status_of modes pull)" "1"
+expect "a failed locked pull keeps the repository modes" "$(names "$MREPO/modes")" "coding.json default.json"
+rmdir "$MREPO/.state/modes.lock"
+expect "push works again after the lock is released" "$(status_of modes push)" "0"
+expect "push releases its lock" "$([ -e "$MREPO/.state/modes.lock" ] && echo held || echo free)" "free"
+
 # --- installer ---------------------------------------------------------------
 DOTFILES="$TEST_ROOT/dotfiles"
 TEST_HOME="$TEST_ROOT/home"
@@ -312,5 +375,20 @@ expect "install replaces a symlinked modes folder" \
   "$([ -L "$APP_DIR/modes" ] && echo link || echo folder)" "folder"
 expect "the repository modes survive that replacement" \
   "$(names "$DOTFILES/.config/superwhisper/modes")" "default.json"
+
+# Without --yes, modes edited in the app are not replaced.
+jq '.voiceModelID = "app-edit"' "$APP_DIR/modes/default.json" > "$APP_DIR/modes/default.json.tmp"
+mv "$APP_DIR/modes/default.json.tmp" "$APP_DIR/modes/default.json"
+env -u SUPERWHISPER_CONFIG_DIR HOME="$TEST_HOME" NO_COLOR=1 \
+  sh "$DOTFILES/install.sh" --no-update --dotfiles-dir "$DOTFILES" < /dev/null > /dev/null 2>&1 || true
+expect "install without --yes keeps modes edited in the app" \
+  "$(jq -r '.voiceModelID' "$APP_DIR/modes/default.json")" "app-edit"
+env -u SUPERWHISPER_CONFIG_DIR HOME="$TEST_HOME" NO_COLOR=1 \
+  sh "$DOTFILES/install.sh" --no-update --no-backup --dotfiles-dir "$DOTFILES" < /dev/null > /dev/null 2>&1 || true
+expect "install --no-backup without --yes keeps them too" \
+  "$(jq -r '.voiceModelID' "$APP_DIR/modes/default.json")" "app-edit"
+install
+expect "install --yes replaces them" \
+  "$(jq -r '.voiceModelID // "unset"' "$APP_DIR/modes/default.json")" "unset"
 
 exit "$FAIL"
