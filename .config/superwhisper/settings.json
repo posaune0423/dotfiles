@@ -80,6 +80,26 @@
       "id": "4F2EE37A-76BE-4D28-A175-B214C0891CCC",
       "original": "エラー",
       "with": "error"
+    },
+    {
+      "id": "3891A6FA-E6B9-402C-8F63-4C915195B05E",
+      "original": "クイックノード",
+      "with": "Quicknode"
+    },
+    {
+      "id": "F480BE0A-1205-4141-9EB4-965DC56B5774",
+      "original": "ホームブリュー",
+      "with": "Homebrew"
+    },
+    {
+      "id": "4DEA796C-084E-430F-B5EC-40A1FAB96DFC",
+      "original": "ミーズ",
+      "with": "mise"
+    },
+    {
+      "id": "AA07A9FB-3C52-4360-A55B-D05E70DB5B6A",
+      "original": "スタッシュ",
+      "with": "stash"
     }
   ],
   "vocabulary": [
@@ -88,6 +108,10 @@
     "Orca",
     "Jupiter",
     "Codex",
-    "Claude Code"
+    "Claude Code",
+    "Notion",
+    "Dia",
+    "Slack",
+    "Ghosty"
   ]
 }
