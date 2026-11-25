@@ -350,8 +350,9 @@ link_item() {
 
   progress "$_name"
 
-  # Skip if source doesn't exist (optional config)
-  if [ ! -e "$_src" ]; then
+  # Skip if source doesn't exist (optional config). A "generated" source is
+  # written by a step that a dry run skips, so preview its link regardless.
+  if [ ! -e "$_src" ] && ! { [ "$DRY_RUN" -eq 1 ] && [ "${4:-}" = "generated" ]; }; then
     skip "Source not found: $_short_src ${DIM}(skipping)${RESET}"
     return 0
   fi
@@ -497,7 +498,15 @@ if [ -d "$SUPERWHISPER_DIR" ]; then
   else
     warn "jq not found: Superwhisper settings were not built"
   fi
-  link_item "$DOTFILES_DIR/.config/superwhisper/settings" "$SUPERWHISPER_DIR/settings" "$TS"
+  # Never hand the app a settings folder without a readable settings.json: a
+  # failed first build would otherwise replace its working settings.
+  SUPERWHISPER_BUILT="$DOTFILES_DIR/.config/superwhisper/settings/settings.json"
+  if [ "$DRY_RUN" -eq 1 ] || { command -v jq > /dev/null 2>&1 && jq -e 'type == "object"' "$SUPERWHISPER_BUILT" > /dev/null 2>&1; }; then
+    link_item "$DOTFILES_DIR/.config/superwhisper/settings" "$SUPERWHISPER_DIR/settings" "$TS" generated
+  else
+    progress "settings"
+    warn "No usable built Superwhisper settings: leaving $(short_path "$SUPERWHISPER_DIR/settings") untouched"
+  fi
 else
   skip "Superwhisper not detected (${DIM}skipping modes, settings${RESET})"
 fi

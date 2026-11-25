@@ -68,11 +68,11 @@ normalize() {
   ' "$1"
 }
 
-# Entries present in the built file but in neither source. The public file is
+# Entries present in the built file ($1) but in neither source ($2 is the merge). The public file is
 # checked as well as the merge, because a private replacement hides the public
 # one it overrides.
 app_side_entries() {
-  jq -rn --slurpfile cur "$OUT" --slurpfile new "$1" --slurpfile pub "$PUBLIC" '
+  jq -rn --slurpfile cur "$1" --slurpfile new "$2" --slurpfile pub "$PUBLIC" '
     $cur[0] as $c
     | (($new[0].vocabulary // []) + ($pub[0].vocabulary // [])) as $words
     | [(($new[0].replacements // []) + ($pub[0].replacements // []))[] | {original, with}] as $rules
@@ -117,8 +117,11 @@ case "$cmd" in
       esac
     done
     merge > "$MERGED"
+    # Check a snapshot, then make sure the app did not write in between.
+    SNAPSHOT="$TMP_DIR/built.json"
     if [ -f "$OUT" ] && [ "$FORCE" -eq 0 ]; then
-      extra="$(app_side_entries "$MERGED")"
+      cp "$OUT" "$SNAPSHOT"
+      extra="$(app_side_entries "$SNAPSHOT" "$MERGED")"
       if [ -n "$extra" ]; then
         echo "superwhisper-settings: the built file has entries missing from both sources:" >&2
         printf '%s\n' "$extra" | sed 's/^/  /' >&2
@@ -127,9 +130,16 @@ case "$cmd" in
       fi
     fi
     mkdir -p "$OUT_DIR"
-    # Rename within the folder so the app never reads a half-written file.
-    cp "$MERGED" "$OUT_DIR/.settings.json.tmp"
-    mv "$OUT_DIR/.settings.json.tmp" "$OUT"
+    # Rename within the folder so the app never reads a half-written file. The
+    # temporary name is unique, so overlapping builds cannot share it.
+    TMP_OUT="$(mktemp "$OUT_DIR/.settings.json.XXXXXX")"
+    trap 'rm -rf "$TMP_DIR" "$TMP_OUT"' EXIT HUP INT TERM
+    cp "$MERGED" "$TMP_OUT"
+    chmod 644 "$TMP_OUT"
+    if [ -f "$SNAPSHOT" ] && ! cmp -s "$SNAPSHOT" "$OUT"; then
+      die "the built settings changed during the build (edited in the app?): rerun"
+    fi
+    mv "$TMP_OUT" "$OUT"
     echo "superwhisper-settings: wrote $OUT"
     ;;
   -h | --help | help)
