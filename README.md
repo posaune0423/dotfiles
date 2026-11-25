@@ -444,6 +444,10 @@ Superwhisper はモードと設定を `~/Documents/superwhisper/` 配下の JSON
 | `npm:tsx` | `4.22.4` |  |
 | `npm:turbo` | `2.9.18` |  |
 | `npm:vercel` | `48.12.1` |  |
+| `npm:ntn` | `0.23.19` | Notion CLI |
+| `npm:wrangler` | `4.151.3` | Cloudflare Workers CLI |
+| `npm:ctx7` | `0.5.12` | Context7 CLI |
+| `npm:portless` | `0.15.11` |  |
 
 #### Python
 
@@ -459,7 +463,7 @@ Superwhisper はモードと設定を `~/Documents/superwhisper/` 配下の JSON
 
 | tool (mise key) | version | note |
 |---|---:|---|
-| `ruby` | `latest` |  |
+| `ruby` | `latest` | `.ruby-version` などの idiomatic version file も読む（`idiomatic_version_file_enable_tools`） |
 
 #### Go
 
