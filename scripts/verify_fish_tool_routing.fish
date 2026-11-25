@@ -12,13 +12,13 @@ set desktop_codex $HOME/.local/bin/codex
 
 mkdir -p $mise_shims $HOME/.local/bin $HOME/Library/pnpm
 printf '%s\n' '#!/bin/sh' 'echo mise-uv' >$mise_shims/uv
+printf '%s\n' '#!/bin/sh' 'echo codex-cli mise-test' >$mise_shims/codex
 printf '%s\n' '#!/bin/sh' 'echo codex-cli desktop-test' >$desktop_codex
-chmod +x $mise_shims/uv $desktop_codex
+chmod +x $mise_shims/uv $mise_shims/codex $desktop_codex
 
 set -gx PATH $HOME/Library/pnpm /usr/bin /bin
 source $repo_root/.config/fish/conf.d/01_env.fish
 source $repo_root/.config/fish/conf.d/02_path.fish
-source $repo_root/.config/fish/conf.d/zz_codex-desktop.fish
 
 set actual_uv (command -s uv)
 if test "$actual_uv" != "$mise_shims/uv"
@@ -26,10 +26,15 @@ if test "$actual_uv" != "$mise_shims/uv"
     exit 1
 end
 
-set expected_codex_version 'codex-cli desktop-test'
-set actual_codex_version (codex --version)
-if test "$actual_codex_version" != "$expected_codex_version"
-    echo "[fail] Codex does not resolve to the Desktop build" >&2
+# Codex is a mise-managed npm tool; a Desktop-bundled CLI in ~/.local/bin
+# must not shadow it.
+set actual_codex (command -s codex)
+if test "$actual_codex" != "$mise_shims/codex"
+    echo "[fail] expected mise codex at $mise_shims/codex, got $actual_codex" >&2
+    exit 1
+end
+if functions -q codex
+    echo "[fail] a codex function overrides the mise-managed CLI" >&2
     exit 1
 end
 
@@ -42,4 +47,4 @@ if test "$GOPATH" != "$HOME/go"
     exit 1
 end
 
-echo "[ok] Fish routes only Codex to Desktop and keeps mise tools first"
+echo "[ok] Fish keeps mise tools, including Codex, ahead of ~/.local/bin"

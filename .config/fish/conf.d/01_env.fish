@@ -49,3 +49,9 @@ set -gx HOMEBREW_FORBIDDEN_FORMULAE "node python python3 pip npm pnpm yarn claud
 # Starknet RPC (Optional)
 #---------------------------
 set -gx STARKNET_RPC_URL https://starknet-mainnet.public.blastapi.io
+
+#---------------------------
+# Local secrets (API keys)
+#---------------------------
+# See conf.d/99_local_secrets.fish (gitignored). Copy from
+# 99_local_secrets.fish.example if missing.
