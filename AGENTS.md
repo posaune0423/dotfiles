@@ -25,6 +25,9 @@ These instructions apply at the repository root. `dotagents/` is a Git submodule
   `just brew-lock bump <formula>`, which upgrades the live install.
 - Fish reads `.config/fish/conf.d/*.fish` in lexical order before `config.fish` for interactive and
   non-interactive shells. Guard interactive-only work with `status is-interactive`.
+- Fish PATH entries are added with `fish_add_path --path`, never into the universal
+  `fish_user_paths`. `conf.d/zz_mise_path.fish` sorts last and moves mise shims to the front, so
+  mise-managed tools win over directories that installers prepend (for example `~/.vite-plus/bin`).
 - `.zshenv`, `.zprofile`, `.zshrc`, and `.config/zsh/` jointly define Zsh startup. Preserve their
   login, interactive, and environment-only boundaries.
 - `.config/macos/network/` and `scripts/macos-network.sh` jointly define the network-profile

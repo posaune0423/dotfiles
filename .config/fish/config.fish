@@ -57,7 +57,7 @@ if status is-interactive
     # set -g fish_color_valid_path --underline # Valid file paths
 end
 
-fish_add_path -a $HOME/.config/.foundry/bin
+fish_add_path --path --append $HOME/.config/.foundry/bin
 
 # OpenClaw Completion
 if test -f $HOME/.openclaw/completions/openclaw.fish

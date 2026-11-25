@@ -1,14 +1,16 @@
 #---------------------------
 # PATH Configuration
 #---------------------------
-# Fish handles PATH deduplication automatically via fish_add_path
+# fish_add_path --path edits $PATH for this session only. Without it, fish_add_path
+# saves into the universal fish_user_paths, which outlives this file: stale or
+# temporary directories pile up there and decide the PATH order.
 #---------------------------
 
 # Helper function to add paths only if directory exists
 function __add_path_if_exists
     for dir in $argv
         if test -d $dir
-            fish_add_path --prepend $dir
+            fish_add_path --path --move --prepend $dir
         end
     end
 end
@@ -16,7 +18,7 @@ end
 function __append_path_if_exists
     for dir in $argv
         if test -d $dir
-            fish_add_path --append $dir
+            fish_add_path --path --append $dir
         end
     end
 end

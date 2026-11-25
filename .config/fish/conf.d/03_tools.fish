@@ -10,7 +10,7 @@
 if test -f $HOME/.cargo/env.fish
     source $HOME/.cargo/env.fish
 else if test -d $HOME/.cargo/bin
-    fish_add_path --prepend $HOME/.cargo/bin
+    fish_add_path --path --prepend $HOME/.cargo/bin
 end
 
 #---------------------------
@@ -18,7 +18,7 @@ end
 #---------------------------
 if test -f $HOME/.starkli/env
     # Starkli doesn't have fish-specific env, just add to PATH
-    fish_add_path --prepend $HOME/.starkli/bin
+    fish_add_path --path --prepend $HOME/.starkli/bin
 end
 
 #---------------------------
