@@ -13,3 +13,8 @@ fish_variables
 .config/raycast/ai/
 # Raycast "Export" output: encrypted blob that still carries the access token.
 *.rayconfig
+
+# Superwhisper: private vocabulary and the settings folder built from it by
+# scripts/superwhisper-settings.sh. Only settings.json and modes/ are tracked.
+.config/superwhisper/settings.local.json
+.config/superwhisper/settings/

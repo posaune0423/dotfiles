@@ -51,6 +51,8 @@ sh ./install.sh --no-update
 | `.config/ghostty/` | `~/.config/ghostty/` |
 | `.config/raycast/script-commands/` | `~/.config/raycast/script-commands/`（ディレクトリ単位。`~/.config/raycast` 自体はリンクしない） |
 | `.config/homebrew/Brewfile` | `~/.config/homebrew/Brewfile`（ファイル単位。brew の `trust.json` がある `~/.config/homebrew` 自体はリンクしない） |
+| `.config/superwhisper/modes/` | `~/Documents/superwhisper/modes/`（`~/Documents/superwhisper` が存在する場合のみ） |
+| `.config/superwhisper/settings/` | `~/Documents/superwhisper/settings/`（同上。`scripts/superwhisper-settings.sh build` の生成物） |
 | `.vscode/settings.json` | `~/Library/Application Support/{Code,Code - Insiders,Cursor,VSCodium}/User/settings.json`（存在するもののみ） |
 | `.vscode/keybindings.json` | `~/Library/Application Support/{Code,Code - Insiders,Cursor,VSCodium}/User/keybindings.json`（存在するもののみ） |
 
@@ -156,6 +158,7 @@ just update
 | macOS network profiles | `.config/macos/network/`, `scripts/macos-network.sh` |
 | macOS system defaults | `.config/macos/defaults.conf`, `scripts/macos-defaults.sh` |
 | Raycast | `.config/raycast/defaults.conf`, `.config/raycast/script-commands/`, `scripts/raycast-defaults.sh` |
+| Superwhisper | `.config/superwhisper/modes/`, `.config/superwhisper/settings.json`, `scripts/superwhisper-settings.sh` |
 | VS Code / Cursor / VSCodium | `.vscode/settings.json`, `.vscode/keybindings.json` |
 
 ### macOS network sysctl profiles
@@ -227,6 +230,35 @@ Karabiner-Elements 側でキーを受けて `open -g raycast://extensions/raycas
 > `~/.config/raycast/config.json` には Raycast のアクセストークンが入っています。
 > `~/.config/raycast` を丸ごとリンク・追跡しないでください（`.gitignore` でも除外しています）。
 > Raycast の「Export」が生成する `.rayconfig` もトークンを含む暗号化 blob なので、このリポジトリには置きません。
+
+### Superwhisper
+
+Superwhisper はモードと設定を `~/Documents/superwhisper/` 配下の JSON に保存します。
+`install.sh` はそのうち `modes/` と `settings/` の 2 フォルダをこのリポジトリへリンクします
+（録音の `recordings/` とモデルの `models/` はアプリ側に残します）。
+
+| 何を | どこで | 追跡 |
+|---|---|---|
+| モード（プロンプト、言語、モデル、起動アプリ） | `.config/superwhisper/modes/*.json` | する |
+| 公開してよい vocabulary / replacements、モードの並び、お気に入りモデル | `.config/superwhisper/settings.json` | する |
+| 公開できない vocabulary / replacements | `.config/superwhisper/settings.local.json` | しない |
+| アプリが実際に読む設定（上 2 つのマージ結果） | `.config/superwhisper/settings/settings.json` | しない |
+
+- マージして書き出し: `./scripts/superwhisper-settings.sh build`
+- 差分確認: `./scripts/superwhisper-settings.sh status`
+- マージ結果の確認のみ: `./scripts/superwhisper-settings.sh print`
+
+`settings.local.json` は `settings.json` と同じ形で、`vocabulary` は公開側の後ろに追加され、
+`replacements` は `original` が同じなら private 側が優先されます。
+
+> [!WARNING]
+> アプリの画面から追加した vocabulary / replacements は、マージ結果の `settings/settings.json` にだけ入ります。
+> `status` で差分を確認し、`settings.json` か `settings.local.json` へ移してください。
+> 未反映の項目が残っている間、`build` は書き出しを拒否します（破棄するなら `build --force`）。
+> 編集後はアプリを再起動すると確実に反映されます。
+
+モードをアプリの画面で編集すると、アプリ独自の整形で `modes/*.json` が書き戻されます。
+そのため `modes/` は JSON フォーマッタの対象外です。
 
 ### Zsh plugins (sheldon)
 

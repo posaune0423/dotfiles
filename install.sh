@@ -449,8 +449,9 @@ print_section "${ICON_FOLDER} Creating Symlinks"
 run mkdir -p "$HOME/.config"
 
 # Count total items
-# 5 root + 13 XDG configs + up to 8 editor settings (4 apps x 2 files) = 26
-set_total_items 26
+# 5 root + 13 XDG configs + 2 Superwhisper folders
+# + up to 8 editor settings (4 apps x 2 files) = 28
+set_total_items 28
 
 # Root dotfiles
 link_item "$DOTFILES_DIR/.zshenv" "$HOME/.zshenv" "$TS"
@@ -482,6 +483,24 @@ link_item "$DOTFILES_DIR/.config/raycast/script-commands" "$HOME/.config/raycast
 # (trust.json) in ~/.config/homebrew.
 run mkdir -p "$HOME/.config/homebrew"
 link_item "$DOTFILES_DIR/.config/homebrew/Brewfile" "$HOME/.config/homebrew/Brewfile" "$TS"
+
+# Superwhisper keeps modes and settings as JSON in its app folder. Link the two
+# folders rather than the files, so the app's atomic rewrites stay inside the
+# repository. settings/ is built from the tracked public settings plus the
+# untracked private ones; recordings/ and models/ stay with the app.
+SUPERWHISPER_DIR="$HOME/Documents/superwhisper"
+if [ -d "$SUPERWHISPER_DIR" ]; then
+  link_item "$DOTFILES_DIR/.config/superwhisper/modes" "$SUPERWHISPER_DIR/modes" "$TS"
+  if command -v jq > /dev/null 2>&1; then
+    run sh "$DOTFILES_DIR/scripts/superwhisper-settings.sh" build ||
+      warn "Superwhisper settings were not rebuilt (see scripts/superwhisper-settings.sh status)"
+  else
+    warn "jq not found: Superwhisper settings were not built"
+  fi
+  link_item "$DOTFILES_DIR/.config/superwhisper/settings" "$SUPERWHISPER_DIR/settings" "$TS"
+else
+  skip "Superwhisper not detected (${DIM}skipping modes, settings${RESET})"
+fi
 
 # Editor settings (macOS)
 if [ "$(uname -s 2> /dev/null || echo unknown)" = "Darwin" ]; then

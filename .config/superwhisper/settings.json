@@ -1,0 +1,62 @@
+{
+  "favoriteModelIDs": [
+    "vad-v2",
+    "speakerkit-coreml",
+    "nemotron3-fast32-fp16-v1"
+  ],
+  "modeKeys": [
+    "pro",
+    "default",
+    "custom"
+  ],
+  "replacements": [
+    {
+      "id": "2C739BD7-3983-4E44-8C7D-C9BB6939BC66",
+      "original": "super whisper",
+      "with": "Superwhisper"
+    },
+    {
+      "id": "4DC626DB-3A3A-4F3F-B4FC-D387474AF9BB",
+      "original": "オルカ",
+      "with": "Orca"
+    },
+    {
+      "id": "3FA4D59B-7DDC-48B3-A1F6-22CD8A4517A0",
+      "original": "そらな",
+      "with": "Solana"
+    },
+    {
+      "id": "AC6BE79E-0250-47F7-816E-098E10F90AD7",
+      "original": "じゅぴたー",
+      "with": "Jupiter"
+    },
+    {
+      "id": "EEA22894-7155-4124-ACAD-98CA5A13FE15",
+      "original": "空菜",
+      "with": "Solana"
+    },
+    {
+      "id": "9A1B7236-4CDC-4095-B79B-C4DF12B0D7AC",
+      "original": "ソラナ",
+      "with": "Solana"
+    },
+    {
+      "id": "D21FD516-9A01-4C97-849E-C182CA57BF1A",
+      "original": "シムリンク",
+      "with": "symlink"
+    },
+    {
+      "id": "47232811-1A9F-4E48-B1EE-32F9728992B6",
+      "original": "コーデックス",
+      "with": "Codex"
+    }
+  ],
+  "vocabulary": [
+    "Superwhisper",
+    "Solana",
+    "Orca",
+    "Jupiter",
+    "Codex",
+    "Claude Code"
+  ]
+}

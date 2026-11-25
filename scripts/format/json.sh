@@ -35,6 +35,12 @@ while IFS= read -r f; do
       SKIPPED=$((SKIPPED + 1))
       continue
       ;;
+    # Superwhisper rewrites a mode file in its own layout when it is edited
+    # in the app.
+    .config/superwhisper/modes/*)
+      SKIPPED=$((SKIPPED + 1))
+      continue
+      ;;
     .agents/* | .git/*)
       SKIPPED=$((SKIPPED + 1))
       continue

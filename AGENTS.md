@@ -32,6 +32,10 @@ These instructions apply at the repository root. `dotagents/` is a Git submodule
 - `.config/raycast/defaults.conf` and `scripts/raycast-defaults.sh` jointly define the Raycast
   preference contract. Only `defaults`-domain keys and `.config/raycast/script-commands/` are
   tracked; Raycast's encrypted database and `~/.config/raycast/config.json` (access token) are not.
+- `.config/superwhisper/settings.json` (public) and the untracked
+  `.config/superwhisper/settings.local.json` (private) are merged by
+  `scripts/superwhisper-settings.sh` into the untracked `.config/superwhisper/settings/`, which
+  Superwhisper reads through a symlink. Private vocabulary belongs only in the local file.
 - `justfile`, `scripts/format/`, and `.github/workflows/ci.yml` define repository validation. Use
   the existing `just` recipes; do not introduce a second task runner for ordinary changes.
 - Edit `AGENTS.md`, not `CLAUDE.md`. `CLAUDE.md` must remain a symlink to `AGENTS.md`.
@@ -45,6 +49,8 @@ committed.
 - `.config/karabiner/karabiner.json`, `.config/nvim/lazy-lock.json`, and
   `.config/nvim/lazyvim.json` are app-managed state. Include them only for an intentional app
   change, inspect the semantic diff, and do not reformat them.
+- `.config/superwhisper/modes/*.json` is rewritten by Superwhisper when a mode is edited in the
+  app. Do not reformat it.
 - `.config/fish/completions/*.fish` is vendored or generated upstream output. Replace a completion
   from its owning tool; do not hand-format it.
 - `.config/fish/completions.local/`, Fish variable files, `.nvimlog`, and `.agents/memory/` are
@@ -123,6 +129,7 @@ sh ./install.sh --dry-run --yes --no-update
 ./scripts/macos-network.sh validate --all
 sh scripts/verify_raycast_defaults.sh
 sh scripts/verify_macos_defaults.sh
+sh scripts/verify_superwhisper_settings.sh
 ```
 
 The network validation, Raycast, and macOS defaults verification commands are macOS-only. A green
