@@ -1,0 +1,4 @@
+# Homebrew formulae held at a fixed version: `formula version` per line.
+# scripts/brew-lock.sh pins them (`brew pin`), so `brew upgrade` skips them.
+# Move a version only with `just brew-lock bump <formula>`.
+tailscale 1.104.5

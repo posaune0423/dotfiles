@@ -15,6 +15,10 @@ install:
 update:
     ./scripts/update.sh
 
+# Check, pin, or bump Homebrew formulae held by Brewfile.lock (check | pin | bump <formula>)
+brew-lock *args="check":
+    ./scripts/brew-lock.sh {{ args }}
+
 # Check formatting (sh/zsh/fish/lua/toml/json)
 format:
     ./scripts/format.sh --check

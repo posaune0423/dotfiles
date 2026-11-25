@@ -85,3 +85,6 @@ jobs:
 
       - name: Verify Superwhisper settings merge and links
         run: sh scripts/verify_superwhisper_settings.sh
+
+      - name: Verify Homebrew version lock
+        run: sh scripts/verify_brew_lock.sh
