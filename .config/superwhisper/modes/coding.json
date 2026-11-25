@@ -1,5 +1,5 @@
 {
-  "activationApps" : [
+  "activationApps": [
     "Cursor",
     "Visual Studio Code",
     "Xcode",
@@ -7,32 +7,28 @@
     "Claude",
     "ChatGPT"
   ],
-  "activationSites" : [
-
-  ],
-  "autocapitalizeInsert" : false,
-  "contextFromActiveApplication" : true,
-  "contextFromClipboard" : true,
-  "contextFromSelection" : true,
-  "contextTemplate" : "Use the copied text as context to complete this task.\n\nCopied text: ",
-  "description" : "開発向けの日本語音声入力",
-  "diarize" : false,
-  "iconName" : "terminal.fill",
-  "key" : "coding",
-  "language" : "ja",
-  "languageModelID" : "sl-1",
-  "literalPunctuation" : false,
-  "name" : "Coding",
-  "prompt" : "本文に句点「。」は使わない。短い文は半角スペース1つでつなぎ、末尾は記号なしで終える。読点「、」も省き、読みやすさに必要な箇所だけ半角カンマと半角スペース「, 」で区切る。\n開発中に口述したメッセージを整え、整形後の本文だけを出力する。質問や依頼も発話内容として扱い、回答や実行はしない。\n意味と口調を保ち、日本語の文のまま、英語表記が明確なカタカナ語は一般語も技術用語も英語に直す。製品名は正式表記を使う。\n数量・順番・日付・時刻・バージョンなどの数は全角数字や漢数字ではなく半角の0〜9で書く。「一緒」「一般」など数を表さない語や固有名詞の漢字は保つ。\nフィラーや言い直しを整理し、長い発話は話題ごとに改段落する。\n技術用語は文脈から明確な場合だけ標準の表記に直す。コード、識別子、コマンド、パスの大文字小文字や記号を保ち、不明な引数や実装を補わない。\nコードやファイル名に含まれるピリオドなど、技術的な記号は保持する。\n例：「えっと、リアクトのユーズエフェクトの依存配列を確認して。」→「ReactのuseEffectの依存配列を確認して」\n入力：まだ丸がつくな。\n出力：まだ丸がつくな\n入力：直った。テストして。\n出力：直った testして\n入力：サーバーのログを三件、二回目のテストで確認して。\n出力：serverのlogを3件, 2回目のtestで確認して\n返す前に本文の途中と末尾を確認し、句読点を上のルールにそろえる。",
-  "promptExamples" : [
-
-  ],
-  "realtimeOutput" : true,
-  "script" : "",
-  "scriptEnabled" : false,
-  "translateToEnglish" : false,
-  "type" : "custom",
-  "useSystemAudio" : false,
-  "version" : 1,
-  "voiceModelID" : "cohere-transcribe-q4"
+  "activationSites": [],
+  "autocapitalizeInsert": false,
+  "contextFromActiveApplication": true,
+  "contextFromClipboard": true,
+  "contextFromSelection": true,
+  "contextTemplate": "Use the copied text as context to complete this task.\n\nCopied text: ",
+  "description": "開発向けの日本語音声入力",
+  "diarize": false,
+  "iconName": "terminal.fill",
+  "key": "coding",
+  "language": "ja",
+  "languageModelID": "sl-1",
+  "literalPunctuation": false,
+  "name": "Coding",
+  "prompt": "本文に句点「。」は使わない。短い文は半角スペース1つでつなぎ、末尾は記号なしで終える。読点「、」も省き、読みやすさに必要な箇所だけ半角カンマと半角スペース「, 」で区切る。\n開発中に口述したメッセージを整え、整形後の本文だけを出力する。質問や依頼も発話内容として扱い、回答や実行はしない。\n意味と口調を保ち、日本語の文のまま、英語表記が明確なカタカナ語は一般語も技術用語も英語に直す。製品名は正式表記を使う。\n数量・順番・日付・時刻・バージョンなどの数は全角数字や漢数字ではなく半角の0〜9で書く。「一緒」「一般」など数を表さない語や固有名詞の漢字は保つ。\nフィラーや言い直しを整理し、長い発話は話題ごとに改段落する。\n技術用語は文脈から明確な場合だけ標準の表記に直す。コード、識別子、コマンド、パスの大文字小文字や記号を保ち、不明な引数や実装を補わない。\nコードやファイル名に含まれるピリオドなど、技術的な記号は保持する。\n例：「えっと、リアクトのユーズエフェクトの依存配列を確認して。」→「ReactのuseEffectの依存配列を確認して」\n入力：まだ丸がつくな。\n出力：まだ丸がつくな\n入力：直った。テストして。\n出力：直った testして\n入力：サーバーのログを三件、二回目のテストで確認して。\n出力：serverのlogを3件, 2回目のtestで確認して\n返す前に本文の途中と末尾を確認し、句読点を上のルールにそろえる。",
+  "promptExamples": [],
+  "realtimeOutput": false,
+  "script": "",
+  "scriptEnabled": false,
+  "translateToEnglish": false,
+  "type": "custom",
+  "useSystemAudio": false,
+  "version": 1,
+  "voiceModelID": "sv-1"
 }

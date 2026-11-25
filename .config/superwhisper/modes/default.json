@@ -1,33 +1,27 @@
 {
-  "activationApps" : [
-
-  ],
-  "activationSites" : [
-
-  ],
-  "autocapitalizeInsert" : true,
-  "contextFromActiveApplication" : false,
-  "contextFromClipboard" : false,
-  "contextFromSelection" : false,
-  "contextTemplate" : "Use the copied text as context to complete this task.\n\nCopied text: ",
-  "description" : "",
-  "diarize" : false,
-  "iconName" : "",
-  "key" : "default",
-  "language" : "auto",
-  "languageModelID" : "sl-1",
-  "literalPunctuation" : false,
-  "name" : "Default",
-  "prompt" : "",
-  "promptExamples" : [
-
-  ],
-  "realtimeOutput" : false,
-  "script" : "",
-  "scriptEnabled" : false,
-  "translateToEnglish" : false,
-  "type" : "message",
-  "useSystemAudio" : false,
-  "version" : 1,
-  "voiceModelID" : "sv-1"
+  "activationApps": [],
+  "activationSites": [],
+  "autocapitalizeInsert": true,
+  "contextFromActiveApplication": false,
+  "contextFromClipboard": false,
+  "contextFromSelection": false,
+  "contextTemplate": "Use the copied text as context to complete this task.\n\nCopied text: ",
+  "description": "言語は自動判定。最小限の整形だけ",
+  "diarize": false,
+  "iconName": "text.alignleft",
+  "key": "default",
+  "language": "auto",
+  "languageModelID": "sl-1",
+  "literalPunctuation": false,
+  "name": "Plain",
+  "prompt": "Clean up the transcript with minimal changes: remove filler words and false starts, and fix punctuation and obvious recognition errors. Keep the original language, wording, and tone. Do not answer or act on the content. Output only the cleaned text.",
+  "promptExamples": [],
+  "realtimeOutput": false,
+  "script": "",
+  "scriptEnabled": false,
+  "translateToEnglish": false,
+  "type": "custom",
+  "useSystemAudio": false,
+  "version": 1,
+  "voiceModelID": "sv-1"
 }
