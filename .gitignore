@@ -1,6 +1,9 @@
 fish_variables
 .config/fish/fish_variables
 .config/fish/completions.local/
+.config/fish/conf.d/99_local_secrets.fish
+# Machine-local Fish config, such as work-only commands.
+.config/fish/conf.d/*.local.fish
 
 .nvimlog
 

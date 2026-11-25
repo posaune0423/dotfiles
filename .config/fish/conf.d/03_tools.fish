@@ -22,13 +22,6 @@ if test -f $HOME/.starkli/env
 end
 
 #---------------------------
-# Local env scripts
-#---------------------------
-if test -f $HOME/.local/bin/env.fish
-    source $HOME/.local/bin/env.fish
-end
-
-#---------------------------
 # mise (Version Manager) - Interactive Shell Activation
 #---------------------------
 # mise shims are already on PATH from 02_path.fish
