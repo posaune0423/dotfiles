@@ -50,6 +50,31 @@
       "id": "47232811-1A9F-4E48-B1EE-32F9728992B6",
       "original": "コーデックス",
       "with": "Codex"
+    },
+    {
+      "id": "F046663F-7856-48EE-B188-5690FE2238E1",
+      "original": "コンフリクト",
+      "with": "conflict"
+    },
+    {
+      "id": "294907AF-6A7D-451F-B914-468009698F56",
+      "original": "SIM リンク",
+      "with": "symlink"
+    },
+    {
+      "id": "D4CA7D43-AA81-4739-B89E-3DD83E0AF2AD",
+      "original": "コードラビット",
+      "with": "CodeRabbit"
+    },
+    {
+      "id": "192CD6FD-FE80-4DCD-917F-CE0F4A7A38A2",
+      "original": "マージ",
+      "with": "merge"
+    },
+    {
+      "id": "4F2EE37A-76BE-4D28-A175-B214C0891CCC",
+      "original": "エラー",
+      "with": "error"
     }
   ],
   "vocabulary": [
