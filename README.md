@@ -51,8 +51,8 @@ sh ./install.sh --no-update
 | `.config/ghostty/` | `~/.config/ghostty/` |
 | `.config/raycast/script-commands/` | `~/.config/raycast/script-commands/`（ディレクトリ単位。`~/.config/raycast` 自体はリンクしない） |
 | `.config/homebrew/Brewfile` | `~/.config/homebrew/Brewfile`（ファイル単位。brew の `trust.json` がある `~/.config/homebrew` 自体はリンクしない） |
-| `.config/superwhisper/modes/` | `~/Documents/superwhisper/modes/`（`~/Documents/superwhisper` が存在する場合のみ） |
-| `.config/superwhisper/settings/` | `~/Documents/superwhisper/settings/`（同上。`scripts/superwhisper-settings.sh build` の生成物） |
+| `.config/superwhisper/modes/` | `~/Documents/superwhisper/modes/`（**コピー**。リンクしない。`~/Documents/superwhisper` が存在する場合のみ） |
+| `.config/superwhisper/settings/` | `~/Documents/superwhisper/settings/`（**symlink**。`~/Documents/superwhisper` が存在する場合のみ。`scripts/superwhisper-settings.sh build` の生成物） |
 | `.vscode/settings.json` | `~/Library/Application Support/{Code,Code - Insiders,Cursor,VSCodium}/User/settings.json`（存在するもののみ） |
 | `.vscode/keybindings.json` | `~/Library/Application Support/{Code,Code - Insiders,Cursor,VSCodium}/User/keybindings.json`（存在するもののみ） |
 
@@ -173,7 +173,7 @@ Homebrew には lockfile が無いので、固定したい formula は `.config/
 | macOS network profiles | `.config/macos/network/`, `scripts/macos-network.sh` |
 | macOS system defaults | `.config/macos/defaults.conf`, `scripts/macos-defaults.sh` |
 | Raycast | `.config/raycast/defaults.conf`, `.config/raycast/script-commands/`, `scripts/raycast-defaults.sh` |
-| Superwhisper | `.config/superwhisper/modes/`, `.config/superwhisper/settings.json`, `scripts/superwhisper-settings.sh` |
+| Superwhisper | `.config/superwhisper/modes/`, `.config/superwhisper/settings.json`, `scripts/superwhisper-modes.sh`, `scripts/superwhisper-settings.sh` |
 | VS Code / Cursor / VSCodium | `.vscode/settings.json`, `.vscode/keybindings.json` |
 
 ### macOS network sysctl profiles
@@ -249,15 +249,30 @@ Karabiner-Elements 側でキーを受けて `open -g raycast://extensions/raycas
 ### Superwhisper
 
 Superwhisper はモードと設定を `~/Documents/superwhisper/` 配下の JSON に保存します。
-`install.sh` はそのうち `modes/` と `settings/` の 2 フォルダをこのリポジトリへリンクします
+`install.sh` は `modes/` をコピーし、`settings/` をこのリポジトリへリンクします
 （録音の `recordings/` とモデルの `models/` はアプリ側に残します）。
+
+`modes/` をリンクしないのは、アプリがフォルダの中身を URL ベースの API で一覧しており、
+フォルダ自体が symlink だと辿らないためです（リンクするとモードが 1 つも表示されません）。
 
 | 何を | どこで | 追跡 |
 |---|---|---|
-| モード（プロンプト、言語、モデル、起動アプリ） | `.config/superwhisper/modes/*.json` | する |
+| モード（プロンプト、言語、モデル、起動アプリ） | `.config/superwhisper/modes/*.json`（アプリ側は `~/Documents/superwhisper/modes/` のコピー） | する |
 | 公開してよい vocabulary / replacements、モードの並び、お気に入りモデル | `.config/superwhisper/settings.json` | する |
 | 公開できない vocabulary / replacements | `.config/superwhisper/settings.local.json` | しない |
 | アプリが実際に読む設定（上 2 つのマージ結果） | `.config/superwhisper/settings/settings.json` | しない |
+
+モード:
+
+- アプリで編集したモードをリポジトリへ取り込む: `./scripts/superwhisper-modes.sh pull`
+- リポジトリのモードをアプリへ反映: `./scripts/superwhisper-modes.sh push`
+- 差分確認: `./scripts/superwhisper-modes.sh status`（アプリ側とリポジトリ側のどちらで変わったかも表示）
+
+最後に `push` / `pull` した時点のモードを `.config/superwhisper/.state/`（git 管理外）に記録しています。
+そのため、リポジトリで直したモードは `push` でそのまま反映でき、`pull` もリポジトリ側の変更を上書きしません。
+同じモードを両方で変えていたときは `pull` が止まるので、どちらを残すか決めてください。
+
+設定:
 
 - マージして書き出し: `./scripts/superwhisper-settings.sh build`
 - 差分確認: `./scripts/superwhisper-settings.sh status`
@@ -269,11 +284,16 @@ Superwhisper はモードと設定を `~/Documents/superwhisper/` 配下の JSON
 （`modeKeys` にないモードはアプリに読み込まれないため。組み込みの `system-*` は除く）。
 
 起動中の Superwhisper は設定をメモリに持ち、ファイルを書き換えても古い状態で上書きし直します。
-そのため `build` と `install.sh` は、起動中のアプリを一度終了してから書き込み、終わったら起動し直します
+そのため `push`、`build`、`install.sh` は、起動中のアプリを一度終了してから書き込み、終わったら起動し直します
 （アプリの操作は `scripts/superwhisper-app.sh`）。
 
 > [!WARNING]
-> アプリの画面から追加した vocabulary / replacements は、マージ結果の `settings/settings.json` にだけ入ります。
+> アプリの画面で編集したモードは、アプリ側の `modes/` にだけ入ります。`pull` で取り込んでください。
+> 取り込んでいない編集が残っている間、`push` は書き込みを拒否します（破棄するなら `push --force`）。
+> `install.sh` も、その場合は確認してから退避して置き換えます（`--yes` なしで TTY が無ければ置き換えません）。
+>
+> アプリの画面から追加した vocabulary / replacements やお気に入りモデルなどの設定は、
+> マージ結果の `settings/settings.json` にだけ入ります。
 > `status` で差分を確認し、`settings.json` か `settings.local.json` へ移してください。
 > 未反映の項目が残っている間、`build` は書き出しを拒否します（破棄するなら `build --force`）。
 > ソースを手で編集したら、アプリを起動したままでよいので `build` を実行してください。

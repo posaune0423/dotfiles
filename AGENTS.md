@@ -41,6 +41,9 @@ These instructions apply at the repository root. `dotagents/` is a Git submodule
   Superwhisper reads through a symlink. Private vocabulary belongs only in the local file.
   A running Superwhisper overwrites that file with its in-memory state, so anything that writes it
   must quit and relaunch the app through `scripts/superwhisper-app.sh`; never write it directly.
+- `.config/superwhisper/modes/` is the source of truth for Superwhisper modes. The app folder keeps a
+  real `modes/` folder with copies, synced by `scripts/superwhisper-modes.sh` (`push` / `pull`);
+  never link that folder, because the app cannot list a symlinked `modes/`.
 - `justfile`, `scripts/format/`, and `.github/workflows/ci.yml` define repository validation. Use
   the existing `just` recipes; do not introduce a second task runner for ordinary changes.
 - Edit `AGENTS.md`, not `CLAUDE.md`. `CLAUDE.md` must remain a symlink to `AGENTS.md`.
@@ -54,8 +57,8 @@ committed.
 - `.config/karabiner/karabiner.json`, `.config/nvim/lazy-lock.json`, and
   `.config/nvim/lazyvim.json` are app-managed state. Include them only for an intentional app
   change, inspect the semantic diff, and do not reformat them.
-- `.config/superwhisper/modes/*.json` is rewritten by Superwhisper when a mode is edited in the
-  app. Do not reformat it.
+- `.config/superwhisper/modes/*.json` is written by Superwhisper and copied back with
+  `superwhisper-modes.sh pull`. Do not reformat it.
 - `.config/fish/completions/*.fish` is vendored or generated upstream output. Replace a completion
   from its owning tool; do not hand-format it.
 - `.config/fish/completions.local/`, Fish variable files, `.nvimlog`, and `.agents/memory/` are

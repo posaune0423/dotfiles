@@ -2,7 +2,12 @@
   "favoriteModelIDs": [
     "vad-v2",
     "speakerkit-coreml",
-    "nemotron3-fast32-fp16-v1"
+    "nemotron3-fast32-fp16-v1",
+    "s1-vocab-v2-160MB",
+    "s1-mini",
+    "cohere-transcribe-q4",
+    "sl-1",
+    "sv-1"
   ],
   "modeKeys": [
     "pro",

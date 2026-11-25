@@ -15,7 +15,8 @@ fi
 
 # Stand-in for scripts/superwhisper-app.sh, so no test touches the real app.
 # Like Superwhisper, it saves its in-memory settings when it quits; that write
-# is stale whenever the settings file changed while it was running.
+# is stale whenever the settings file changed while it was running (here: the
+# coding mode registered after it started is missing).
 FAKE_APP="$TEST_ROOT/fake-app.sh"
 cat > "$FAKE_APP" << 'EOF'
 #!/bin/sh
@@ -24,7 +25,7 @@ case "$1" in
   running) [ "$(cat "$FAKE_APP_STATE")" = running ] ;;
   quit)
     if [ -f "$FAKE_APP_SETTINGS" ]; then
-      jq '.modeKeys = ["stale"]' "$FAKE_APP_SETTINGS" > "$FAKE_APP_SETTINGS.tmp"
+      jq '.modeKeys = ((.modeKeys // []) - ["coding"])' "$FAKE_APP_SETTINGS" > "$FAKE_APP_SETTINGS.tmp"
       mv "$FAKE_APP_SETTINGS.tmp" "$FAKE_APP_SETTINGS"
     fi
     echo stopped > "$FAKE_APP_STATE"
@@ -112,6 +113,30 @@ expect "refused build keeps the app-side edit" \
 settings build --force > /dev/null
 expect "build --force rebuilds from the sources" \
   "$(jq -c '.vocabulary' "$OUT")" '["Alpha","Beta","Secret"]'
+
+# Other settings changed in the app, such as favorite models, are kept too.
+jq '.favoriteModelIDs = ["from-app"]' "$OUT" > "$OUT.tmp" && mv "$OUT.tmp" "$OUT"
+expect "build refuses to drop other settings changed in the app" "$(status_of settings build)" "1"
+expect "the refusal names the changed setting" \
+  "$(settings build 2>&1 | grep -c 'setting: favoriteModelIDs')" "1"
+settings build --force > /dev/null
+expect "build --force drops the changed setting" \
+  "$(jq -c '.favoriteModelIDs // "none"' "$OUT")" '"none"'
+
+# The last build is remembered, so a change made only in the sources is not
+# mistaken for an app-side change.
+cp "$CONFIG/settings.json" "$TEST_ROOT/settings.public.json"
+jq '.favoriteModelIDs = ["from-source"]' "$CONFIG/settings.json" > "$CONFIG/settings.json.tmp"
+mv "$CONFIG/settings.json.tmp" "$CONFIG/settings.json"
+expect "build applies a setting changed only in the sources" "$(status_of settings build)" "0"
+expect "the built file has the source setting" \
+  "$(jq -c '.favoriteModelIDs' "$OUT")" '["from-source"]'
+jq '.vocabulary -= ["Alpha"]' "$CONFIG/settings.json" > "$CONFIG/settings.json.tmp"
+mv "$CONFIG/settings.json.tmp" "$CONFIG/settings.json"
+expect "build applies a word removed from the sources" "$(status_of settings build)" "0"
+expect "the removed word is gone" "$(jq -c '.vocabulary | index("Alpha")' "$OUT")" "null"
+cp "$TEST_ROOT/settings.public.json" "$CONFIG/settings.json"
+settings build --force > /dev/null
 expect "the built file stays readable by the app" \
   "$(find "$OUT" -perm -044 | wc -l | tr -d ' ')" "1"
 expect "no temporary file is left next to the built settings" \
@@ -151,6 +176,123 @@ settings build --force > /dev/null
 export FAKE_APP_SETTINGS="$TEST_ROOT/none"
 reset_app stopped
 
+# --- modes -------------------------------------------------------------------
+# Superwhisper lists modes/ with URL-based Foundation APIs, which do not follow
+# a symlinked folder, so the app folder keeps a real modes/ with copies of the
+# repository's modes. push copies repo -> app, pull copies app -> repo.
+MREPO="$TEST_ROOT/mrepo"
+MAPP="$TEST_ROOT/mapp"
+mkdir -p "$MREPO/modes" "$MAPP"
+printf '{\n  "key" : "default",\n  "voiceModelID" : "sv-1"\n}\n' > "$MREPO/modes/default.json"
+printf '{\n  "key" : "coding",\n  "voiceModelID" : "sv-1"\n}\n' > "$MREPO/modes/coding.json"
+modes() {
+  SUPERWHISPER_CONFIG_DIR="$MREPO" SUPERWHISPER_APP_DIR="$MAPP" \
+    sh "$REPO_ROOT/scripts/superwhisper-modes.sh" "$@"
+}
+names() {
+  find "$1" -maxdepth 1 -name '*.json' -exec basename {} \; | sort | tr '\n' ' ' | sed 's/ $//'
+}
+
+expect "modes status fails before the first push" "$(status_of modes status)" "1"
+modes push > /dev/null
+expect "push makes a real modes folder" \
+  "$([ -d "$MAPP/modes" ] && [ ! -L "$MAPP/modes" ] && echo folder || echo other)" "folder"
+expect "push copies every repository mode" "$(names "$MAPP/modes")" "coding.json default.json"
+expect "modes status passes after push" "$(status_of modes status)" "0"
+
+# A folder-level symlink from an earlier install is replaced by a real folder.
+rm -rf "$MAPP/modes"
+ln -s "$MREPO/modes" "$MAPP/modes"
+expect "modes status rejects a symlinked folder" "$(status_of modes status)" "1"
+modes push > /dev/null
+expect "push replaces a symlinked folder with a real one" \
+  "$([ -L "$MAPP/modes" ] && echo link || echo folder)" "folder"
+expect "replacing the symlink keeps the repository modes" "$(names "$MREPO/modes")" "coding.json default.json"
+
+# The app saves in its own JSON layout; layout alone is not a change.
+jq . "$MAPP/modes/default.json" > "$MAPP/modes/default.json.tmp"
+mv "$MAPP/modes/default.json.tmp" "$MAPP/modes/default.json"
+expect "a layout-only rewrite is not drift" "$(status_of modes status)" "0"
+
+# Edits made in the app: a changed model, a new mode.
+jq '.voiceModelID = "local-model"' "$MAPP/modes/coding.json" > "$MAPP/modes/coding.json.tmp"
+mv "$MAPP/modes/coding.json.tmp" "$MAPP/modes/coding.json"
+echo '{"key":"local"}' > "$MAPP/modes/local.json"
+expect "modes status reports app-side edits" "$(status_of modes status)" "1"
+expect "push refuses to drop app-side edits" "$(status_of modes push)" "1"
+expect "a refused push keeps the app-side edit" \
+  "$(jq -r '.voiceModelID' "$MAPP/modes/coding.json")" "local-model"
+modes pull > /dev/null
+expect "pull brings a changed mode into the repository" \
+  "$(jq -r '.voiceModelID' "$MREPO/modes/coding.json")" "local-model"
+expect "pull brings a new mode into the repository" \
+  "$(names "$MREPO/modes")" "coding.json default.json local.json"
+expect "modes status passes after pull" "$(status_of modes status)" "0"
+
+# A mode deleted in the app is deleted from the repository by pull.
+rm "$MAPP/modes/local.json"
+modes pull > /dev/null
+expect "pull removes a mode deleted in the app" "$(names "$MREPO/modes")" "coding.json default.json"
+
+# push --force replaces app-side edits with the repository modes.
+echo '{"key":"stray"}' > "$MAPP/modes/stray.json"
+modes push --force > /dev/null
+expect "push --force mirrors the repository" "$(names "$MAPP/modes")" "coding.json default.json"
+
+# A running app is quit before the push and started again afterwards.
+reset_app running
+modes push > /dev/null
+expect "push restarts a running app around the copy" "$(app_calls)" "quit launch"
+reset_app stopped
+
+# The last synced modes are remembered, so edits made in the repository are
+# not mistaken for edits made in the app.
+jq '.voiceModelID = "repo-model"' "$MREPO/modes/default.json" > "$MREPO/modes/default.json.tmp"
+mv "$MREPO/modes/default.json.tmp" "$MREPO/modes/default.json"
+expect "push applies a repository edit without --force" "$(status_of modes push)" "0"
+expect "the app gets the repository edit" \
+  "$(jq -r '.voiceModelID' "$MAPP/modes/default.json")" "repo-model"
+echo '{"key":"extra"}' > "$MREPO/modes/extra.json"
+modes push > /dev/null
+rm "$MREPO/modes/extra.json"
+expect "push removes a mode deleted in the repository without --force" "$(status_of modes push)" "0"
+expect "the deleted mode is gone from the app" "$(names "$MAPP/modes")" "coding.json default.json"
+
+jq '.voiceModelID = "repo-2"' "$MREPO/modes/default.json" > "$MREPO/modes/default.json.tmp"
+mv "$MREPO/modes/default.json.tmp" "$MREPO/modes/default.json"
+modes pull > /dev/null
+expect "pull keeps a repository edit the app has not seen" \
+  "$(jq -r '.voiceModelID' "$MREPO/modes/default.json")" "repo-2"
+
+jq '.voiceModelID = "app-2"' "$MAPP/modes/default.json" > "$MAPP/modes/default.json.tmp"
+mv "$MAPP/modes/default.json.tmp" "$MAPP/modes/default.json"
+expect "pull refuses when both sides changed a mode" "$(status_of modes pull)" "1"
+expect "the refused pull keeps the repository edit" \
+  "$(jq -r '.voiceModelID' "$MREPO/modes/default.json")" "repo-2"
+expect "status names the side of each change" \
+  "$(modes status 2>&1 | grep -c -E '(app|repo): changed: default.json')" "2"
+modes push --force > /dev/null
+
+# push --check only reports; it does not stop the app or write anything.
+jq '.voiceModelID = "app-3"' "$MAPP/modes/coding.json" > "$MAPP/modes/coding.json.tmp"
+mv "$MAPP/modes/coding.json.tmp" "$MAPP/modes/coding.json"
+reset_app running
+expect "push --check reports app-side edits" "$(status_of modes push --check)" "1"
+expect "push --check does not stop the app" "$(app_calls)" ""
+expect "push --check writes nothing" "$(jq -r '.voiceModelID' "$MAPP/modes/coding.json")" "app-3"
+modes pull > /dev/null
+expect "push --check passes once the edit is pulled" "$(status_of modes push --check)" "0"
+reset_app stopped
+
+# Only one push or pull runs at a time.
+mkdir -p "$MREPO/.state/modes.lock"
+expect "push waits for no one: it fails while the lock is held" "$(status_of modes push)" "1"
+expect "pull fails while the lock is held" "$(status_of modes pull)" "1"
+expect "a failed locked pull keeps the repository modes" "$(names "$MREPO/modes")" "coding.json default.json"
+rmdir "$MREPO/.state/modes.lock"
+expect "push works again after the lock is released" "$(status_of modes push)" "0"
+expect "push releases its lock" "$([ -e "$MREPO/.state/modes.lock" ] && echo held || echo free)" "free"
+
 # --- installer ---------------------------------------------------------------
 DOTFILES="$TEST_ROOT/dotfiles"
 TEST_HOME="$TEST_ROOT/home"
@@ -158,7 +300,8 @@ APP_DIR="$TEST_HOME/Documents/superwhisper"
 mkdir -p "$DOTFILES/scripts" "$DOTFILES/.config/superwhisper/modes" "$TEST_HOME"
 git init -q "$DOTFILES"
 cp "$REPO_ROOT/install.sh" "$DOTFILES/install.sh"
-cp "$REPO_ROOT/scripts/superwhisper-settings.sh" "$REPO_ROOT/scripts/superwhisper-app.sh" "$DOTFILES/scripts/"
+cp "$REPO_ROOT/scripts/superwhisper-settings.sh" "$REPO_ROOT/scripts/superwhisper-modes.sh" \
+  "$REPO_ROOT/scripts/superwhisper-app.sh" "$DOTFILES/scripts/"
 cp "$CONFIG/settings.json" "$DOTFILES/.config/superwhisper/settings.json"
 echo '{"key":"default"}' > "$DOTFILES/.config/superwhisper/modes/default.json"
 
@@ -190,6 +333,9 @@ expect "dry run builds nothing" \
 expect "dry run leaves the app settings folder alone" \
   "$([ -L "$APP_DIR/settings" ] && echo link || echo folder)" "folder"
 expect "dry run does not stop the app" "$(app_calls)" ""
+expect "dry run previews copying the modes" \
+  "$(printf '%s\n' "$DRY_OUT" | grep -c "superwhisper-modes.sh push")" "1"
+expect "dry run leaves the app modes alone" "$(names "$APP_DIR/modes")" "old.json"
 
 # A failed first build must not replace the app's working settings.
 cp "$DOTFILES/.config/superwhisper/settings.json" "$TEST_ROOT/settings.good.json"
@@ -211,13 +357,38 @@ export FAKE_APP_SETTINGS="$APP_DIR/settings/settings.json"
 reset_app running
 install
 expect "install stops the running app once and starts it again" "$(app_calls)" "quit launch"
-expect "modes links to the repository" \
-  "$(resolved "$APP_DIR/modes")" "$(resolved "$DOTFILES/.config/superwhisper/modes")"
+expect "modes stays a real folder" \
+  "$([ -L "$APP_DIR/modes" ] && echo link || echo folder)" "folder"
+expect "modes holds copies of the repository modes" "$(names "$APP_DIR/modes")" "default.json"
 expect "settings links to the built folder" \
   "$(resolved "$APP_DIR/settings")" "$(resolved "$DOTFILES/.config/superwhisper/settings")"
 expect "the app reads the built vocabulary" \
   "$(jq -c '.vocabulary' "$APP_DIR/settings/settings.json")" '["Alpha","Beta"]'
 expect "previous modes are backed up" \
   "$(find "$TEST_HOME/.dotfiles-backup" -name old.json | wc -l | tr -d ' ')" "1"
+
+# A folder-level symlink left by an earlier install is turned into a folder.
+rm -rf "$APP_DIR/modes"
+ln -s "$DOTFILES/.config/superwhisper/modes" "$APP_DIR/modes"
+install
+expect "install replaces a symlinked modes folder" \
+  "$([ -L "$APP_DIR/modes" ] && echo link || echo folder)" "folder"
+expect "the repository modes survive that replacement" \
+  "$(names "$DOTFILES/.config/superwhisper/modes")" "default.json"
+
+# Without --yes, modes edited in the app are not replaced.
+jq '.voiceModelID = "app-edit"' "$APP_DIR/modes/default.json" > "$APP_DIR/modes/default.json.tmp"
+mv "$APP_DIR/modes/default.json.tmp" "$APP_DIR/modes/default.json"
+env -u SUPERWHISPER_CONFIG_DIR HOME="$TEST_HOME" NO_COLOR=1 \
+  sh "$DOTFILES/install.sh" --no-update --dotfiles-dir "$DOTFILES" < /dev/null > /dev/null 2>&1 || true
+expect "install without --yes keeps modes edited in the app" \
+  "$(jq -r '.voiceModelID' "$APP_DIR/modes/default.json")" "app-edit"
+env -u SUPERWHISPER_CONFIG_DIR HOME="$TEST_HOME" NO_COLOR=1 \
+  sh "$DOTFILES/install.sh" --no-update --no-backup --dotfiles-dir "$DOTFILES" < /dev/null > /dev/null 2>&1 || true
+expect "install --no-backup without --yes keeps them too" \
+  "$(jq -r '.voiceModelID' "$APP_DIR/modes/default.json")" "app-edit"
+install
+expect "install --yes replaces them" \
+  "$(jq -r '.voiceModelID // "unset"' "$APP_DIR/modes/default.json")" "unset"
 
 exit "$FAIL"
