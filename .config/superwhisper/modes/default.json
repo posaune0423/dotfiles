@@ -14,7 +14,7 @@
   "diarize" : false,
   "iconName" : "",
   "key" : "default",
-  "language" : "en",
+  "language" : "auto",
   "languageModelID" : "sl-1",
   "literalPunctuation" : false,
   "name" : "Default",
