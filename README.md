@@ -444,6 +444,9 @@ Superwhisper はモードと設定を `~/Documents/superwhisper/` 配下の JSON
 | `hyperfine` | `latest` | benchmarking tool |
 | `atuin` | `latest` | shell history manager |
 | `usage` | `latest` | CLI usage/help parser |
+| `github:duckdb/duckdb` | `latest` | DuckDB CLI（aqua が 2.0 のアセット名に未対応のため GitHub releases から取得） |
+| `github:quicknode/cli` | `latest` | Quicknode CLI（`qn`） |
+| `github:duneanalytics/cli` | `latest` | Dune API CLI（`dune`） |
 
 #### Node.js
 

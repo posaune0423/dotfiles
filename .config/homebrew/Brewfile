@@ -99,6 +99,7 @@ cask "android-platform-tools"
 
 # [Casks - media]
 cask "audacity"
+cask "blackhole-2ch"  # virtual audio driver for routing app audio
 cask "blender"
 cask "obs"
 
